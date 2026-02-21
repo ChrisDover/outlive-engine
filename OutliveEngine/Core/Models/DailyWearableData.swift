@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class DailyWearableData: Sendable {
+final class DailyWearableData {
 
     var userId: String
     var date: Date

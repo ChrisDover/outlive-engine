@@ -37,8 +37,8 @@ enum AppTab: String, CaseIterable, Sendable {
 
 // MARK: - App State
 
-@Observable
-final class AppState: Sendable {
+@MainActor @Observable
+final class AppState {
     var isAuthenticated: Bool = false
     var hasCompletedOnboarding: Bool = false
     var selectedTab: AppTab = .dashboard

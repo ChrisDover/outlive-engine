@@ -231,7 +231,7 @@ private struct SupplementEntry: Sendable {
 
 // MARK: - SupplementDose Identifiable Conformance
 
-extension SupplementDose: @retroactive Identifiable {
+extension SupplementDose: Identifiable {
     var id: String { "\(name)-\(timing.rawValue)-\(dose)" }
 }
 

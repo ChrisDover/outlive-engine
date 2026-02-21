@@ -208,7 +208,7 @@ actor AIClient {
 
 /// A type-erased `Codable` wrapper for bridging `[String: Any]` dictionaries
 /// into the `Encodable` world. Supports JSON primitives and nested collections.
-struct AnyCodable: Codable, Sendable {
+struct AnyCodable: Codable, @unchecked Sendable {
     let value: Any
 
     init(_ value: Any) {

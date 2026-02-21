@@ -31,7 +31,7 @@ struct MainTabView: View {
     private func tabContent(for tab: AppTab) -> some View {
         switch tab {
         case .dashboard:
-            DailyDashboardView()
+            DailyDashboardView(userId: appState.currentUserId ?? "")
 
         case .protocols:
             ProtocolLibraryView()

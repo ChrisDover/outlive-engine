@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class GenomicProfile: Sendable {
+final class GenomicProfile {
 
     var userId: String
 

@@ -104,7 +104,7 @@ final class HealthKitManager: @unchecked Sendable {
             throw HealthKitManagerError.queryFailed(underlying: "Could not compute end of day.")
         }
 
-        let predicate = HKQuery.predicateForSamples(
+        nonisolated(unsafe) let predicate = HKQuery.predicateForSamples(
             withStart: startOfDay,
             end: endOfDay,
             options: .strictStartDate
@@ -287,7 +287,7 @@ final class HealthKitManager: @unchecked Sendable {
                 sampleType: sleepType,
                 predicate: predicate,
                 limit: HKObjectQueryNoLimit,
-                sortDescriptors: [SortDescriptor(\.startDate)]
+                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
             ) { _, samples, error in
                 if let error {
                     continuation.resume(throwing: HealthKitManagerError.queryFailed(underlying: error.localizedDescription))
@@ -327,7 +327,7 @@ final class HealthKitManager: @unchecked Sendable {
                 sampleType: type,
                 predicate: nil,
                 limit: 1,
-                sortDescriptors: [SortDescriptor(\.startDate, order: .reverse)]
+                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)]
             ) { _, samples, error in
                 if let error {
                     continuation.resume(throwing: HealthKitManagerError.queryFailed(underlying: error.localizedDescription))

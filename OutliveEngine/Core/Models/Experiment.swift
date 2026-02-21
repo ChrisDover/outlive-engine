@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Experiment: Sendable {
+final class Experiment {
 
     var userId: String
     var title: String

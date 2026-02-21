@@ -8,7 +8,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class DailyProtocol: Sendable {
+final class DailyProtocol {
 
     var userId: String
     var date: Date

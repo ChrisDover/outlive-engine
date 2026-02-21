@@ -227,27 +227,29 @@ final class SyncManager: @unchecked Sendable {
     /// Finds all local records with `syncStatus == .pending` and pushes them to the server.
     @MainActor
     func pushChanges(modelContext: ModelContext) async throws {
+        let pendingStatus = SyncStatus.pending
+
         // Fetch pending bloodwork.
         let bloodworkDescriptor = FetchDescriptor<BloodworkPanel>(
-            predicate: #Predicate { $0.syncStatus == .pending }
+            predicate: #Predicate { $0.syncStatus == pendingStatus }
         )
         let pendingBloodwork = (try? modelContext.fetch(bloodworkDescriptor)) ?? []
 
         // Fetch pending wearable data.
         let wearableDescriptor = FetchDescriptor<DailyWearableData>(
-            predicate: #Predicate { $0.syncStatus == .pending }
+            predicate: #Predicate { $0.syncStatus == pendingStatus }
         )
         let pendingWearables = (try? modelContext.fetch(wearableDescriptor)) ?? []
 
         // Fetch pending body composition.
         let bodyCompDescriptor = FetchDescriptor<BodyComposition>(
-            predicate: #Predicate { $0.syncStatus == .pending }
+            predicate: #Predicate { $0.syncStatus == pendingStatus }
         )
         let pendingBodyComp = (try? modelContext.fetch(bodyCompDescriptor)) ?? []
 
         // Fetch pending experiments.
         let experimentDescriptor = FetchDescriptor<Experiment>(
-            predicate: #Predicate { $0.syncStatus == .pending }
+            predicate: #Predicate { $0.syncStatus == pendingStatus }
         )
         let pendingExperiments = (try? modelContext.fetch(experimentDescriptor)) ?? []
 

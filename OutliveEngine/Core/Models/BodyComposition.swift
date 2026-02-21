@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class BodyComposition: Sendable {
+final class BodyComposition {
 
     var userId: String
     var date: Date

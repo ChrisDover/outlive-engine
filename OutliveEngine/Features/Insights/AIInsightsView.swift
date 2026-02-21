@@ -8,7 +8,7 @@ import SwiftUI
 struct AIInsightsView: View {
 
     @State private var isGenerating = false
-    @State private var insights: [AIInsight] = AIInsight.placeholders
+    @State private var insights: [InsightDisplayItem] = InsightDisplayItem.placeholders
 
     var body: some View {
         NavigationStack {
@@ -89,7 +89,7 @@ struct AIInsightsView: View {
 
 private struct InsightCard: View {
 
-    let insight: AIInsight
+    let insight: InsightDisplayItem
 
     var body: some View {
         VStack(alignment: .leading, spacing: OutliveSpacing.sm) {
@@ -141,7 +141,7 @@ private struct InsightCard: View {
 
 // MARK: - AI Insight Model
 
-private struct AIInsight: Identifiable {
+private struct InsightDisplayItem: Identifiable {
     let id = UUID()
     let category: String
     let title: String
@@ -150,8 +150,8 @@ private struct AIInsight: Identifiable {
     let icon: String
     let color: Color
 
-    static let placeholders: [AIInsight] = [
-        AIInsight(
+    static let placeholders: [InsightDisplayItem] = [
+        InsightDisplayItem(
             category: "Recovery",
             title: "Sleep Quality Declining",
             summary: "Your deep sleep has decreased 18% over the past two weeks. This correlates with increased evening screen time. Consider enforcing your digital sunset protocol.",
@@ -159,7 +159,7 @@ private struct AIInsight: Identifiable {
             icon: "bed.double.fill",
             color: .domainSleep
         ),
-        AIInsight(
+        InsightDisplayItem(
             category: "Nutrition",
             title: "Vitamin D Optimization Needed",
             summary: "Based on your VDR gene variant and last bloodwork panel showing 38 ng/mL, increasing D3 supplementation to 5000 IU/day with K2 is recommended to reach your 60-80 ng/mL target.",
@@ -167,7 +167,7 @@ private struct AIInsight: Identifiable {
             icon: "sun.max.fill",
             color: .domainNutrition
         ),
-        AIInsight(
+        InsightDisplayItem(
             category: "Training",
             title: "Strength Plateau Detected",
             summary: "Your grip strength metrics have been flat for 3 weeks. Given your ACTN3 RX genotype, consider adding dedicated power work and increasing training variety.",
@@ -175,7 +175,7 @@ private struct AIInsight: Identifiable {
             icon: "dumbbell.fill",
             color: .domainTraining
         ),
-        AIInsight(
+        InsightDisplayItem(
             category: "Metabolic",
             title: "Glucose Response Improving",
             summary: "Post-meal glucose spikes have decreased 12% since adding post-meal walks. Your fasting glucose trend is moving toward optimal. Maintain current protocol.",

@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class ProtocolSource: Sendable {
+final class ProtocolSource {
 
     var userId: String
     var name: String

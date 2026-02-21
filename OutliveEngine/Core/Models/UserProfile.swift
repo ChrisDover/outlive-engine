@@ -7,11 +7,9 @@ import Foundation
 import SwiftData
 
 @Model
-final class UserProfile: Sendable {
+final class UserProfile {
 
-    #Unique<UserProfile>([\.appleUserId])
-
-    var appleUserId: String
+    @Attribute(.unique) var appleUserId: String
     var displayName: String?
     var birthDate: Date?
     var biologicalSex: String?

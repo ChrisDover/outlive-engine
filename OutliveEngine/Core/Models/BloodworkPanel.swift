@@ -7,7 +7,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class BloodworkPanel: Sendable {
+final class BloodworkPanel {
 
     var userId: String
     var labDate: Date

@@ -131,7 +131,7 @@ actor APIClient {
             sessionConfiguration: sessionConfig
         )
 
-        startNetworkMonitor()
+        Task { await self.startNetworkMonitor() }
     }
 
     // MARK: - Network Monitoring

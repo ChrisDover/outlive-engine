@@ -90,6 +90,7 @@ final class AuthService: @unchecked Sendable {
     // MARK: - Sign Out
 
     /// Clears the Keychain session and encryption keys, then resets `AppState`.
+    @MainActor
     func signOut(appState: AppState) {
         // Remove auth entries from Keychain.
         deleteKeychainValue(account: Constants.userIdAccount)
@@ -120,7 +121,7 @@ final class AuthService: @unchecked Sendable {
             try keyManager.deriveKey(from: userId)
         } catch {
             // Key derivation failed — session is invalid.
-            signOut(appState: appState)
+            await MainActor.run { self.signOut(appState: appState) }
             return
         }
 
