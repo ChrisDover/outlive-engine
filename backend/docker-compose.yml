@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: outlive-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: outlive
+      POSTGRES_PASSWORD: outlive
+      POSTGRES_DB: outlive_engine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - outlive-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U outlive -d outlive_engine"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: outlive-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://outlive:outlive@postgres:5432/outlive_engine"
+      JWT_SECRET: "change-me-in-production"
+      FIELD_ENCRYPTION_KEY: "change-me-32-byte-base64-key-here"
+      ALLOWED_ORIGINS: '["*"]'
+    networks:
+      - outlive-network
+
+volumes:
+  pgdata:
+
+networks:
+  outlive-network:
+    driver: bridge
