@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
+import logging
+import sys
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+logger = logging.getLogger("outlive.config")
+
+# Secrets that must be changed from defaults before production use.
+_INSECURE_DEFAULTS = frozenset({
+    "change-me-in-production",
+    "change-me-32-byte-base64-key-here",
+})
 
 
 class Settings(BaseSettings):
@@ -22,7 +32,7 @@ class Settings(BaseSettings):
     )
 
     # ── JWT / Auth ────────────────────────────────────────────────────────
-    JWT_SECRET: str = "change-me-in-production"
+    JWT_SECRET: str = ""
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_HOURS: int = 24
     JWT_REFRESH_EXPIRATION_DAYS: int = 30
@@ -38,13 +48,13 @@ class Settings(BaseSettings):
     AIRLLM_MODEL: str = "llama3.1" # Model name (ollama model or cloud model ID)
 
     # ── CORS ──────────────────────────────────────────────────────────────
-    ALLOWED_ORIGINS: list[str] = ["*"]
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
 
     # ── Encryption ────────────────────────────────────────────────────────
-    FIELD_ENCRYPTION_KEY: str = "change-me-32-byte-base64-key-here"
+    FIELD_ENCRYPTION_KEY: str = ""
 
-    # ── Apple Sign-In ─────────────────────────────────────────────────────
-    APPLE_BUNDLE_ID: str = "com.outlive.engine"
+    # ── Apple Sign-In (optional, for mobile clients) ────────────────────────
+    APPLE_BUNDLE_ID: str = ""
 
     # ── Service Auth (Next.js → FastAPI) ──────────────────────────────────
     SERVICE_API_KEY: str = ""
@@ -53,6 +63,38 @@ class Settings(BaseSettings):
     def asyncpg_dsn(self) -> str:
         """Return a plain asyncpg DSN (without the +asyncpg dialect)."""
         return self.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://")
+
+
+def validate_settings(settings: Settings) -> None:
+    """Refuse to start if critical secrets are missing or insecure."""
+    errors: list[str] = []
+
+    if not settings.JWT_SECRET or settings.JWT_SECRET in _INSECURE_DEFAULTS:
+        errors.append(
+            "JWT_SECRET is missing or uses an insecure default. "
+            "Generate one: python -c \"import secrets; print(secrets.token_urlsafe(64))\""
+        )
+
+    if not settings.FIELD_ENCRYPTION_KEY or settings.FIELD_ENCRYPTION_KEY in _INSECURE_DEFAULTS:
+        errors.append(
+            "FIELD_ENCRYPTION_KEY is missing or uses an insecure default. "
+            "Generate one: openssl rand -base64 32"
+        )
+
+    if "*" in settings.ALLOWED_ORIGINS:
+        errors.append(
+            "ALLOWED_ORIGINS contains '*' — this allows any website to make "
+            "authenticated requests. Set it to your actual frontend URL(s)."
+        )
+
+    if errors:
+        for err in errors:
+            logger.critical("SECURITY: %s", err)
+        sys.exit(
+            "\n\nFATAL: Refusing to start with insecure configuration.\n"
+            + "\n".join(f"  - {e}" for e in errors)
+            + "\n\nSee .env.example for required values.\n"
+        )
 
 
 @lru_cache

@@ -1,0 +1,974 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 63;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0646D41EAEF80D54E93D86DC /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA52AAF057F1950E4373903 /* DashboardViewModel.swift */; };
+		07F67AC4C12E5AC83E1F9B24 /* InterventionsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3668C70346D646A220281AF5 /* InterventionsCardView.swift */; };
+		0910BA647C3275DE79617546 /* BiomarkerTrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C98DB18AB98260F6065870 /* BiomarkerTrendsView.swift */; };
+		0C0334918AAEABA89B6EC306 /* ConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3324DC36CAAA3AB255C69CF9 /* ConflictResolver.swift */; };
+		0FF85C77FAC209D549AD649C /* DailyWearableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A7E06EC3050F58663EEDF6 /* DailyWearableData.swift */; };
+		101B93BD143D9BC89AE690AE /* GoalsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2963B737F340FC85FFEEEA /* GoalsSelectionView.swift */; };
+		153990AEA0A7EFE7BC7AA7AF /* MealPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB01052CAB92EEB763F7B372 /* MealPlanner.swift */; };
+		1AF72D7E9C3578A894332400 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7852CDC841825337FC45A /* OnboardingFlow.swift */; };
+		1DC05975EEBA5CBE6E873258 /* OutliveColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97937F40B869047C1095DD2C /* OutliveColors.swift */; };
+		20014CA7285674299CAAF9B0 /* MetricRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090D161328C3731D3A4BEEC8 /* MetricRing.swift */; };
+		21E98B071CB5A856F625FFF6 /* KeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68529180D74962AF3196402C /* KeyManager.swift */; };
+		24F25370A7E8D573A40D824E /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82922B83701B5DBC3416C95 /* APIClient.swift */; };
+		2B8E8B2F7431E3DDBD37A3E1 /* GeneticDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9BAEFC257FA63953E143381 /* GeneticDetailView.swift */; };
+		2BDCD589AA6D83BA2B0FB5A9 /* OutliveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39D16D6911D94072FA0752D /* OutliveButton.swift */; };
+		2FEAE092A4DE1C2F921CB2DB /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF73DAAA4F38EE93166117A /* SyncManager.swift */; };
+		3027DB58382CACBF089C7650 /* ProtocolSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDF009945969A306CDA92CC /* ProtocolSelectionView.swift */; };
+		319E9F795EAFC179ADEFE881 /* ExperimentDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73F9ED634CB3D768E50F007 /* ExperimentDashboardView.swift */; };
+		357C41F4A17593E1626496C7 /* DataExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3408C1F02811358A58FFD8B /* DataExportView.swift */; };
+		36ABCB97CD4E182834E89305 /* ProtocolSynthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9D4DC130EE60694515B81F /* ProtocolSynthesizer.swift */; };
+		3ED6D295642EFC3244593FB6 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BD5AA019A304CCC795F55E /* HealthKitManager.swift */; };
+		408038A053AF0222C34463C4 /* BodyCompositionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E7E1E8FDA814E8C2EDB2A5 /* BodyCompositionView.swift */; };
+		419CFA471202AA8D3905E8EC /* ProtocolCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC478222E19078D92ED3D724 /* ProtocolCard.swift */; };
+		41D6776A8FABB8376F1EE2CE /* GenomeParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF20708BCEF76F37A5FD05BB /* GenomeParser.swift */; };
+		43C55CEADC71A0C8378606B8 /* ExperimentResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35FE814E98A1AE661AB7881 /* ExperimentResultView.swift */; };
+		47909EBA2AEFC640625A1636 /* GenomeProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2C8953E035BB8176E68DDA /* GenomeProfileView.swift */; };
+		47D46D8A4E687C168E0F62F9 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE909252590C5BC00850EBB /* EmptyStateView.swift */; };
+		4AF24054D0BACBC44219087E /* ActiveExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDEEE480A375210E67A284F /* ActiveExperimentView.swift */; };
+		4F65A5710198A773289ED3D5 /* RecoveryBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B669787D67CA56688F7BF1E /* RecoveryBanner.swift */; };
+		532AC4DED2070315557CD741 /* BodyComposition.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA780FE2B68C3C28E1C58CB /* BodyComposition.swift */; };
+		554057C832364C08E5BA6625 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EF8D33190EC2CC1932EBE7 /* AppState.swift */; };
+		554A4DB0DDA7D7E0639A8E3A /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F256E0DD0E1C27FC874A2B16 /* WelcomeView.swift */; };
+		5779D2D5DF09B25616372801 /* CircaseptanEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F6D593BDF360763706AB1 /* CircaseptanEngine.swift */; };
+		594F10F769D35573FF6AADDA /* WeeklyReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C678817AC842B5B00A31365 /* WeeklyReportView.swift */; };
+		6117BF80C3A2933A79A4D1CB /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F1DD17D8A389F468B5499 /* ProfileEditView.swift */; };
+		685C41D051AC2D760CD8A0CD /* WearableSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683056BBB12A93C63036F0DA /* WearableSettingsView.swift */; };
+		6A6EFA84E9CC04057968C1DB /* BloodworkPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83138D32A506AA2669052F3 /* BloodworkPanel.swift */; };
+		6F06D90A40394A046EFA0290 /* OutliveEngineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE77536106EACF0A48319E1 /* OutliveEngineApp.swift */; };
+		6FAAD6C74AF1114EF870C99F /* BiomarkerGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BAF16BC11907F241A8772 /* BiomarkerGauge.swift */; };
+		734896E4640F2066C79E1FA1 /* TrainingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ECC85E59569EB0A98C4CE3B /* TrainingCardView.swift */; };
+		758ACDE6A638C3F2632928D4 /* ProtocolEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF47A9DE2CF70BAA88A5A337 /* ProtocolEngineTests.swift */; };
+		764528436A272A1FCC19C6FF /* NutritionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46963361AF012BE7B28A19F0 /* NutritionCardView.swift */; };
+		7826772775E1C1205E36C338 /* BiomarkerAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C915AF587FB979B7948B010 /* BiomarkerAnalyzer.swift */; };
+		78933572351C6D27D5D40772 /* MedicalDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73751B9AA1927ABE61063690 /* MedicalDisclaimerView.swift */; };
+		7D2376D38543D932D7FECFBE /* BloodworkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EFE66386201E568567889B /* BloodworkDetailView.swift */; };
+		7D6152F50DE296215B30DB1A /* SupplementTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E3A9E6EABFF416FFBB1142 /* SupplementTimerView.swift */; };
+		7E2FC165EECF137691FDEB75 /* ProtocolLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A1C20BB17FB3BFBBD5A385 /* ProtocolLibraryView.swift */; };
+		7F297CB24A8B7D8ADEA54D7F /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B3BF99CD5AD59EF1BA6FA6 /* AuthService.swift */; };
+		80B0C9A558152EB5FAC57553 /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766D577CE1E208E482273D4A /* APIEndpoints.swift */; };
+		815666674A0900E692E7D48E /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E1069DB595872E78ADA1F4 /* SectionHeader.swift */; };
+		878AD26BF23D798310080102 /* OuraClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A5D6F85487C14821492CAB5 /* OuraClient.swift */; };
+		89635D6DB6EE937E3377D318 /* ProgressDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443DDB9A7D8EEC0A0B7E9033 /* ProgressDetailView.swift */; };
+		8ACDC3601D8207CE6CE30F6B /* ProtocolSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBD5FD34C48840D0DDB57BB /* ProtocolSource.swift */; };
+		8D1886E53C7B2FE65F890387 /* GeneticRiskMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0257DDBC647B9E570D57884 /* GeneticRiskMapper.swift */; };
+		8D5F1BFEE0D19820090D8A77 /* DataHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDFFE8C2A5AABAB845D6258 /* DataHubView.swift */; };
+		8D894AD133EE0FB8A44F51FB /* GenomicProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5EB18B8239B7B8CEFDB5D39 /* GenomicProfile.swift */; };
+		96A2EDD096B4B708685B961D /* BloodworkHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C8E1B469E188E2132F1505 /* BloodworkHistoryView.swift */; };
+		96B73EAC6C553C892198CE2F /* ProtocolDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E9EB4E8823B537D21955EDC /* ProtocolDetailView.swift */; };
+		9DE03B6BAFA32B8600872F1B /* SleepCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDB6BFDCA7B843DCE0171EA /* SleepCardView.swift */; };
+		9EEBF43115CE86DFD8E60CD5 /* SecuritySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4B1854DB89644D98B7A494 /* SecuritySettingsView.swift */; };
+		A0A9E66B11C9768489CDFF0F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC871553D0F71426DF3D548 /* SettingsView.swift */; };
+		A34494C823D59947A83574A7 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254928EB54565206AC0BE3E7 /* Enums.swift */; };
+		A5A0D0E2366ACDA52688D421 /* AIInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F217711990EB646B92C12A /* AIInsightsView.swift */; };
+		A8A3F14A871563D22D886359 /* AIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D6291A7476F1E3CAD5A3A7 /* AIClient.swift */; };
+		A933A46E7A313F4D135EB0D9 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7596BA89AA7407F06DC1D3A5 /* MainTabView.swift */; };
+		A98923E94A73F88370011918 /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A7076E1A54D540AF0002 /* AuditLogger.swift */; };
+		AB7D75491D18765ACC84DD86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFA3292CEF528D74AABFF00C /* Assets.xcassets */; };
+		AB99B58D15F8C7FA974820E8 /* GenomeUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683A04A6F626094D9646F95A /* GenomeUploadView.swift */; };
+		ADF29CA3C4B6A31194ADF96D /* AllergiesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C03BCD32D73E91AD04FB795 /* AllergiesView.swift */; };
+		AEFD146202122F7278F282AF /* WhoopClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5420CF6A62B7F3FD05A1373E /* WhoopClient.swift */; };
+		B31B7CB1B1CC6EF1A540301E /* RecoveryAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5BF8094FBA1A784BB04A8BD /* RecoveryAdaptor.swift */; };
+		B711AEC95D1024E979BC1C1F /* OutliveTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = C59DCB66C9BCBC8F7E5600D8 /* OutliveTypography.swift */; };
+		BB35FDEE524CBB3569940806 /* BloodworkInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECF1F73021B15DD50C1BB44 /* BloodworkInputView.swift */; };
+		BE99401EE62DD7A343A2400B /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89674572581E8F04478B664 /* DataStore.swift */; };
+		C1BEE90955EDA30C45C8CEA3 /* GutHealthCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F934753043031372C25A60F9 /* GutHealthCardView.swift */; };
+		C422717E5C8E6E215487F297 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54751B7A203B3AA94A7FFB08 /* TrendsView.swift */; };
+		C9107A980E4CFAA9A603CCC5 /* SupplementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867FB4338C58769DDCEF3210 /* SupplementCardView.swift */; };
+		CF7360C8CB97411C59026CAF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7128B153445DD7E3D380DA66 /* ContentView.swift */; };
+		D43DFE764A64869C7BD20B6A /* Experiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C658FB63BA14297D80D7E6 /* Experiment.swift */; };
+		D46A3609B3474A9E2D5494AC /* WearableConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07E38FC48EF4A9C38BF13F2 /* WearableConnectionView.swift */; };
+		D628229B04BF8162DF72BB41 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A8843A500F14EE743BC99D /* NotificationSettingsView.swift */; };
+		D873B9F1C0970918D7BB6276 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AD4F7373CD9C97B7F536D4 /* TimerView.swift */; };
+		DA22320CD5E89EB326A4A213 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932204AD945BE87D6A0EBE82 /* UserProfile.swift */; };
+		DE5A5EFFFEBCF9D623500785 /* OutliveSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F229C275D10277795A76A6 /* OutliveSpacing.swift */; };
+		E98FE94413EB59521A71E0B9 /* DailyProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6483C1C7D6ECA1FB156D461 /* DailyProtocol.swift */; };
+		ED9770DCBD87E925E4095324 /* NewExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25900D65B4B4A90EB4AB25B5 /* NewExperimentView.swift */; };
+		F2DED27E26C2BC987E8F4CB2 /* DailyDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC3D8CE1C59E649694CAA345 /* DailyDashboardView.swift */; };
+		FAE005C1176FB7F1E784AD42 /* CertificatePinning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2C2C9806891E47B1E1AAC2 /* CertificatePinning.swift */; };
+		FED62BD86F08B5AD5D89A094 /* CodableTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89B2393EFF4D5DD89B4646E /* CodableTypes.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B8F6B49B2F7057A4E9657E1E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C6DDB81AC16D89EA9D56D715 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3866DD951AE433AEC376DA49;
+			remoteInfo = OutliveEngine;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		01B3BF99CD5AD59EF1BA6FA6 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		07A8843A500F14EE743BC99D /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		090D161328C3731D3A4BEEC8 /* MetricRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricRing.swift; sourceTree = "<group>"; };
+		0C2C2C9806891E47B1E1AAC2 /* CertificatePinning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePinning.swift; sourceTree = "<group>"; };
+		1D9D4DC130EE60694515B81F /* ProtocolSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolSynthesizer.swift; sourceTree = "<group>"; };
+		1DE909252590C5BC00850EBB /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		1ECF1F73021B15DD50C1BB44 /* BloodworkInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodworkInputView.swift; sourceTree = "<group>"; };
+		254928EB54565206AC0BE3E7 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		25900D65B4B4A90EB4AB25B5 /* NewExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewExperimentView.swift; sourceTree = "<group>"; };
+		2ECC85E59569EB0A98C4CE3B /* TrainingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingCardView.swift; sourceTree = "<group>"; };
+		3324DC36CAAA3AB255C69CF9 /* ConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolver.swift; sourceTree = "<group>"; };
+		3668C70346D646A220281AF5 /* InterventionsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterventionsCardView.swift; sourceTree = "<group>"; };
+		3B4B1854DB89644D98B7A494 /* SecuritySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecuritySettingsView.swift; sourceTree = "<group>"; };
+		3DC871553D0F71426DF3D548 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		443DDB9A7D8EEC0A0B7E9033 /* ProgressDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressDetailView.swift; sourceTree = "<group>"; };
+		44EF8D33190EC2CC1932EBE7 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		46963361AF012BE7B28A19F0 /* NutritionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionCardView.swift; sourceTree = "<group>"; };
+		4A26581B2DB486912899F6EA /* OutliveEngine.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OutliveEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C678817AC842B5B00A31365 /* WeeklyReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyReportView.swift; sourceTree = "<group>"; };
+		4DE77536106EACF0A48319E1 /* OutliveEngineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutliveEngineApp.swift; sourceTree = "<group>"; };
+		4E9EB4E8823B537D21955EDC /* ProtocolDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolDetailView.swift; sourceTree = "<group>"; };
+		52C8E1B469E188E2132F1505 /* BloodworkHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodworkHistoryView.swift; sourceTree = "<group>"; };
+		5420CF6A62B7F3FD05A1373E /* WhoopClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhoopClient.swift; sourceTree = "<group>"; };
+		54751B7A203B3AA94A7FFB08 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
+		55BD5AA019A304CCC795F55E /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		56F217711990EB646B92C12A /* AIInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightsView.swift; sourceTree = "<group>"; };
+		58E1069DB595872E78ADA1F4 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		59A1C20BB17FB3BFBBD5A385 /* ProtocolLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolLibraryView.swift; sourceTree = "<group>"; };
+		683056BBB12A93C63036F0DA /* WearableSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableSettingsView.swift; sourceTree = "<group>"; };
+		683A04A6F626094D9646F95A /* GenomeUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenomeUploadView.swift; sourceTree = "<group>"; };
+		68529180D74962AF3196402C /* KeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManager.swift; sourceTree = "<group>"; };
+		6A2C8953E035BB8176E68DDA /* GenomeProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenomeProfileView.swift; sourceTree = "<group>"; };
+		6BD7852CDC841825337FC45A /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
+		6C915AF587FB979B7948B010 /* BiomarkerAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomarkerAnalyzer.swift; sourceTree = "<group>"; };
+		6DDFFE8C2A5AABAB845D6258 /* DataHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataHubView.swift; sourceTree = "<group>"; };
+		7128B153445DD7E3D380DA66 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		73751B9AA1927ABE61063690 /* MedicalDisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalDisclaimerView.swift; sourceTree = "<group>"; };
+		74C658FB63BA14297D80D7E6 /* Experiment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Experiment.swift; sourceTree = "<group>"; };
+		7596BA89AA7407F06DC1D3A5 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		766D577CE1E208E482273D4A /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
+		7C03BCD32D73E91AD04FB795 /* AllergiesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergiesView.swift; sourceTree = "<group>"; };
+		7FF73DAAA4F38EE93166117A /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
+		806BAF16BC11907F241A8772 /* BiomarkerGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomarkerGauge.swift; sourceTree = "<group>"; };
+		82F229C275D10277795A76A6 /* OutliveSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutliveSpacing.swift; sourceTree = "<group>"; };
+		867FB4338C58769DDCEF3210 /* SupplementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementCardView.swift; sourceTree = "<group>"; };
+		88352F612F4A7E9F00B0C12C /* OutliveEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = OutliveEngine.xcodeproj; sourceTree = "<group>"; };
+		88D6291A7476F1E3CAD5A3A7 /* AIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIClient.swift; sourceTree = "<group>"; };
+		8A5D6F85487C14821492CAB5 /* OuraClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OuraClient.swift; sourceTree = "<group>"; };
+		8B669787D67CA56688F7BF1E /* RecoveryBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryBanner.swift; sourceTree = "<group>"; };
+		932204AD945BE87D6A0EBE82 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		97937F40B869047C1095DD2C /* OutliveColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutliveColors.swift; sourceTree = "<group>"; };
+		9DDB6BFDCA7B843DCE0171EA /* SleepCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepCardView.swift; sourceTree = "<group>"; };
+		A1E3A9E6EABFF416FFBB1142 /* SupplementTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementTimerView.swift; sourceTree = "<group>"; };
+		A35FE814E98A1AE661AB7881 /* ExperimentResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentResultView.swift; sourceTree = "<group>"; };
+		A73F9ED634CB3D768E50F007 /* ExperimentDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentDashboardView.swift; sourceTree = "<group>"; };
+		A89B2393EFF4D5DD89B4646E /* CodableTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableTypes.swift; sourceTree = "<group>"; };
+		ABA780FE2B68C3C28E1C58CB /* BodyComposition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyComposition.swift; sourceTree = "<group>"; };
+		AC478222E19078D92ED3D724 /* ProtocolCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolCard.swift; sourceTree = "<group>"; };
+		AF20708BCEF76F37A5FD05BB /* GenomeParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenomeParser.swift; sourceTree = "<group>"; };
+		B39D16D6911D94072FA0752D /* OutliveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutliveButton.swift; sourceTree = "<group>"; };
+		B9EFE66386201E568567889B /* BloodworkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodworkDetailView.swift; sourceTree = "<group>"; };
+		BFA52AAF057F1950E4373903 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		BFDEEE480A375210E67A284F /* ActiveExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveExperimentView.swift; sourceTree = "<group>"; };
+		C07E38FC48EF4A9C38BF13F2 /* WearableConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WearableConnectionView.swift; sourceTree = "<group>"; };
+		C28D58F9CEF2618393EA39C8 /* OutliveEngine.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OutliveEngine.entitlements; sourceTree = "<group>"; };
+		C4C98DB18AB98260F6065870 /* BiomarkerTrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiomarkerTrendsView.swift; sourceTree = "<group>"; };
+		C53F1DD17D8A389F468B5499 /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
+		C59DCB66C9BCBC8F7E5600D8 /* OutliveTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutliveTypography.swift; sourceTree = "<group>"; };
+		C5EB18B8239B7B8CEFDB5D39 /* GenomicProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenomicProfile.swift; sourceTree = "<group>"; };
+		C6483C1C7D6ECA1FB156D461 /* DailyProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyProtocol.swift; sourceTree = "<group>"; };
+		C82922B83701B5DBC3416C95 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		C83138D32A506AA2669052F3 /* BloodworkPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodworkPanel.swift; sourceTree = "<group>"; };
+		C9BAEFC257FA63953E143381 /* GeneticDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneticDetailView.swift; sourceTree = "<group>"; };
+		CFA3292CEF528D74AABFF00C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D0257DDBC647B9E570D57884 /* GeneticRiskMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneticRiskMapper.swift; sourceTree = "<group>"; };
+		DCB5A7076E1A54D540AF0002 /* AuditLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditLogger.swift; sourceTree = "<group>"; };
+		DF47A9DE2CF70BAA88A5A337 /* ProtocolEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolEngineTests.swift; sourceTree = "<group>"; };
+		E3408C1F02811358A58FFD8B /* DataExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportView.swift; sourceTree = "<group>"; };
+		E5BF8094FBA1A784BB04A8BD /* RecoveryAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryAdaptor.swift; sourceTree = "<group>"; };
+		E8AD4F7373CD9C97B7F536D4 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		E92F6D593BDF360763706AB1 /* CircaseptanEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircaseptanEngine.swift; sourceTree = "<group>"; };
+		EB01052CAB92EEB763F7B372 /* MealPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanner.swift; sourceTree = "<group>"; };
+		EBDF009945969A306CDA92CC /* ProtocolSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolSelectionView.swift; sourceTree = "<group>"; };
+		EEBD5FD34C48840D0DDB57BB /* ProtocolSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolSource.swift; sourceTree = "<group>"; };
+		F256E0DD0E1C27FC874A2B16 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		F2A7E06EC3050F58663EEDF6 /* DailyWearableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWearableData.swift; sourceTree = "<group>"; };
+		F3E7E1E8FDA814E8C2EDB2A5 /* BodyCompositionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionView.swift; sourceTree = "<group>"; };
+		F89674572581E8F04478B664 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
+		F8AFCB16C76DB4F9DAE5B706 /* OutliveEngineTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = OutliveEngineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F934753043031372C25A60F9 /* GutHealthCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GutHealthCardView.swift; sourceTree = "<group>"; };
+		FC3D8CE1C59E649694CAA345 /* DailyDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyDashboardView.swift; sourceTree = "<group>"; };
+		FF2963B737F340FC85FFEEEA /* GoalsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsSelectionView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		05A8E79CEB8D255BEBADB41E /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				6C915AF587FB979B7948B010 /* BiomarkerAnalyzer.swift */,
+				E92F6D593BDF360763706AB1 /* CircaseptanEngine.swift */,
+				3324DC36CAAA3AB255C69CF9 /* ConflictResolver.swift */,
+				D0257DDBC647B9E570D57884 /* GeneticRiskMapper.swift */,
+				EB01052CAB92EEB763F7B372 /* MealPlanner.swift */,
+				1D9D4DC130EE60694515B81F /* ProtocolSynthesizer.swift */,
+				E5BF8094FBA1A784BB04A8BD /* RecoveryAdaptor.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		0FC8C34544BEDD5BA5B5899A /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				05A8E79CEB8D255BEBADB41E /* Engine */,
+				1B505F1AFEDF8BAE2C773659 /* Models */,
+				928AC58D0EDF0609EB8FE07D /* Network */,
+				6E916F1EB151A48ED1B0CA5C /* Security */,
+				168F087EFAFAD40DF5C73F10 /* Services */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		168F087EFAFAD40DF5C73F10 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				88D6291A7476F1E3CAD5A3A7 /* AIClient.swift */,
+				01B3BF99CD5AD59EF1BA6FA6 /* AuthService.swift */,
+				F89674572581E8F04478B664 /* DataStore.swift */,
+				AF20708BCEF76F37A5FD05BB /* GenomeParser.swift */,
+				55BD5AA019A304CCC795F55E /* HealthKitManager.swift */,
+				8A5D6F85487C14821492CAB5 /* OuraClient.swift */,
+				5420CF6A62B7F3FD05A1373E /* WhoopClient.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		1B505F1AFEDF8BAE2C773659 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C83138D32A506AA2669052F3 /* BloodworkPanel.swift */,
+				ABA780FE2B68C3C28E1C58CB /* BodyComposition.swift */,
+				A89B2393EFF4D5DD89B4646E /* CodableTypes.swift */,
+				C6483C1C7D6ECA1FB156D461 /* DailyProtocol.swift */,
+				F2A7E06EC3050F58663EEDF6 /* DailyWearableData.swift */,
+				254928EB54565206AC0BE3E7 /* Enums.swift */,
+				74C658FB63BA14297D80D7E6 /* Experiment.swift */,
+				C5EB18B8239B7B8CEFDB5D39 /* GenomicProfile.swift */,
+				EEBD5FD34C48840D0DDB57BB /* ProtocolSource.swift */,
+				932204AD945BE87D6A0EBE82 /* UserProfile.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1ED8AC7F95138FC72E92E208 /* OutliveEngineTests */ = {
+			isa = PBXGroup;
+			children = (
+				DF47A9DE2CF70BAA88A5A337 /* ProtocolEngineTests.swift */,
+			);
+			path = OutliveEngineTests;
+			sourceTree = "<group>";
+		};
+		223F599DACAEB954B41B9757 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				75FF7267CD1CF4D831603B81 /* Components */,
+				6D7CC4987B76092BE7ACBB21 /* Theme */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		494E3FABDEF22D236211215A /* Insights */ = {
+			isa = PBXGroup;
+			children = (
+				56F217711990EB646B92C12A /* AIInsightsView.swift */,
+				54751B7A203B3AA94A7FFB08 /* TrendsView.swift */,
+				4C678817AC842B5B00A31365 /* WeeklyReportView.swift */,
+			);
+			path = Insights;
+			sourceTree = "<group>";
+		};
+		6D7CC4987B76092BE7ACBB21 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				97937F40B869047C1095DD2C /* OutliveColors.swift */,
+				82F229C275D10277795A76A6 /* OutliveSpacing.swift */,
+				C59DCB66C9BCBC8F7E5600D8 /* OutliveTypography.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		6E916F1EB151A48ED1B0CA5C /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				DCB5A7076E1A54D540AF0002 /* AuditLogger.swift */,
+				0C2C2C9806891E47B1E1AAC2 /* CertificatePinning.swift */,
+				68529180D74962AF3196402C /* KeyManager.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		6FA56B14A1BB712CEB47DC25 = {
+			isa = PBXGroup;
+			children = (
+				F2FA824268EF8E45385AABA7 /* OutliveEngine */,
+				1ED8AC7F95138FC72E92E208 /* OutliveEngineTests */,
+				D34CB4E9EFBD812FACBDA528 /* Products */,
+				88352F612F4A7E9F00B0C12C /* OutliveEngine.xcodeproj */,
+			);
+			sourceTree = "<group>";
+		};
+		720D3617367B11D2AD0E979D /* Experiments */ = {
+			isa = PBXGroup;
+			children = (
+				BFDEEE480A375210E67A284F /* ActiveExperimentView.swift */,
+				A73F9ED634CB3D768E50F007 /* ExperimentDashboardView.swift */,
+				A35FE814E98A1AE661AB7881 /* ExperimentResultView.swift */,
+				25900D65B4B4A90EB4AB25B5 /* NewExperimentView.swift */,
+			);
+			path = Experiments;
+			sourceTree = "<group>";
+		};
+		75FF7267CD1CF4D831603B81 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				806BAF16BC11907F241A8772 /* BiomarkerGauge.swift */,
+				1DE909252590C5BC00850EBB /* EmptyStateView.swift */,
+				090D161328C3731D3A4BEEC8 /* MetricRing.swift */,
+				B39D16D6911D94072FA0752D /* OutliveButton.swift */,
+				AC478222E19078D92ED3D724 /* ProtocolCard.swift */,
+				8B669787D67CA56688F7BF1E /* RecoveryBanner.swift */,
+				58E1069DB595872E78ADA1F4 /* SectionHeader.swift */,
+				E8AD4F7373CD9C97B7F536D4 /* TimerView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		7F459A00C82C2FE678568698 /* BodyComposition */ = {
+			isa = PBXGroup;
+			children = (
+				F3E7E1E8FDA814E8C2EDB2A5 /* BodyCompositionView.swift */,
+			);
+			path = BodyComposition;
+			sourceTree = "<group>";
+		};
+		88352F622F4A7E9F00B0C12C /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8B6CB1153818368FCACCD65A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				AA48181AEFD8B35C9F2AC70E /* Bloodwork */,
+				7F459A00C82C2FE678568698 /* BodyComposition */,
+				B08050F515C0160C7319774C /* Dashboard */,
+				AD9BD2D650CB9E1FF5BD1B40 /* DataHub */,
+				720D3617367B11D2AD0E979D /* Experiments */,
+				9A68BC8FE2A3F2C464A6905D /* Genomics */,
+				494E3FABDEF22D236211215A /* Insights */,
+				D87AE45E129D5399283E2A3C /* Onboarding */,
+				8D508AD8DC2F7683CB1292DE /* Protocols */,
+				92731593CB9D21EDACDCF756 /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		8D508AD8DC2F7683CB1292DE /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				4E9EB4E8823B537D21955EDC /* ProtocolDetailView.swift */,
+				59A1C20BB17FB3BFBBD5A385 /* ProtocolLibraryView.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		92731593CB9D21EDACDCF756 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				E3408C1F02811358A58FFD8B /* DataExportView.swift */,
+				73751B9AA1927ABE61063690 /* MedicalDisclaimerView.swift */,
+				07A8843A500F14EE743BC99D /* NotificationSettingsView.swift */,
+				C53F1DD17D8A389F468B5499 /* ProfileEditView.swift */,
+				3B4B1854DB89644D98B7A494 /* SecuritySettingsView.swift */,
+				3DC871553D0F71426DF3D548 /* SettingsView.swift */,
+				683056BBB12A93C63036F0DA /* WearableSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		928AC58D0EDF0609EB8FE07D /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				C82922B83701B5DBC3416C95 /* APIClient.swift */,
+				766D577CE1E208E482273D4A /* APIEndpoints.swift */,
+				7FF73DAAA4F38EE93166117A /* SyncManager.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		9A68BC8FE2A3F2C464A6905D /* Genomics */ = {
+			isa = PBXGroup;
+			children = (
+				C9BAEFC257FA63953E143381 /* GeneticDetailView.swift */,
+				6A2C8953E035BB8176E68DDA /* GenomeProfileView.swift */,
+			);
+			path = Genomics;
+			sourceTree = "<group>";
+		};
+		A376403BBB97A1BC288D1E72 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CFA3292CEF528D74AABFF00C /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AA48181AEFD8B35C9F2AC70E /* Bloodwork */ = {
+			isa = PBXGroup;
+			children = (
+				C4C98DB18AB98260F6065870 /* BiomarkerTrendsView.swift */,
+				B9EFE66386201E568567889B /* BloodworkDetailView.swift */,
+				52C8E1B469E188E2132F1505 /* BloodworkHistoryView.swift */,
+			);
+			path = Bloodwork;
+			sourceTree = "<group>";
+		};
+		AD9BD2D650CB9E1FF5BD1B40 /* DataHub */ = {
+			isa = PBXGroup;
+			children = (
+				6DDFFE8C2A5AABAB845D6258 /* DataHubView.swift */,
+			);
+			path = DataHub;
+			sourceTree = "<group>";
+		};
+		B08050F515C0160C7319774C /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				FC3D8CE1C59E649694CAA345 /* DailyDashboardView.swift */,
+				BFA52AAF057F1950E4373903 /* DashboardViewModel.swift */,
+				F934753043031372C25A60F9 /* GutHealthCardView.swift */,
+				3668C70346D646A220281AF5 /* InterventionsCardView.swift */,
+				46963361AF012BE7B28A19F0 /* NutritionCardView.swift */,
+				443DDB9A7D8EEC0A0B7E9033 /* ProgressDetailView.swift */,
+				9DDB6BFDCA7B843DCE0171EA /* SleepCardView.swift */,
+				867FB4338C58769DDCEF3210 /* SupplementCardView.swift */,
+				A1E3A9E6EABFF416FFBB1142 /* SupplementTimerView.swift */,
+				2ECC85E59569EB0A98C4CE3B /* TrainingCardView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		D34CB4E9EFBD812FACBDA528 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A26581B2DB486912899F6EA /* OutliveEngine.app */,
+				F8AFCB16C76DB4F9DAE5B706 /* OutliveEngineTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D87AE45E129D5399283E2A3C /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				7C03BCD32D73E91AD04FB795 /* AllergiesView.swift */,
+				1ECF1F73021B15DD50C1BB44 /* BloodworkInputView.swift */,
+				683A04A6F626094D9646F95A /* GenomeUploadView.swift */,
+				FF2963B737F340FC85FFEEEA /* GoalsSelectionView.swift */,
+				6BD7852CDC841825337FC45A /* OnboardingFlow.swift */,
+				EBDF009945969A306CDA92CC /* ProtocolSelectionView.swift */,
+				C07E38FC48EF4A9C38BF13F2 /* WearableConnectionView.swift */,
+				F256E0DD0E1C27FC874A2B16 /* WelcomeView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		F0B6E885AF85F0092F86B12C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				44EF8D33190EC2CC1932EBE7 /* AppState.swift */,
+				7128B153445DD7E3D380DA66 /* ContentView.swift */,
+				7596BA89AA7407F06DC1D3A5 /* MainTabView.swift */,
+				4DE77536106EACF0A48319E1 /* OutliveEngineApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F2FA824268EF8E45385AABA7 /* OutliveEngine */ = {
+			isa = PBXGroup;
+			children = (
+				F0B6E885AF85F0092F86B12C /* App */,
+				0FC8C34544BEDD5BA5B5899A /* Core */,
+				223F599DACAEB954B41B9757 /* Design */,
+				8B6CB1153818368FCACCD65A /* Features */,
+				A376403BBB97A1BC288D1E72 /* Resources */,
+				C28D58F9CEF2618393EA39C8 /* OutliveEngine.entitlements */,
+			);
+			path = OutliveEngine;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3866DD951AE433AEC376DA49 /* OutliveEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A15206AB28CEF07B9E44172A /* Build configuration list for PBXNativeTarget "OutliveEngine" */;
+			buildPhases = (
+				0FF1A5B6DE37CC5C1DBD6B4E /* Sources */,
+				B8712E99C7B1B2913985D3FE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OutliveEngine;
+			packageProductDependencies = (
+			);
+			productName = OutliveEngine;
+			productReference = 4A26581B2DB486912899F6EA /* OutliveEngine.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AF19A17311B637429E2BC748 /* OutliveEngineTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CC21A40C041AB9C7AC26244 /* Build configuration list for PBXNativeTarget "OutliveEngineTests" */;
+			buildPhases = (
+				0741ED67673E76C5E3F67DBC /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				32442404FA2FD1718DAA251F /* PBXTargetDependency */,
+			);
+			name = OutliveEngineTests;
+			packageProductDependencies = (
+			);
+			productName = OutliveEngineTests;
+			productReference = F8AFCB16C76DB4F9DAE5B706 /* OutliveEngineTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C6DDB81AC16D89EA9D56D715 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					3866DD951AE433AEC376DA49 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					AF19A17311B637429E2BC748 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 3E7EFE1C09F10D9146662027 /* Build configuration list for PBXProject "OutliveEngine" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6FA56B14A1BB712CEB47DC25;
+			minimizedProjectReferenceProxies = 1;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 88352F622F4A7E9F00B0C12C /* Products */;
+					ProjectRef = 88352F612F4A7E9F00B0C12C /* OutliveEngine.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				3866DD951AE433AEC376DA49 /* OutliveEngine */,
+				AF19A17311B637429E2BC748 /* OutliveEngineTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B8712E99C7B1B2913985D3FE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AB7D75491D18765ACC84DD86 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0741ED67673E76C5E3F67DBC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				758ACDE6A638C3F2632928D4 /* ProtocolEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0FF1A5B6DE37CC5C1DBD6B4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8A3F14A871563D22D886359 /* AIClient.swift in Sources */,
+				A5A0D0E2366ACDA52688D421 /* AIInsightsView.swift in Sources */,
+				24F25370A7E8D573A40D824E /* APIClient.swift in Sources */,
+				80B0C9A558152EB5FAC57553 /* APIEndpoints.swift in Sources */,
+				4AF24054D0BACBC44219087E /* ActiveExperimentView.swift in Sources */,
+				ADF29CA3C4B6A31194ADF96D /* AllergiesView.swift in Sources */,
+				554057C832364C08E5BA6625 /* AppState.swift in Sources */,
+				A98923E94A73F88370011918 /* AuditLogger.swift in Sources */,
+				7F297CB24A8B7D8ADEA54D7F /* AuthService.swift in Sources */,
+				7826772775E1C1205E36C338 /* BiomarkerAnalyzer.swift in Sources */,
+				6FAAD6C74AF1114EF870C99F /* BiomarkerGauge.swift in Sources */,
+				0910BA647C3275DE79617546 /* BiomarkerTrendsView.swift in Sources */,
+				7D2376D38543D932D7FECFBE /* BloodworkDetailView.swift in Sources */,
+				96A2EDD096B4B708685B961D /* BloodworkHistoryView.swift in Sources */,
+				BB35FDEE524CBB3569940806 /* BloodworkInputView.swift in Sources */,
+				6A6EFA84E9CC04057968C1DB /* BloodworkPanel.swift in Sources */,
+				532AC4DED2070315557CD741 /* BodyComposition.swift in Sources */,
+				408038A053AF0222C34463C4 /* BodyCompositionView.swift in Sources */,
+				FAE005C1176FB7F1E784AD42 /* CertificatePinning.swift in Sources */,
+				5779D2D5DF09B25616372801 /* CircaseptanEngine.swift in Sources */,
+				FED62BD86F08B5AD5D89A094 /* CodableTypes.swift in Sources */,
+				0C0334918AAEABA89B6EC306 /* ConflictResolver.swift in Sources */,
+				CF7360C8CB97411C59026CAF /* ContentView.swift in Sources */,
+				F2DED27E26C2BC987E8F4CB2 /* DailyDashboardView.swift in Sources */,
+				E98FE94413EB59521A71E0B9 /* DailyProtocol.swift in Sources */,
+				0FF85C77FAC209D549AD649C /* DailyWearableData.swift in Sources */,
+				0646D41EAEF80D54E93D86DC /* DashboardViewModel.swift in Sources */,
+				357C41F4A17593E1626496C7 /* DataExportView.swift in Sources */,
+				8D5F1BFEE0D19820090D8A77 /* DataHubView.swift in Sources */,
+				BE99401EE62DD7A343A2400B /* DataStore.swift in Sources */,
+				47D46D8A4E687C168E0F62F9 /* EmptyStateView.swift in Sources */,
+				A34494C823D59947A83574A7 /* Enums.swift in Sources */,
+				D43DFE764A64869C7BD20B6A /* Experiment.swift in Sources */,
+				319E9F795EAFC179ADEFE881 /* ExperimentDashboardView.swift in Sources */,
+				43C55CEADC71A0C8378606B8 /* ExperimentResultView.swift in Sources */,
+				2B8E8B2F7431E3DDBD37A3E1 /* GeneticDetailView.swift in Sources */,
+				8D1886E53C7B2FE65F890387 /* GeneticRiskMapper.swift in Sources */,
+				41D6776A8FABB8376F1EE2CE /* GenomeParser.swift in Sources */,
+				47909EBA2AEFC640625A1636 /* GenomeProfileView.swift in Sources */,
+				AB99B58D15F8C7FA974820E8 /* GenomeUploadView.swift in Sources */,
+				8D894AD133EE0FB8A44F51FB /* GenomicProfile.swift in Sources */,
+				101B93BD143D9BC89AE690AE /* GoalsSelectionView.swift in Sources */,
+				C1BEE90955EDA30C45C8CEA3 /* GutHealthCardView.swift in Sources */,
+				3ED6D295642EFC3244593FB6 /* HealthKitManager.swift in Sources */,
+				07F67AC4C12E5AC83E1F9B24 /* InterventionsCardView.swift in Sources */,
+				21E98B071CB5A856F625FFF6 /* KeyManager.swift in Sources */,
+				A933A46E7A313F4D135EB0D9 /* MainTabView.swift in Sources */,
+				153990AEA0A7EFE7BC7AA7AF /* MealPlanner.swift in Sources */,
+				78933572351C6D27D5D40772 /* MedicalDisclaimerView.swift in Sources */,
+				20014CA7285674299CAAF9B0 /* MetricRing.swift in Sources */,
+				ED9770DCBD87E925E4095324 /* NewExperimentView.swift in Sources */,
+				D628229B04BF8162DF72BB41 /* NotificationSettingsView.swift in Sources */,
+				764528436A272A1FCC19C6FF /* NutritionCardView.swift in Sources */,
+				1AF72D7E9C3578A894332400 /* OnboardingFlow.swift in Sources */,
+				878AD26BF23D798310080102 /* OuraClient.swift in Sources */,
+				2BDCD589AA6D83BA2B0FB5A9 /* OutliveButton.swift in Sources */,
+				1DC05975EEBA5CBE6E873258 /* OutliveColors.swift in Sources */,
+				6F06D90A40394A046EFA0290 /* OutliveEngineApp.swift in Sources */,
+				DE5A5EFFFEBCF9D623500785 /* OutliveSpacing.swift in Sources */,
+				B711AEC95D1024E979BC1C1F /* OutliveTypography.swift in Sources */,
+				6117BF80C3A2933A79A4D1CB /* ProfileEditView.swift in Sources */,
+				89635D6DB6EE937E3377D318 /* ProgressDetailView.swift in Sources */,
+				419CFA471202AA8D3905E8EC /* ProtocolCard.swift in Sources */,
+				96B73EAC6C553C892198CE2F /* ProtocolDetailView.swift in Sources */,
+				7E2FC165EECF137691FDEB75 /* ProtocolLibraryView.swift in Sources */,
+				3027DB58382CACBF089C7650 /* ProtocolSelectionView.swift in Sources */,
+				8ACDC3601D8207CE6CE30F6B /* ProtocolSource.swift in Sources */,
+				36ABCB97CD4E182834E89305 /* ProtocolSynthesizer.swift in Sources */,
+				B31B7CB1B1CC6EF1A540301E /* RecoveryAdaptor.swift in Sources */,
+				4F65A5710198A773289ED3D5 /* RecoveryBanner.swift in Sources */,
+				815666674A0900E692E7D48E /* SectionHeader.swift in Sources */,
+				9EEBF43115CE86DFD8E60CD5 /* SecuritySettingsView.swift in Sources */,
+				A0A9E66B11C9768489CDFF0F /* SettingsView.swift in Sources */,
+				9DE03B6BAFA32B8600872F1B /* SleepCardView.swift in Sources */,
+				C9107A980E4CFAA9A603CCC5 /* SupplementCardView.swift in Sources */,
+				7D6152F50DE296215B30DB1A /* SupplementTimerView.swift in Sources */,
+				2FEAE092A4DE1C2F921CB2DB /* SyncManager.swift in Sources */,
+				D873B9F1C0970918D7BB6276 /* TimerView.swift in Sources */,
+				734896E4640F2066C79E1FA1 /* TrainingCardView.swift in Sources */,
+				C422717E5C8E6E215487F297 /* TrendsView.swift in Sources */,
+				DA22320CD5E89EB326A4A213 /* UserProfile.swift in Sources */,
+				D46A3609B3474A9E2D5494AC /* WearableConnectionView.swift in Sources */,
+				685C41D051AC2D760CD8A0CD /* WearableSettingsView.swift in Sources */,
+				594F10F769D35573FF6AADDA /* WeeklyReportView.swift in Sources */,
+				554A4DB0DDA7D7E0639A8E3A /* WelcomeView.swift in Sources */,
+				AEFD146202122F7278F282AF /* WhoopClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		32442404FA2FD1718DAA251F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3866DD951AE433AEC376DA49 /* OutliveEngine */;
+			targetProxy = B8F6B49B2F7057A4E9657E1E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		53196F61015003E54846C405 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		5D72195C4635002A6AB6EA12 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OutliveEngine/OutliveEngine.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_CFBundleDisplayName = "Outlive Engine";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Outlive Engine uses the camera to scan bloodwork lab reports via OCR.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Outlive Engine uses Face ID to protect your encrypted health data.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Outlive Engine reads your health data to personalize your daily protocols, track recovery, and optimize training recommendations.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Outlive Engine records body composition measurements and workout data to your Health app.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Outlive Engine accesses your photo library to import bloodwork lab report images.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.outlive-engine.app";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8753EF392F6447FCF4FA4334 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.outlive-engine.tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OutliveEngine.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OutliveEngine";
+			};
+			name = Release;
+		};
+		972979267018C86CD7EEA740 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		BF45DD1FBB54D4D1E5C12701 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.outlive-engine.tests";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OutliveEngine.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OutliveEngine";
+			};
+			name = Debug;
+		};
+		C95A6BAB103AC160C220CA1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OutliveEngine/OutliveEngine.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_GENERATION_MODE = GeneratedFile;
+				INFOPLIST_KEY_CFBundleDisplayName = "Outlive Engine";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Outlive Engine uses the camera to scan bloodwork lab reports via OCR.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Outlive Engine uses Face ID to protect your encrypted health data.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Outlive Engine reads your health data to personalize your daily protocols, track recovery, and optimize training recommendations.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Outlive Engine records body composition measurements and workout data to your Health app.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Outlive Engine accesses your photo library to import bloodwork lab report images.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.outlive-engine.app";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1CC21A40C041AB9C7AC26244 /* Build configuration list for PBXNativeTarget "OutliveEngineTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF45DD1FBB54D4D1E5C12701 /* Debug */,
+				8753EF392F6447FCF4FA4334 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3E7EFE1C09F10D9146662027 /* Build configuration list for PBXProject "OutliveEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				972979267018C86CD7EEA740 /* Debug */,
+				53196F61015003E54846C405 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A15206AB28CEF07B9E44172A /* Build configuration list for PBXNativeTarget "OutliveEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C95A6BAB103AC160C220CA1B /* Debug */,
+				5D72195C4635002A6AB6EA12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C6DDB81AC16D89EA9D56D715 /* Project object */;
+}

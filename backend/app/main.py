@@ -9,7 +9,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import get_settings
+from app.config import get_settings, validate_settings
 from app.models.database import close_pool, init_pool
 from app.routers import ai, auth, bloodwork, experiments, genomics, protocols, sync, users, wearables
 from app.security.audit import AuditLogMiddleware
@@ -39,6 +39,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    validate_settings(settings)
 
     application = FastAPI(
         title="Outlive Engine API",

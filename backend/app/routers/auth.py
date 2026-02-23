@@ -19,6 +19,7 @@ from app.security.auth import (
     create_access_token,
     create_refresh_token,
     refresh_access_token,
+    revoke_token,
     validate_apple_identity_token,
 )
 
@@ -81,12 +82,9 @@ async def refresh_token(
 
 
 @router.post("/revoke", status_code=status.HTTP_204_NO_CONTENT)
-async def revoke_token(body: RevokeRequest) -> None:
-    """Revoke a refresh token.
-
-    In a stateless JWT setup the token cannot truly be invalidated without a
-    deny-list.  This endpoint is provided for API completeness and can be
-    extended with a token deny-list backed by Redis or the database.
-    """
-    # Placeholder: in production, add the jti to a deny-list.
-    return None
+async def revoke_refresh_token(
+    body: RevokeRequest,
+    settings: Settings = Depends(get_settings),
+) -> None:
+    """Revoke a refresh token by adding it to the deny-list."""
+    await revoke_token(body.refresh_token, settings)

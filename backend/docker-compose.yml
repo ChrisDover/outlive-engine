@@ -9,7 +9,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: outlive
-      POSTGRES_PASSWORD: outlive
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: outlive_engine
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -32,11 +32,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: "postgresql+asyncpg://outlive:outlive@postgres:5432/outlive_engine"
-      JWT_SECRET: "change-me-in-production"
-      FIELD_ENCRYPTION_KEY: "change-me-32-byte-base64-key-here"
-      ALLOWED_ORIGINS: '["*"]'
+      DATABASE_URL: "postgresql+asyncpg://outlive:${POSTGRES_PASSWORD}@postgres:5432/outlive_engine"
     networks:
       - outlive-network
 

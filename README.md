@@ -14,7 +14,6 @@ Browser → Next.js (web/) → FastAPI Backend (backend/)
 
 - **Web frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS v4
 - **Backend API:** FastAPI, asyncpg, PostgreSQL
-- **iOS app:** SwiftUI, SwiftData (in `OutliveEngine/`)
 - **AI:** Local LLMs by default (Ollama), optional cloud LLM support
 
 ## Security Model
@@ -28,6 +27,9 @@ Browser → Next.js (web/) → FastAPI Backend (backend/)
 - **Service auth between frontend and backend** via API key + user ID headers (no shared cookies)
 - **mTLS support** for production backend deployments
 - **Audit logging** on every API request
+- **Startup validation** — app refuses to start with default/missing secrets
+- **Constant-time key comparison** — timing-attack resistant service auth
+- **Token revocation** — compromised refresh tokens can be killed immediately
 
 See [SECURITY.md](SECURITY.md) for the full security policy and self-hosting hardening guide.
 
@@ -105,14 +107,14 @@ AIRLLM_MODEL=claude-sonnet-4-20250514
 
 ### Backend (`backend/.env`)
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql+asyncpg://outlive:outlive@localhost:5432/outlive_engine` |
-| `JWT_SECRET` | Secret for signing JWT tokens | **change in production** |
-| `FIELD_ENCRYPTION_KEY` | 32-byte base64 key for field encryption | **change in production** |
-| `SERVICE_API_KEY` | Shared key for web → backend auth | **change in production** |
-| `AIRLLM_BASE_URL` | LLM API endpoint (Ollama, OpenAI, etc.) | `http://localhost:11434/v1` |
-| `ALLOWED_ORIGINS` | CORS origins | `["http://localhost:3000"]` |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `JWT_SECRET` | Secret for signing JWT tokens | Yes (app won't start without it) |
+| `FIELD_ENCRYPTION_KEY` | 32-byte base64 key for field encryption | Yes (app won't start without it) |
+| `SERVICE_API_KEY` | Shared key for web → backend auth | Yes for web frontend |
+| `AIRLLM_BASE_URL` | LLM API endpoint (Ollama, OpenAI, etc.) | No (defaults to localhost Ollama) |
+| `ALLOWED_ORIGINS` | CORS origins (no wildcards allowed) | Yes |
 
 ### Web (`web/.env`)
 
@@ -130,7 +132,6 @@ AIRLLM_MODEL=claude-sonnet-4-20250514
 |--------|--------|------|
 | Oura Ring | Planned | OAuth 2.0 |
 | Whoop | Planned | OAuth 2.0 + PKCE |
-| Apple Watch | iOS only | HealthKit |
 
 ## Project Structure
 
@@ -142,16 +143,12 @@ AIRLLM_MODEL=claude-sonnet-4-20250514
 │   │   ├── security/     # Auth, audit logging, encryption
 │   │   └── services/     # Business logic
 │   └── alembic/          # Database migrations
-├── web/                  # Next.js web frontend
-│   ├── src/
-│   │   ├── app/          # Pages and API routes
-│   │   ├── components/   # Reusable UI components
-│   │   └── lib/          # Auth, Prisma, backend client
-│   └── prisma/           # Auth-only schema
-└── OutliveEngine/        # iOS app (SwiftUI)
-    ├── Design/           # Theme + reusable components
-    ├── Core/             # Models, networking, security
-    └── Features/         # Feature modules
+└── web/                  # Next.js web frontend
+    ├── src/
+    │   ├── app/          # Pages and API routes
+    │   ├── components/   # Reusable UI components
+    │   └── lib/          # Auth, Prisma, backend client
+    └── prisma/           # Auth-only schema
 ```
 
 ## Contributing

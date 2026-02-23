@@ -1,27 +1,3 @@
-# Xcode
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
-*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
-xcuserdata/
-DerivedData/
-build/
-*.moved-aside
-*.pbxuser
-*.mode1v3
-*.mode2v3
-*.perspectivev3
-*.hmap
-*.ipa
-*.dSYM.zip
-*.dSYM
-
-# Swift Package Manager
-.build/
-Packages/
-Package.pins
-Package.resolved
-*.xcodeproj
-
 # Backend
 backend/__pycache__/
 backend/**/__pycache__/
@@ -45,6 +21,12 @@ web/.env.production.local
 .env.*.local
 .env.production
 !.env.example
+
+# Xcode (legacy, removed from repo)
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
 
 # OS
 .DS_Store

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import hmac
 import logging
 import time
 from datetime import datetime, timedelta, timezone
@@ -18,6 +20,11 @@ from app.config import Settings, get_settings
 from app.models.database import get_pool
 
 logger = logging.getLogger("outlive.auth")
+
+
+def _safe_compare(a: str, b: str) -> bool:
+    """Constant-time string comparison to prevent timing attacks."""
+    return hmac.compare_digest(a.encode(), b.encode())
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 APPLE_JWKS_URL = "https://appleid.apple.com/auth/keys"
@@ -157,6 +164,49 @@ def decode_token(token: str, settings: Settings) -> dict[str, Any]:
         )
 
 
+# ── Token Revocation ──────────────────────────────────────────────────────────
+
+def _hash_token(token: str) -> str:
+    """SHA-256 hash of a token for the revocation table."""
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+async def is_token_revoked(token: str) -> bool:
+    """Check if a token has been revoked."""
+    pool = get_pool()
+    row = await pool.fetchrow(
+        "SELECT 1 FROM revoked_tokens WHERE token_hash = $1",
+        _hash_token(token),
+    )
+    return row is not None
+
+
+async def revoke_token(token: str, settings: Settings) -> None:
+    """Add a token to the revocation table."""
+    try:
+        payload = jwt.decode(
+            token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM],
+            options={"verify_exp": False},
+        )
+    except JWTError:
+        return  # Can't revoke an unparseable token
+
+    user_id = payload.get("sub")
+    exp = payload.get("exp")
+    if not user_id or not exp:
+        return
+
+    pool = get_pool()
+    expires_at = datetime.fromtimestamp(exp, tz=timezone.utc)
+    await pool.execute(
+        "INSERT INTO revoked_tokens (token_hash, user_id, expires_at) "
+        "VALUES ($1, $2, $3) ON CONFLICT (token_hash) DO NOTHING",
+        _hash_token(token),
+        UUID(user_id),
+        expires_at,
+    )
+
+
 # ── Refresh Logic ─────────────────────────────────────────────────────────────
 
 async def refresh_access_token(
@@ -172,7 +222,13 @@ async def refresh_access_token(
             detail="Token is not a refresh token",
         )
 
-    # Check that the refresh token has not been revoked
+    # Check revocation
+    if await is_token_revoked(refresh_token):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has been revoked",
+        )
+
     pool = get_pool()
     user_id = UUID(payload["sub"])
     row = await pool.fetchrow(
@@ -184,6 +240,9 @@ async def refresh_access_token(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found or deleted",
         )
+
+    # Revoke the old refresh token (rotation)
+    await revoke_token(refresh_token, settings)
 
     return {
         "access_token": create_access_token(user_id, settings),
@@ -214,7 +273,7 @@ async def get_current_user(
     pool = get_pool()
 
     # ── Service Auth Mode ─────────────────────────────────────────────
-    if settings.SERVICE_API_KEY and token == settings.SERVICE_API_KEY:
+    if settings.SERVICE_API_KEY and _safe_compare(token, settings.SERVICE_API_KEY):
         web_user_id = request.headers.get("X-Outlive-User-Id")
         if not web_user_id:
             raise HTTPException(
@@ -281,7 +340,7 @@ async def require_service_auth(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Service auth not configured",
         )
-    if credentials.credentials != settings.SERVICE_API_KEY:
+    if not _safe_compare(credentials.credentials, settings.SERVICE_API_KEY):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid service API key",

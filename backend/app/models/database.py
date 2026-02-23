@@ -177,6 +177,15 @@ CREATE TABLE IF NOT EXISTS sync_log (
 );
 CREATE INDEX IF NOT EXISTS idx_sync_log_user_entity ON sync_log(user_id, entity_type, entity_id);
 CREATE INDEX IF NOT EXISTS idx_sync_log_user_created ON sync_log(user_id, created_at);
+
+-- ── Revoked Tokens ───────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS revoked_tokens (
+    token_hash      TEXT PRIMARY KEY,      -- SHA-256 hash of the token
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    revoked_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    expires_at      TIMESTAMPTZ NOT NULL   -- auto-cleanup after token would have expired anyway
+);
+CREATE INDEX IF NOT EXISTS idx_revoked_tokens_expires ON revoked_tokens(expires_at);
 """
 
 
