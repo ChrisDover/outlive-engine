@@ -31,8 +31,11 @@ class Settings(BaseSettings):
     TLS_CERT_PATH: str = ""
     TLS_KEY_PATH: str = ""
 
-    # ── External Services ─────────────────────────────────────────────────
+    # ── AI / LLM ──────────────────────────────────────────────────────────
+    # Default: Ollama local. Set to OpenAI/Anthropic URL for cloud models.
     AIRLLM_BASE_URL: str = "http://localhost:11434/v1"
+    AIRLLM_API_KEY: str = ""       # Only needed for cloud LLM providers
+    AIRLLM_MODEL: str = "llama3.1" # Model name (ollama model or cloud model ID)
 
     # ── CORS ──────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: list[str] = ["*"]
@@ -42,6 +45,9 @@ class Settings(BaseSettings):
 
     # ── Apple Sign-In ─────────────────────────────────────────────────────
     APPLE_BUNDLE_ID: str = "com.outlive.engine"
+
+    # ── Service Auth (Next.js → FastAPI) ──────────────────────────────────
+    SERVICE_API_KEY: str = ""
 
     @property
     def asyncpg_dsn(self) -> str:

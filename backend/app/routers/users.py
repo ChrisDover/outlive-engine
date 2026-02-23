@@ -8,10 +8,30 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.models.database import get_pool
-from app.models.schemas import UserResponse, UserUpdate
-from app.security.auth import get_current_user
+from app.models.schemas import UserResponse, UserUpdate, WebUserCreate
+from app.security.auth import get_current_user, require_service_auth
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+@router.post("/web-register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def web_register(
+    body: WebUserCreate,
+    _: None = Depends(require_service_auth),
+) -> UserResponse:
+    """Register a web user. Protected by service auth only."""
+    pool = get_pool()
+    now = datetime.now(timezone.utc)
+
+    row = await pool.fetchrow(
+        "INSERT INTO users (email, display_name, created_at, updated_at) "
+        "VALUES ($1, $2, $3, $3) "
+        "RETURNING id, apple_user_id, email, display_name, created_at, updated_at",
+        body.email,
+        body.display_name,
+        now,
+    )
+    return UserResponse(**dict(row))
 
 
 @router.get("/me", response_model=UserResponse)

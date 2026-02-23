@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  /* Recovery Zones */
+  --recovery-green: #34C759;
+  --recovery-yellow: #FFD60A;
+  --recovery-red: #FF3B30;
+
+  /* Domain Accents */
+  --domain-training: #007AFF;
+  --domain-nutrition: #FF9500;
+  --domain-supplements: #AF52DE;
+  --domain-interventions: #5AC8FA;
+  --domain-sleep: #5856D6;
+  --domain-genomics: #FF2D55;
+  --domain-bloodwork: #FF3B30;
+
+  /* Surfaces (light) */
+  --surface-background: #F2F2F7;
+  --surface-secondary: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-tertiary: rgba(0, 0, 0, 0.3);
+
+  /* Spacing */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-background: #000000;
+    --surface-secondary: #1C1C1E;
+    --surface-card: #242427;
+    --surface-elevated: #2C2C2E;
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-tertiary: rgba(255, 255, 255, 0.3);
+  }
+}
+
+@theme inline {
+  --color-background: var(--surface-background);
+  --color-foreground: var(--text-primary);
+  --color-card: var(--surface-card);
+  --color-elevated: var(--surface-elevated);
+  --color-secondary: var(--surface-secondary);
+  --color-muted: var(--text-secondary);
+  --color-subtle: var(--text-tertiary);
+
+  --color-recovery-green: var(--recovery-green);
+  --color-recovery-yellow: var(--recovery-yellow);
+  --color-recovery-red: var(--recovery-red);
+
+  --color-training: var(--domain-training);
+  --color-nutrition: var(--domain-nutrition);
+  --color-supplements: var(--domain-supplements);
+  --color-interventions: var(--domain-interventions);
+  --color-sleep: var(--domain-sleep);
+  --color-genomics: var(--domain-genomics);
+  --color-bloodwork: var(--domain-bloodwork);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--surface-background);
+  color: var(--text-primary);
+}

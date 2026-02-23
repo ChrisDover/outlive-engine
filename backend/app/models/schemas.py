@@ -44,11 +44,17 @@ class UserUpdate(BaseModel):
     display_name: str | None = None
 
 
+class WebUserCreate(BaseModel):
+    email: str
+    display_name: str | None = None
+    web_user_id: str
+
+
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    apple_user_id: str
+    apple_user_id: str | None = None
     email: str | None = None
     display_name: str | None = None
     created_at: datetime

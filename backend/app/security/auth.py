@@ -1,20 +1,23 @@
-"""Apple Sign-In validation and JWT token management."""
+"""Apple Sign-In validation, service auth, and JWT token management."""
 
 from __future__ import annotations
 
+import logging
 import time
 from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import UUID
 
 import httpx
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from jose.backends import RSAKey
 
 from app.config import Settings, get_settings
 from app.models.database import get_pool
+
+logger = logging.getLogger("outlive.auth")
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 APPLE_JWKS_URL = "https://appleid.apple.com/auth/keys"
@@ -192,15 +195,54 @@ async def refresh_access_token(
 # ── FastAPI Dependency ────────────────────────────────────────────────────────
 
 async def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
     settings: Settings = Depends(get_settings),
 ) -> dict[str, Any]:
     """Extract and validate the current user from the Authorization header.
 
+    Supports two modes:
+    1. Service auth: Bearer token matches SERVICE_API_KEY, user ID from
+       X-Outlive-User-Id header (used by Next.js web frontend).
+    2. JWT auth: Standard access token decoded to get user ID
+       (used by iOS app).
+
     Returns a dict with at minimum ``{"user_id": UUID, ...}`` pulled from
     the database so downstream handlers have the full user row.
     """
-    payload = decode_token(credentials.credentials, settings)
+    token = credentials.credentials
+    pool = get_pool()
+
+    # ── Service Auth Mode ─────────────────────────────────────────────
+    if settings.SERVICE_API_KEY and token == settings.SERVICE_API_KEY:
+        web_user_id = request.headers.get("X-Outlive-User-Id")
+        if not web_user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Service auth requires X-Outlive-User-Id header",
+            )
+        try:
+            user_uuid = UUID(web_user_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid X-Outlive-User-Id format",
+            )
+
+        row = await pool.fetchrow(
+            "SELECT id, apple_user_id, email, display_name, created_at, updated_at "
+            "FROM users WHERE id = $1 AND deleted_at IS NULL",
+            user_uuid,
+        )
+        if row is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found or deleted",
+            )
+        return dict(row)
+
+    # ── JWT Auth Mode ─────────────────────────────────────────────────
+    payload = decode_token(token, settings)
 
     if payload.get("type") != "access":
         raise HTTPException(
@@ -215,7 +257,6 @@ async def get_current_user(
             detail="Token missing subject claim",
         )
 
-    pool = get_pool()
     row = await pool.fetchrow(
         "SELECT id, apple_user_id, email, display_name, created_at, updated_at "
         "FROM users WHERE id = $1 AND deleted_at IS NULL",
@@ -228,3 +269,20 @@ async def get_current_user(
         )
 
     return dict(row)
+
+
+async def require_service_auth(
+    credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
+    settings: Settings = Depends(get_settings),
+) -> None:
+    """Dependency that requires service API key auth only."""
+    if not settings.SERVICE_API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Service auth not configured",
+        )
+    if credentials.credentials != settings.SERVICE_API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid service API key",
+        )
