@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Outlive Engine" width="600" />
+</p>
+
 # Outlive Engine
 
 Open-source longevity protocol platform. Feed it your health data — bloodwork, genetics, wearables, body composition — and it generates a personalized daily protocol across training, nutrition, supplements, interventions, and sleep.
