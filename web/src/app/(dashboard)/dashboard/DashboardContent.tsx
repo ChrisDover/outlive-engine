@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { RecoveryBanner } from "@/components/ui/RecoveryBanner";
 import { ProtocolCard } from "@/components/ui/ProtocolCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -17,6 +18,24 @@ function getRecoveryZone(wearable: any): "green" | "yellow" | "red" {
   return "green";
 }
 
+function RationaleToggle({ rationale }: { rationale: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="mt-[var(--space-sm)]">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-xs text-muted hover:text-foreground transition-colors"
+      >
+        {expanded ? "Hide rationale ▲" : "Why this recommendation? ▼"}
+      </button>
+      {expanded && (
+        <p className="text-xs text-muted mt-1 leading-relaxed">{rationale}</p>
+      )}
+    </div>
+  );
+}
+
 export function DashboardContent({ protocol, wearable }: DashboardContentProps) {
   const zone = getRecoveryZone(wearable);
 
@@ -26,6 +45,8 @@ export function DashboardContent({ protocol, wearable }: DashboardContentProps) 
   const supplements = protocolData?.supplements;
   const interventions = protocolData?.interventions;
   const sleep = protocolData?.sleep;
+  const summary = protocolData?.summary;
+  const rationale = protocolData?.rationale;
 
   return (
     <div className="space-y-[var(--space-md)]">
@@ -35,6 +56,13 @@ export function DashboardContent({ protocol, wearable }: DashboardContentProps) 
         rhr={wearable?.metrics?.resting_heart_rate}
         sleepScore={wearable?.metrics?.sleep_score}
       />
+
+      {summary && (
+        <div className="bg-card rounded-[var(--radius-md)] border border-training/20 p-[var(--space-md)]">
+          <p className="text-sm text-foreground">{summary}</p>
+          {rationale && <RationaleToggle rationale={rationale} />}
+        </div>
+      )}
 
       {!protocolData ? (
         <EmptyState

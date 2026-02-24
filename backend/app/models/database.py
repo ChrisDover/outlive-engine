@@ -179,6 +179,17 @@ CREATE TABLE IF NOT EXISTS sync_log (
 CREATE INDEX IF NOT EXISTS idx_sync_log_user_entity ON sync_log(user_id, entity_type, entity_id);
 CREATE INDEX IF NOT EXISTS idx_sync_log_user_created ON sync_log(user_id, created_at);
 
+-- ── Chat Messages ──────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    conversation_id UUID NOT NULL,
+    role            TEXT NOT NULL,            -- system, user, assistant
+    content         TEXT NOT NULL,            -- encrypted
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_chat_messages_conv ON chat_messages(user_id, conversation_id, created_at);
+
 -- ── Revoked Tokens ───────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS revoked_tokens (
     token_hash      TEXT PRIMARY KEY,      -- SHA-256 hash of the token

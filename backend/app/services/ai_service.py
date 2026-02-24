@@ -63,6 +63,27 @@ async def _chat_completion(
         return resp.json()
 
 
+async def chat_completion_multi(
+    messages: list[dict[str, str]],
+    temperature: float = 0.5,
+    model: str = "gpt-4o",
+) -> dict[str, Any]:
+    """Call the LLM with a full multi-turn message history. 120s timeout for local models."""
+    settings = get_settings()
+    url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
+
+    payload = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+    }
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        resp = await client.post(url, json=payload)
+        resp.raise_for_status()
+        return resp.json()
+
+
 async def analyze_with_ai(
     user_id: UUID,
     context: dict[str, Any],

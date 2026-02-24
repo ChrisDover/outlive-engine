@@ -339,6 +339,32 @@ class AIInsightResponse(BaseModel):
     usage: dict[str, Any] | None = None
 
 
+# ── Chat ─────────────────────────────────────────────────────────────────────
+
+class ChatMessageRequest(BaseModel):
+    conversation_id: UUID | None = None
+    message: str = Field(..., min_length=1, max_length=10000)
+    include_context: bool = False
+
+
+class ChatMessageResponse(BaseModel):
+    conversation_id: str
+    response: str
+    model: str | None = None
+
+
+class ChatMessage(BaseModel):
+    id: str
+    role: str
+    content: str
+    created_at: str
+
+
+class ChatHistoryResponse(BaseModel):
+    conversation_id: str
+    messages: list[dict[str, Any]]
+
+
 class OCRRequest(BaseModel):
     image_base64: str = Field(..., min_length=10)
     lab_name: str | None = None

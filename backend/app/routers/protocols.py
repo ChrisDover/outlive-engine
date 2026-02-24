@@ -14,6 +14,7 @@ from app.models.database import get_pool
 from app.models.schemas import DailyProtocolResponse, ProtocolSourceResponse, ProtocolSourceUpdate
 from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
+from app.services.daily_plan_service import generate_daily_plan
 
 router = APIRouter(prefix="/protocols", tags=["protocols"])
 
@@ -42,6 +43,32 @@ async def get_daily_protocol(
         return None
 
     protocol = json.loads(decrypt_field(row["protocol_json"], key))
+    return DailyProtocolResponse(
+        id=row["id"],
+        user_id=row["user_id"],
+        date=row["date"],
+        protocol=protocol,
+        created_at=row["created_at"],
+        updated_at=row["updated_at"],
+    )
+
+
+@router.post("/daily/generate", response_model=DailyProtocolResponse)
+async def generate_daily(
+    target_date: date = Query(default_factory=date.today),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> DailyProtocolResponse:
+    """Generate (or regenerate) a daily protocol for the given date."""
+    protocol = await generate_daily_plan(current_user["id"], target_date)
+    pool = get_pool()
+    key = _enc_key()
+
+    row = await pool.fetchrow(
+        "SELECT id, user_id, date, protocol_json, created_at, updated_at "
+        "FROM daily_protocols WHERE user_id = $1 AND date = $2",
+        current_user["id"],
+        target_date,
+    )
     return DailyProtocolResponse(
         id=row["id"],
         user_id=row["user_id"],

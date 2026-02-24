@@ -5,6 +5,8 @@ import { backendClient } from "@/lib/backend-client";
 import { RecoveryBanner } from "@/components/ui/RecoveryBanner";
 import { DashboardContent } from "./DashboardContent";
 import { WelcomeCard } from "@/components/ui/WelcomeCard";
+import { WearableConnectCard } from "@/components/ui/WearableConnectCard";
+import { ChatBox } from "@/components/ui/ChatBox";
 
 async function getDashboardData(backendUserId: string) {
   try {
@@ -51,18 +53,52 @@ async function getDashboardData(backendUserId: string) {
   }
 }
 
+async function triggerWearableSync(backendUserId: string) {
+  try {
+    // Sync wearable data via internal API
+    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    await fetch(`${baseUrl}/api/wearables/sync`, { method: "POST" });
+  } catch {
+    // Non-blocking — sync errors don't prevent dashboard load
+  }
+}
+
+async function triggerDailyPlanGeneration(backendUserId: string) {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const result = await backendClient(`/protocols/daily/generate?target_date=${today}`, {
+      method: "POST",
+      userId: backendUserId,
+    });
+    return result;
+  } catch {
+    return null;
+  }
+}
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const user = await prisma.user.findUnique({
     where: { id: session!.user.id },
-    select: { backendUserId: true, onboardingComplete: true, name: true },
+    select: {
+      backendUserId: true,
+      onboardingComplete: true,
+      name: true,
+      ouraAccessToken: true,
+      whoopAccessToken: true,
+    },
   });
 
-  if (!user?.onboardingComplete) {
-    // Show welcome card (handled below in render)
+  const hasOura = !!user?.ouraAccessToken;
+  const hasWhoop = !!user?.whoopAccessToken;
+  const hasWearableTokens = hasOura || hasWhoop;
+
+  // Trigger wearable sync if tokens exist (non-blocking)
+  if (user?.backendUserId && hasWearableTokens) {
+    triggerWearableSync(user.backendUserId);
   }
 
-  const data = user?.backendUserId
+  let data = user?.backendUserId
     ? await getDashboardData(user.backendUserId)
     : {
         protocol: null,
@@ -72,6 +108,14 @@ export default async function DashboardPage() {
         hasGenomics: false,
         hasExperiments: false,
       };
+
+  // Auto-generate daily plan if none exists and user has backend account
+  if (!data.protocol && user?.backendUserId) {
+    const generated = await triggerDailyPlanGeneration(user.backendUserId);
+    if (generated) {
+      data = { ...data, protocol: generated };
+    }
+  }
 
   const isNewUser =
     !data.hasBloodwork && !data.hasBodyComp && !data.hasGenomics && !data.hasExperiments;
@@ -91,6 +135,11 @@ export default async function DashboardPage() {
         </p>
       </div>
 
+      {/* Always show wearable card first when not connected — this is the #1 priority */}
+      {!hasWearableTokens && (
+        <WearableConnectCard ouraConnected={hasOura} whoopConnected={hasWhoop} />
+      )}
+
       {(isNewUser || !user?.onboardingComplete) && (
         <WelcomeCard
           name={user?.name ?? null}
@@ -102,6 +151,8 @@ export default async function DashboardPage() {
       )}
 
       <DashboardContent protocol={data.protocol} wearable={data.wearable} />
+
+      <ChatBox />
     </div>
   );
 }
