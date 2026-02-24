@@ -181,6 +181,28 @@ class GenomicRiskUpdate(BaseModel):
     risks: list[GenomicRiskCategory] = Field(..., min_length=1)
 
 
+class GenomeUploadResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    user_id: UUID
+    source: str
+    filename: str | None
+    variant_count: int
+    status: str
+    error_message: str | None = None
+    created_at: datetime
+    completed_at: datetime | None = None
+
+
+class GenomicVariantResponse(BaseModel):
+    rsid: str
+    chromosome: str
+    position: int
+    genotype: str
+    source: str
+
+
 # ── Daily Protocols ───────────────────────────────────────────────────────────
 
 class DailyProtocolResponse(BaseModel):

@@ -187,6 +187,35 @@ CREATE TABLE IF NOT EXISTS revoked_tokens (
     expires_at      TIMESTAMPTZ NOT NULL   -- auto-cleanup after token would have expired anyway
 );
 CREATE INDEX IF NOT EXISTS idx_revoked_tokens_expires ON revoked_tokens(expires_at);
+
+-- ── Raw Genomic Variants (23andMe, etc.) ────────────────────────────────────
+CREATE TABLE IF NOT EXISTS genomic_variants (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    rsid            TEXT NOT NULL,            -- e.g. rs4477212
+    chromosome      TEXT NOT NULL,            -- e.g. 1, 2, ..., X, Y, MT
+    position        BIGINT NOT NULL,          -- genomic position
+    genotype        TEXT NOT NULL,            -- e.g. AA, AG, GG
+    source          TEXT NOT NULL DEFAULT '23andme',  -- data source
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user_id, rsid, source)
+);
+CREATE INDEX IF NOT EXISTS idx_genomic_variants_user ON genomic_variants(user_id);
+CREATE INDEX IF NOT EXISTS idx_genomic_variants_rsid ON genomic_variants(rsid);
+
+-- ── Genome Upload Metadata ──────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS genome_uploads (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    source          TEXT NOT NULL DEFAULT '23andme',
+    filename        TEXT,
+    variant_count   INT NOT NULL DEFAULT 0,
+    status          TEXT NOT NULL DEFAULT 'processing',  -- processing, completed, failed
+    error_message   TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    completed_at    TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_genome_uploads_user ON genome_uploads(user_id);
 """
 
 

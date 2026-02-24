@@ -2,6 +2,8 @@
 
 import { signOut, useSession } from "next-auth/react";
 import { SessionProvider } from "next-auth/react";
+import { WhoopImport } from "./WhoopImport";
+import { DailyWhoopInput } from "./DailyWhoopInput";
 
 function SettingsContent() {
   const { data: session } = useSession();
@@ -26,6 +28,17 @@ function SettingsContent() {
           </div>
         </div>
 
+        {/* Whoop Data Section */}
+        <h2 className="text-xl font-semibold text-foreground mt-[var(--space-lg)]">
+          Whoop Data
+        </h2>
+
+        {/* Daily Whoop Input */}
+        <DailyWhoopInput />
+
+        {/* Whoop Import */}
+        <WhoopImport />
+
         {/* Connected Wearables */}
         <div className="bg-card rounded-[var(--radius-md)] border border-[var(--surface-elevated)] p-[var(--space-lg)]">
           <h2 className="font-semibold text-foreground mb-[var(--space-md)]">Connected Wearables</h2>
@@ -36,7 +49,7 @@ function SettingsContent() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-foreground">Whoop</span>
-              <span className="text-sm text-muted">Not connected</span>
+              <span className="text-sm text-muted">Manual entry / import</span>
             </div>
           </div>
         </div>

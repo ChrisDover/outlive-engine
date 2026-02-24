@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { OutliveButton } from "@/components/ui/OutliveButton";
+import { BloodworkOCR } from "./BloodworkOCR";
 
 interface MarkerRow {
   name: string;
@@ -10,6 +11,15 @@ interface MarkerRow {
   unit: string;
   reference_low: string;
   reference_high: string;
+}
+
+interface ExtractedMarker {
+  name: string;
+  value: number;
+  unit: string;
+  reference_low: number | null;
+  reference_high: number | null;
+  flag: string | null;
 }
 
 const PRESETS: { label: string; name: string; unit: string; ref_low: number; ref_high: number }[] = [
@@ -37,6 +47,19 @@ export function NewPanelForm() {
   const [markers, setMarkers] = useState<MarkerRow[]>([emptyMarker()]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  function handleExtractedMarkers(extracted: ExtractedMarker[]) {
+    const newMarkers: MarkerRow[] = extracted.map((m) => ({
+      name: m.name,
+      value: String(m.value),
+      unit: m.unit,
+      reference_low: m.reference_low !== null ? String(m.reference_low) : "",
+      reference_high: m.reference_high !== null ? String(m.reference_high) : "",
+    }));
+    // Add extracted markers to existing ones (filter out empty ones first)
+    const existingNonEmpty = markers.filter((m) => m.name || m.value);
+    setMarkers([...existingNonEmpty, ...newMarkers]);
+  }
 
   function addMarker() {
     setMarkers((prev) => [...prev, emptyMarker()]);
@@ -133,6 +156,9 @@ export function NewPanelForm() {
           {error}
         </div>
       )}
+
+      {/* OCR Upload */}
+      <BloodworkOCR onMarkersExtracted={handleExtractedMarkers} />
 
       {/* Panel info */}
       <div className="bg-card rounded-[var(--radius-md)] border border-[var(--surface-elevated)] p-[var(--space-md)] space-y-[var(--space-md)]">

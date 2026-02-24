@@ -114,27 +114,93 @@ async def analyze_experiment(experiment_data: dict[str, Any]) -> AIInsightRespon
         )
 
 
+async def _vision_completion(
+    system_prompt: str,
+    text_prompt: str,
+    image_base64: str,
+    model: str = "llava:7b",
+) -> dict[str, Any]:
+    """Call the Ollama-compatible chat completions endpoint with vision."""
+    settings = get_settings()
+    url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
+
+    # Build multimodal content for vision model
+    user_content = [
+        {"type": "text", "text": text_prompt},
+        {
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"},
+        },
+    ]
+
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content},
+        ],
+        "temperature": 0.1,
+    }
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        resp = await client.post(url, json=payload)
+        resp.raise_for_status()
+        return resp.json()
+
+
 async def process_ocr_image(
     image_base64: str,
     lab_name: str | None = None,
 ) -> OCRResponse:
-    """Process a bloodwork image through AI OCR.
+    """Process a bloodwork image through AI OCR using vision model.
 
-    This is a placeholder that delegates to the AI model's vision
-    capabilities.  When the AI service is unavailable it returns an
-    empty result rather than crashing.
+    Uses llava to extract biomarkers from lab report images.
     """
-    user_message = f"Lab: {lab_name or 'unknown'}\nImage (base64): {image_base64[:200]}..."
+    text_prompt = f"""Analyze this bloodwork/lab report image from {lab_name or 'an unknown lab'}.
+
+Extract ALL biomarkers visible in the image. For each marker, provide:
+- name: The biomarker name (e.g., "Glucose", "HDL Cholesterol", "TSH")
+- value: The numeric value as a float
+- unit: The unit of measurement (e.g., "mg/dL", "mmol/L")
+- reference_low: Lower bound of normal range (null if not shown)
+- reference_high: Upper bound of normal range (null if not shown)
+- flag: "H" if high, "L" if low, null if normal or not indicated
+
+Return your response as valid JSON with this exact structure:
+{{"markers": [...], "raw_text": "all text visible in image", "confidence": 0.0-1.0}}
+
+Be thorough - extract every single biomarker visible."""
 
     try:
-        result = _parse_completion(
-            await _chat_completion(_OCR_SYSTEM_PROMPT, user_message)
+        response = await _vision_completion(
+            _OCR_SYSTEM_PROMPT,
+            text_prompt,
+            image_base64,
+            model="llava:7b",
         )
+
+        # Parse the response - vision models may not always return perfect JSON
+        content = response["choices"][0]["message"]["content"]
+
+        # Try to extract JSON from the response
+        import re
+        json_match = re.search(r'\{[\s\S]*\}', content)
+        if json_match:
+            import json as _json
+            result = _json.loads(json_match.group())
+        else:
+            # Fallback: return raw text if JSON parsing fails
+            return OCRResponse(
+                markers=[],
+                raw_text=content,
+                confidence=0.3,
+            )
+
         markers = [BloodworkMarker(**m) for m in result.get("markers", [])]
         return OCRResponse(
             markers=markers,
             raw_text=result.get("raw_text"),
-            confidence=result.get("confidence"),
+            confidence=result.get("confidence", 0.8),
         )
     except Exception:
         logger.exception("OCR processing failed, returning empty result")

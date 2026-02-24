@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { backendClient } from "@/lib/backend-client";
+
+const BACKEND_URL = process.env.OUTLIVE_BACKEND_URL || "http://localhost:8000";
+const SERVICE_KEY = process.env.OUTLIVE_SERVICE_KEY || "";
 
 async function proxyRequest(
   request: NextRequest,
@@ -29,20 +31,54 @@ async function proxyRequest(
   const backendPath = `/${path.join("/")}`;
   const searchParams = request.nextUrl.searchParams.toString();
   const fullPath = searchParams ? `${backendPath}?${searchParams}` : backendPath;
+  const url = `${BACKEND_URL}/api/v1${fullPath}`;
+
+  const contentType = request.headers.get("content-type") || "";
 
   try {
-    let body: string | undefined;
-    if (request.method !== "GET" && request.method !== "HEAD") {
-      body = await request.text();
+    let fetchOptions: RequestInit;
+
+    if (contentType.includes("multipart/form-data")) {
+      // Handle file uploads - pass through FormData
+      const formData = await request.formData();
+      fetchOptions = {
+        method: request.method,
+        headers: {
+          Authorization: `Bearer ${SERVICE_KEY}`,
+          "X-Outlive-User-Id": user.backendUserId,
+        },
+        body: formData,
+      };
+    } else {
+      // Handle JSON and other requests
+      let body: string | undefined;
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        body = await request.text();
+      }
+      fetchOptions = {
+        method: request.method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SERVICE_KEY}`,
+          "X-Outlive-User-Id": user.backendUserId,
+        },
+        body,
+      };
     }
 
-    const data = await backendClient(fullPath, {
-      method: request.method,
-      userId: user.backendUserId,
-      body,
-    });
+    const response = await fetch(url, fetchOptions);
 
-    return NextResponse.json(data);
+    if (!response.ok) {
+      throw new Error(`Backend ${response.status}: request failed`);
+    }
+
+    const responseContentType = response.headers.get("content-type");
+    if (responseContentType?.includes("application/json")) {
+      const data = await response.json();
+      return NextResponse.json(data);
+    }
+    const text = await response.text();
+    return new NextResponse(text);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Proxy error";
     const statusMatch = message.match(/Backend (\d+):/);

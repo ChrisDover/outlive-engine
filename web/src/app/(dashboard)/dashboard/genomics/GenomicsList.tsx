@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ProtocolCard } from "@/components/ui/ProtocolCard";
 import { OutliveButton } from "@/components/ui/OutliveButton";
 import { GenomicsForm } from "./GenomicsForm";
+import { GenomeUpload } from "./GenomeUpload";
 
 interface Risk {
   id?: string;
@@ -55,10 +56,21 @@ export function GenomicsList({ risks: initialRisks }: GenomicsListProps) {
 
   if (risks.length === 0 && !showAddForm) {
     return (
-      <div>
+      <div className="space-y-[var(--space-lg)]">
+        <GenomeUpload onUploadComplete={() => router.refresh()} />
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-[var(--surface-elevated)]"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="bg-background px-4 text-muted">or add manually</span>
+          </div>
+        </div>
+
         <EmptyState
           title="No genomic data yet"
-          description="Add your genetic risk categories to see personalized recommendations."
+          description="Upload your 23andMe data above, or add risk categories manually."
           actionLabel="Add Risk Category"
           onAction={() => setShowAddForm(true)}
         />
@@ -73,6 +85,12 @@ export function GenomicsList({ risks: initialRisks }: GenomicsListProps) {
 
   return (
     <div className="space-y-[var(--space-md)]">
+      <GenomeUpload onUploadComplete={() => router.refresh()} />
+
+      <h2 className="text-lg font-semibold text-foreground mt-[var(--space-lg)]">
+        Risk Categories
+      </h2>
+
       {risks.map((risk) => {
         const isEditing = editingId === (risk.id ?? risk.risk_category);
         return (
