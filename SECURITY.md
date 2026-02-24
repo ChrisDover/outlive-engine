@@ -56,9 +56,12 @@ Every API request is logged to the `audit_log` table:
 - [ ] Run behind a reverse proxy (nginx, Caddy) with HTTPS
 - [ ] Keep Ollama bound to localhost (`OLLAMA_HOST=127.0.0.1`)
 - [ ] Set PostgreSQL to listen only on localhost or your private network
-- [ ] Use a firewall to block direct access to backend port (8000)
+- [ ] Use a firewall to block direct access to backend port (8000) and database port (5432)
 - [ ] Regularly rotate `SERVICE_API_KEY` and `JWT_SECRET`
 - [ ] Back up your `FIELD_ENCRYPTION_KEY` securely — data is unrecoverable without it
+- [ ] Set database connection to require SSL (`?sslmode=verify-full` in DATABASE_URL)
+- [ ] Review audit logs regularly for anomalous access patterns
+- [ ] Set up log aggregation and alerting for audit log write failures
 
 ## Cloud LLM Warning
 

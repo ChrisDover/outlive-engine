@@ -1,20 +1,24 @@
 /**
  * Application-layer encryption for sensitive fields stored in Prisma
  * (OAuth tokens, etc.) using AES-256-GCM via Node.js crypto.
+ *
+ * Key derivation uses HKDF-SHA256, matching the backend's approach.
  */
 
-import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
+import { createCipheriv, createDecipheriv, randomBytes, hkdfSync } from "crypto";
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
 const TAG_LENGTH = 16;
+const HKDF_SALT = "outlive-web-token-encryption-v1";
+const HKDF_INFO = "token-encryption";
 
 function getKey(): Buffer {
   const secret = process.env.NEXTAUTH_SECRET;
   if (!secret) throw new Error("NEXTAUTH_SECRET is required for token encryption");
-  // Derive a 32-byte key from the secret using SHA-256
-  const { createHash } = require("crypto");
-  return createHash("sha256").update(secret).digest();
+  return Buffer.from(
+    hkdfSync("sha256", secret, HKDF_SALT, HKDF_INFO, 32)
+  );
 }
 
 /** Encrypt a plaintext string. Returns base64(iv + ciphertext + tag). */

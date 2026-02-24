@@ -14,11 +14,19 @@ export async function POST(request: Request) {
       );
     }
 
+    if (password.length < 8) {
+      return NextResponse.json(
+        { error: "Password must be at least 8 characters" },
+        { status: 400 }
+      );
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
-      // Return 201 with same shape to prevent email enumeration
+      // Uniform response to prevent email enumeration.
+      // Use a stable but non-revealing placeholder id.
       return NextResponse.json(
-        { id: existing.id, email: existing.email },
+        { id: "ok", email },
         { status: 201 }
       );
     }

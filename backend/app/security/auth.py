@@ -309,6 +309,13 @@ async def get_current_user(
             detail="Token is not an access token",
         )
 
+    # Check if this access token has been revoked
+    if await is_token_revoked(token):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has been revoked",
+        )
+
     user_id = payload.get("sub")
     if user_id is None:
         raise HTTPException(

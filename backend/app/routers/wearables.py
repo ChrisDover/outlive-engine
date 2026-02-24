@@ -37,35 +37,37 @@ async def batch_upsert(
 
     results: list[WearableDataResponse] = []
 
-    for entry in body.entries:
-        enc_metrics = encrypt_field(json.dumps(entry.metrics), key)
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            for entry in body.entries:
+                enc_metrics = encrypt_field(json.dumps(entry.metrics), key)
 
-        row = await pool.fetchrow(
-            """
-            INSERT INTO daily_wearable_data (user_id, date, source, metrics_json, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $5)
-            ON CONFLICT (user_id, date, source)
-            DO UPDATE SET metrics_json = $4, updated_at = $5
-            RETURNING id, user_id, date, source, metrics_json, created_at, updated_at
-            """,
-            user_id,
-            entry.date,
-            entry.source,
-            enc_metrics,
-            now,
-        )
+                row = await conn.fetchrow(
+                    """
+                    INSERT INTO daily_wearable_data (user_id, date, source, metrics_json, created_at, updated_at)
+                    VALUES ($1, $2, $3, $4, $5, $5)
+                    ON CONFLICT (user_id, date, source)
+                    DO UPDATE SET metrics_json = $4, updated_at = $5
+                    RETURNING id, user_id, date, source, metrics_json, created_at, updated_at
+                    """,
+                    user_id,
+                    entry.date,
+                    entry.source,
+                    enc_metrics,
+                    now,
+                )
 
-        results.append(
-            WearableDataResponse(
-                id=row["id"],
-                user_id=row["user_id"],
-                date=row["date"],
-                source=row["source"],
-                metrics=entry.metrics,
-                created_at=row["created_at"],
-                updated_at=row["updated_at"],
-            )
-        )
+                results.append(
+                    WearableDataResponse(
+                        id=row["id"],
+                        user_id=row["user_id"],
+                        date=row["date"],
+                        source=row["source"],
+                        metrics=entry.metrics,
+                        created_at=row["created_at"],
+                        updated_at=row["updated_at"],
+                    )
+                )
 
     return results
 
