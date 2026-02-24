@@ -66,7 +66,10 @@ async def _persist_audit_entry(
         )
     except Exception:
         # Audit logging must never break the request pipeline.
-        pass
+        import logging
+        logging.getLogger("outlive.audit").error(
+            "Failed to persist audit entry: %s %s", method, path, exc_info=True
+        )
 
 
 class AuditLogMiddleware(BaseHTTPMiddleware):

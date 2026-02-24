@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -39,17 +39,21 @@ def _row_to_response(row: Any, key: bytes) -> BloodworkPanelResponse:
 
 @router.get("", response_model=list[BloodworkPanelResponse])
 async def list_panels(
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[BloodworkPanelResponse]:
-    """List all bloodwork panels for the current user, newest first."""
+    """List bloodwork panels for the current user, newest first."""
     pool = get_pool()
     key = _enc_key()
 
     rows = await pool.fetch(
         "SELECT id, user_id, panel_date, lab_name, markers_json, notes, created_at, updated_at "
         "FROM bloodwork_panels WHERE user_id = $1 AND deleted_at IS NULL "
-        "ORDER BY panel_date DESC",
+        "ORDER BY panel_date DESC LIMIT $2 OFFSET $3",
         current_user["id"],
+        limit,
+        offset,
     )
     return [_row_to_response(r, key) for r in rows]
 

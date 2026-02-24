@@ -81,6 +81,12 @@ def validate_settings(settings: Settings) -> None:
             "Generate one: openssl rand -base64 32"
         )
 
+    if not settings.SERVICE_API_KEY or settings.SERVICE_API_KEY in _INSECURE_DEFAULTS:
+        errors.append(
+            "SERVICE_API_KEY is missing or uses an insecure default. "
+            "Generate one: openssl rand -hex 32"
+        )
+
     if "*" in settings.ALLOWED_ORIGINS:
         errors.append(
             "ALLOWED_ORIGINS contains '*' — this allows any website to make "

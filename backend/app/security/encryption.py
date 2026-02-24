@@ -3,22 +3,33 @@
 from __future__ import annotations
 
 import base64
-import hashlib
 import os
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives.hashes import SHA256
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
 # Nonce length recommended by NIST for AES-GCM
 _NONCE_BYTES = 12
+
+# Static salt for deterministic key derivation (not a secret, just domain separation)
+_HKDF_SALT = b"outlive-engine-field-encryption-v1"
 
 
 def derive_key(secret: str) -> bytes:
     """Derive a 256-bit key from an arbitrary-length secret string.
 
-    Uses SHA-256 for deterministic, fast key derivation.  For higher
-    security requirements swap to HKDF or Argon2id.
+    Uses HKDF-SHA256 with a static salt for proper cryptographic key
+    derivation.  This is backwards-compatible: the same secret always
+    produces the same derived key.
     """
-    return hashlib.sha256(secret.encode("utf-8")).digest()
+    hkdf = HKDF(
+        algorithm=SHA256(),
+        length=32,
+        salt=_HKDF_SALT,
+        info=b"field-encryption",
+    )
+    return hkdf.derive(secret.encode("utf-8"))
 
 
 def encrypt_field(plaintext: str, key: bytes) -> str:

@@ -5,9 +5,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.config import Settings, get_settings
+
+limiter = Limiter(key_func=get_remote_address)
 from app.models.database import get_pool
 from app.models.schemas import (
     AppleAuthRequest,
@@ -27,7 +31,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/apple", response_model=TokenResponse, status_code=status.HTTP_200_OK)
+@limiter.limit("10/minute")
 async def apple_sign_in(
+    request: Request,
     body: AppleAuthRequest,
     settings: Settings = Depends(get_settings),
 ) -> TokenResponse:
@@ -72,7 +78,9 @@ async def apple_sign_in(
 
 
 @router.post("/refresh", response_model=TokenResponse)
+@limiter.limit("20/minute")
 async def refresh_token(
+    request: Request,
     body: RefreshRequest,
     settings: Settings = Depends(get_settings),
 ) -> TokenResponse:
@@ -82,7 +90,9 @@ async def refresh_token(
 
 
 @router.post("/revoke", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("10/minute")
 async def revoke_refresh_token(
+    request: Request,
     body: RevokeRequest,
     settings: Settings = Depends(get_settings),
 ) -> None:

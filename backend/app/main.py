@@ -6,8 +6,12 @@ import logging
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from slowapi import Limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from app.config import get_settings, validate_settings
 from app.models.database import close_pool, init_pool
@@ -37,6 +41,9 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 
 # ── App Factory ───────────────────────────────────────────────────────────────
 
+limiter = Limiter(key_func=get_remote_address)
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
     validate_settings(settings)
@@ -47,6 +54,16 @@ def create_app() -> FastAPI:
         description="Backend for the Outlive Engine longevity-tracking platform.",
         lifespan=lifespan,
     )
+
+    # ── Rate Limiting ──────────────────────────────────────────────────
+    application.state.limiter = limiter
+
+    @application.exception_handler(RateLimitExceeded)
+    async def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Too many requests. Please slow down."},
+        )
 
     # ── CORS ──────────────────────────────────────────────────────────────
     application.add_middleware(

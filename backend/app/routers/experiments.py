@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -57,9 +57,11 @@ def _row_to_response(row: Any, key: bytes) -> ExperimentResponse:
 
 @router.get("", response_model=list[ExperimentResponse])
 async def list_experiments(
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[ExperimentResponse]:
-    """List all experiments for the current user."""
+    """List experiments for the current user."""
     pool = get_pool()
     key = _enc_key()
 
@@ -67,8 +69,10 @@ async def list_experiments(
         "SELECT id, user_id, title, hypothesis, status, start_date, end_date, "
         "metrics_json, snapshots_json, created_at, updated_at "
         "FROM experiments WHERE user_id = $1 AND deleted_at IS NULL "
-        "ORDER BY created_at DESC",
+        "ORDER BY created_at DESC LIMIT $2 OFFSET $3",
         current_user["id"],
+        limit,
+        offset,
     )
     return [_row_to_response(r, key) for r in rows]
 

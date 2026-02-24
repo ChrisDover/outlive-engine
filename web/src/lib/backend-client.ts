@@ -21,8 +21,8 @@ export async function backendClient(
   });
 
   if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`Backend ${response.status}: ${errorBody}`);
+    // Include status code for proxy routing but not the raw backend body
+    throw new Error(`Backend ${response.status}: request failed`);
   }
 
   const contentType = response.headers.get("content-type");

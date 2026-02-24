@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -24,16 +24,20 @@ def _enc_key() -> bytes:
 
 @router.get("/risks", response_model=list[GenomicRiskResponse])
 async def get_risk_categories(
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[GenomicRiskResponse]:
-    """Return all genomic risk categories for the current user."""
+    """Return genomic risk categories for the current user."""
     pool = get_pool()
     key = _enc_key()
 
     rows = await pool.fetch(
         "SELECT id, user_id, risk_category, risk_level, summary, metadata_json, updated_at "
-        "FROM genomic_profiles WHERE user_id = $1",
+        "FROM genomic_profiles WHERE user_id = $1 LIMIT $2 OFFSET $3",
         current_user["id"],
+        limit,
+        offset,
     )
 
     results: list[GenomicRiskResponse] = []

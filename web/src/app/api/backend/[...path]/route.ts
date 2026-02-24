@@ -46,8 +46,24 @@ async function proxyRequest(
   } catch (error) {
     const message = error instanceof Error ? error.message : "Proxy error";
     const statusMatch = message.match(/Backend (\d+):/);
-    const status = statusMatch ? parseInt(statusMatch[1]) : 502;
-    return NextResponse.json({ error: message }, { status });
+    const statusCode = statusMatch ? parseInt(statusMatch[1]) : 502;
+
+    // Log full error server-side, return generic message to client
+    console.error("Backend proxy error:", message);
+
+    const safeMessages: Record<number, string> = {
+      400: "Bad request",
+      401: "Unauthorized",
+      403: "Forbidden",
+      404: "Not found",
+      422: "Validation error",
+      429: "Too many requests",
+    };
+
+    return NextResponse.json(
+      { error: safeMessages[statusCode] || "Service unavailable" },
+      { status: statusCode }
+    );
   }
 }
 

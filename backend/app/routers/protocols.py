@@ -54,16 +54,20 @@ async def get_daily_protocol(
 
 @router.get("/library", response_model=list[ProtocolSourceResponse])
 async def list_protocol_sources(
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[ProtocolSourceResponse]:
-    """List all protocol sources for the current user."""
+    """List protocol sources for the current user."""
     pool = get_pool()
     key = _enc_key()
 
     rows = await pool.fetch(
         "SELECT id, user_id, source_name, enabled, priority, config_json, updated_at "
-        "FROM protocol_sources WHERE user_id = $1 ORDER BY priority DESC",
+        "FROM protocol_sources WHERE user_id = $1 ORDER BY priority DESC LIMIT $2 OFFSET $3",
         current_user["id"],
+        limit,
+        offset,
     )
 
     results: list[ProtocolSourceResponse] = []

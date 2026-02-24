@@ -48,7 +48,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS users (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     apple_user_id   TEXT UNIQUE,
-    email           TEXT,               -- encrypted
+    email           TEXT UNIQUE,        -- encrypted
     display_name    TEXT,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),

@@ -75,6 +75,8 @@ async def list_wearable_data(
     start_date: date | None = Query(default=None),
     end_date: date | None = Query(default=None),
     source: str | None = Query(default=None),
+    limit: int = Query(default=50, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[WearableDataResponse]:
     """List wearable data with optional date range and source filters."""
@@ -103,7 +105,9 @@ async def list_wearable_data(
         params.append(source.strip().lower())
         idx += 1
 
-    query += " ORDER BY date DESC"
+    query += f" ORDER BY date DESC LIMIT ${idx} OFFSET ${idx+1}"
+    params.append(limit)
+    params.append(offset)
 
     rows = await pool.fetch(query, *params)
 
