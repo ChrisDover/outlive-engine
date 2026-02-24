@@ -6,7 +6,9 @@ import json
 from datetime import date, datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -18,6 +20,7 @@ from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 
 router = APIRouter(prefix="/wearables", tags=["wearables"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _enc_key() -> bytes:
@@ -25,7 +28,9 @@ def _enc_key() -> bytes:
 
 
 @router.post("/batch", response_model=list[WearableDataResponse], status_code=status.HTTP_200_OK)
+@limiter.limit("60/minute")
 async def batch_upsert(
+    request: Request,
     body: WearableDataBatchCreate,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[WearableDataResponse]:

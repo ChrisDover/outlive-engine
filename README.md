@@ -54,30 +54,18 @@ See [SECURITY.md](SECURITY.md) for the full security policy and self-hosting har
 - PostgreSQL 15+
 - [Ollama](https://ollama.ai) (for local AI)
 
-### 1. Backend
+### One-Command Setup
 
 ```bash
-cd backend
-cp .env.example .env          # Edit with your values
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-The backend creates all database tables on startup.
-
-### 2. Web Frontend
-
-```bash
-cd web
-cp .env.example .env          # Edit with your values
-npm install
-npx prisma db push            # Create auth tables
-npm run dev
+make setup    # Creates DB, generates secrets, installs deps, bootstraps schema
+make dev      # Starts backend (port 8000) and frontend (port 3000)
 ```
 
 Open http://localhost:3000, create an account, and you're in.
 
-### 3. Local AI (Optional)
+> **Note:** `make setup` assumes passwordless local PostgreSQL (the default on Mac/Linux dev machines). If your Postgres requires a password, see [Advanced Setup](#advanced-setup) below.
+
+### Local AI (Optional)
 
 ```bash
 ollama pull llama3.1           # Or any model you prefer
@@ -102,6 +90,27 @@ AIRLLM_MODEL=claude-sonnet-4-20250514
 ```
 
 **Be aware:** when using cloud LLMs, your health context is sent to external APIs. Use local models if data sovereignty is important to you.
+
+## Advanced Setup
+
+If `make setup` doesn't work for your environment (e.g. Postgres requires a password), you can set up manually:
+
+```bash
+# 1. Backend
+cd backend
+cp .env.example .env          # Edit with your values
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/uvicorn app.main:app --reload
+
+# 2. Web Frontend (in a separate terminal)
+cd web
+cp .env.example .env          # Edit with your values
+npm install
+npx prisma db push            # Create auth tables
+npm run dev
+```
+
+Both `.env.example` files document every variable. The backend creates all database tables on startup.
 
 ## Environment Variables
 

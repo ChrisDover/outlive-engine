@@ -7,7 +7,9 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -16,6 +18,7 @@ from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 
 router = APIRouter(prefix="/body-composition", tags=["body-composition"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _enc_key() -> bytes:
@@ -46,7 +49,7 @@ async def list_entries(
 
     rows = await pool.fetch(
         "SELECT id, user_id, date, metrics_json, created_at, updated_at "
-        "FROM body_composition WHERE user_id = $1 "
+        "FROM body_composition WHERE user_id = $1 AND deleted_at IS NULL "
         "ORDER BY date DESC LIMIT $2 OFFSET $3",
         current_user["id"],
         limit,
@@ -56,7 +59,9 @@ async def list_entries(
 
 
 @router.post("", response_model=BodyCompositionResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("60/minute")
 async def upsert_entry(
+    request: Request,
     body: BodyCompositionCreate,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> BodyCompositionResponse:
@@ -95,7 +100,7 @@ async def get_entry(
 
     row = await pool.fetchrow(
         "SELECT id, user_id, date, metrics_json, created_at, updated_at "
-        "FROM body_composition WHERE id = $1 AND user_id = $2",
+        "FROM body_composition WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
         entry_id,
         current_user["id"],
     )
@@ -106,16 +111,19 @@ async def get_entry(
 
 
 @router.delete("/{entry_id}", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("60/minute")
 async def delete_entry(
+    request: Request,
     entry_id: UUID,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> None:
-    """Hard-delete a body composition entry."""
+    """Soft-delete a body composition entry."""
     pool = get_pool()
     result = await pool.execute(
-        "DELETE FROM body_composition WHERE id = $1 AND user_id = $2",
+        "UPDATE body_composition SET deleted_at = $1 WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL",
+        datetime.now(timezone.utc),
         entry_id,
         current_user["id"],
     )
-    if result == "DELETE 0":
+    if result == "UPDATE 0":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Entry not found")

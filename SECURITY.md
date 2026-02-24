@@ -49,7 +49,7 @@ Every API request is logged to the `audit_log` table:
 
 ## Self-Hosting Hardening Checklist
 
-- [ ] Generate unique secrets for `JWT_SECRET`, `NEXTAUTH_SECRET`, `FIELD_ENCRYPTION_KEY`, `SERVICE_API_KEY`
+- [ ] Run `make setup` to generate unique secrets automatically (or generate manually — see below)
 - [ ] Run PostgreSQL with authentication enabled (not trust mode)
 - [ ] Set `ALLOWED_ORIGINS` to your exact domain (not `["*"]`)
 - [ ] Enable TLS on the backend (`TLS_CERT_PATH`, `TLS_KEY_PATH`)

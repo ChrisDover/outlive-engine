@@ -7,7 +7,9 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -21,6 +23,7 @@ from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 
 router = APIRouter(prefix="/experiments", tags=["experiments"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _enc_key() -> bytes:
@@ -78,7 +81,9 @@ async def list_experiments(
 
 
 @router.post("", response_model=ExperimentResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("60/minute")
 async def create_experiment(
+    request: Request,
     body: ExperimentCreate,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> ExperimentResponse:
@@ -132,7 +137,9 @@ async def get_experiment(
 
 
 @router.put("/{experiment_id}", response_model=ExperimentResponse)
+@limiter.limit("60/minute")
 async def update_experiment(
+    request: Request,
     experiment_id: UUID,
     body: ExperimentUpdate,
     current_user: dict[str, Any] = Depends(get_current_user),
@@ -181,7 +188,9 @@ async def update_experiment(
 
 
 @router.delete("/{experiment_id}", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("60/minute")
 async def delete_experiment(
+    request: Request,
     experiment_id: UUID,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> None:
@@ -198,7 +207,9 @@ async def delete_experiment(
 
 
 @router.post("/{experiment_id}/snapshots", response_model=ExperimentResponse)
+@limiter.limit("60/minute")
 async def add_snapshot(
+    request: Request,
     experiment_id: UUID,
     body: ExperimentSnapshot,
     current_user: dict[str, Any] = Depends(get_current_user),

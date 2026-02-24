@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS body_composition (
     metrics_json    TEXT NOT NULL,            -- encrypted JSON
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at      TIMESTAMPTZ,
     UNIQUE (user_id, date)
 );
 CREATE INDEX IF NOT EXISTS idx_body_comp_user_date ON body_composition(user_id, date);

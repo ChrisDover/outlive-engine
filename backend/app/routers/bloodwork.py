@@ -7,7 +7,9 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -16,6 +18,7 @@ from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 
 router = APIRouter(prefix="/bloodwork", tags=["bloodwork"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _enc_key() -> bytes:
@@ -59,7 +62,9 @@ async def list_panels(
 
 
 @router.post("", response_model=BloodworkPanelResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("60/minute")
 async def create_panel(
+    request: Request,
     body: BloodworkPanelCreate,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> BloodworkPanelResponse:
@@ -111,7 +116,9 @@ async def get_panel(
 
 
 @router.delete("/{panel_id}", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("60/minute")
 async def delete_panel(
+    request: Request,
     panel_id: UUID,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> None:

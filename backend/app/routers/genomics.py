@@ -7,7 +7,9 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.config import get_settings
 from app.models.database import get_pool
@@ -16,6 +18,7 @@ from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 
 router = APIRouter(prefix="/genomics", tags=["genomics"])
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _enc_key() -> bytes:
@@ -63,7 +66,9 @@ async def get_risk_categories(
 
 
 @router.put("/risks", response_model=list[GenomicRiskResponse], status_code=status.HTTP_200_OK)
+@limiter.limit("60/minute")
 async def update_risk_categories(
+    request: Request,
     body: GenomicRiskUpdate,
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> list[GenomicRiskResponse]:

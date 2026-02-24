@@ -7,6 +7,8 @@ from enum import Enum
 from typing import Any
 from uuid import UUID
 
+import re
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
@@ -48,6 +50,13 @@ class WebUserCreate(BaseModel):
     email: str
     display_name: str | None = None
     web_user_id: str
+
+    @field_validator("web_user_id")
+    @classmethod
+    def validate_cuid(cls, v: str) -> str:
+        if not re.match(r"^c[a-z0-9]{24}$", v):
+            raise ValueError("web_user_id must be a valid CUID")
+        return v
 
 
 class UserResponse(BaseModel):
@@ -268,9 +277,20 @@ class SyncResponse(BaseModel):
 
 # ── Body Composition ─────────────────────────────────────────────────────────
 
+_NUMERIC_BODY_FIELDS = {"weight", "body_fat_pct", "lean_mass", "waist"}
+
+
 class BodyCompositionCreate(BaseModel):
     date: date
     metrics: dict[str, Any]  # weight, body_fat_pct, lean_mass, waist, etc.
+
+    @field_validator("metrics")
+    @classmethod
+    def validate_metrics(cls, v: dict[str, Any]) -> dict[str, Any]:
+        for key in _NUMERIC_BODY_FIELDS & v.keys():
+            if not isinstance(v[key], (int, float)):
+                raise ValueError(f"{key} must be a number")
+        return v
 
 
 class BodyCompositionResponse(BaseModel):

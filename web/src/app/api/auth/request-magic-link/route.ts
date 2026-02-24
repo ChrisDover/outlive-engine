@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         subject: "Your login link",
         html: `<p>Click <a href="${magicUrl}">here</a> to log in. This link expires in 15 minutes.</p>`,
       });
-    } else {
+    } else if (process.env.NODE_ENV === "development") {
       console.log("Magic link (no Resend key):", magicUrl);
     }
 
