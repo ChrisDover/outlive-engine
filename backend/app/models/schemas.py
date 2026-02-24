@@ -266,6 +266,24 @@ class SyncResponse(BaseModel):
     conflicts: list[dict[str, Any]] = Field(default_factory=list)
 
 
+# ── Body Composition ─────────────────────────────────────────────────────────
+
+class BodyCompositionCreate(BaseModel):
+    date: date
+    metrics: dict[str, Any]  # weight, body_fat_pct, lean_mass, waist, etc.
+
+
+class BodyCompositionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    user_id: UUID
+    date: date
+    metrics: dict[str, Any]
+    created_at: datetime
+    updated_at: datetime
+
+
 # ── AI ────────────────────────────────────────────────────────────────────────
 
 class AIInsightRequest(BaseModel):

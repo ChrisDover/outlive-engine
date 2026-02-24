@@ -27,6 +27,8 @@ model User {
   updatedAt          DateTime  @updatedAt
   accounts           Account[]
   sessions           Session[]
+
+  @@map("web_users")
 }
 
 model Account {
@@ -45,6 +47,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("web_accounts")
 }
 
 model Session {
@@ -53,6 +56,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("web_sessions")
 }
 
 model VerificationToken {
@@ -61,4 +66,5 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("web_verification_tokens")
 }
