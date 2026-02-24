@@ -2,11 +2,27 @@
   <img src="assets/banner.png" alt="Outlive Engine" width="600" />
 </p>
 
-# Outlive Engine
+<p align="center">
+  <strong>Open-source longevity protocol platform.</strong><br/>
+  Feed it your health data. Get a personalized daily protocol. Your data never leaves your machine.
+</p>
 
-Open-source longevity protocol platform. Feed it your health data — bloodwork, genetics, wearables, body composition — and it generates a personalized daily protocol across training, nutrition, supplements, interventions, and sleep.
+<p align="center">
+  <a href="https://github.com/ChrisDover/outlive-engine/stargazers"><img src="https://img.shields.io/github/stars/ChrisDover/outlive-engine?style=social" alt="GitHub Stars"></a>
+  <a href="https://github.com/ChrisDover/outlive-engine/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
+  <a href="https://github.com/ChrisDover/outlive-engine/issues"><img src="https://img.shields.io/github/issues/ChrisDover/outlive-engine" alt="Issues"></a>
+</p>
 
-Your data stays on your hardware. Your models run locally. No cloud dependency required.
+<p align="center">
+  <a href="#quick-start">Quick Start</a> |
+  <a href="#what-it-tracks">What It Tracks</a> |
+  <a href="#architecture">Architecture</a> |
+  <a href="#security-model">Security</a> |
+  <a href="#local-ai-setup">Local AI</a> |
+  <a href="#faq">FAQ</a>
+</p>
+
+---
 
 ## Quick Start
 
@@ -139,7 +155,8 @@ Both `.env.example` files document every variable with generation commands. The 
 
 ## Environment Variables
 
-### Backend (`backend/.env`)
+<details>
+<summary><strong>Backend</strong> (<code>backend/.env</code>)</summary>
 
 | Variable | Description | Required |
 |----------|-------------|----------|
@@ -150,7 +167,10 @@ Both `.env.example` files document every variable with generation commands. The 
 | `AIRLLM_BASE_URL` | LLM API endpoint (Ollama, OpenAI, etc.) | No (defaults to localhost Ollama) |
 | `ALLOWED_ORIGINS` | CORS origins (no wildcards allowed) | Yes |
 
-### Web (`web/.env`)
+</details>
+
+<details>
+<summary><strong>Web</strong> (<code>web/.env</code>)</summary>
 
 | Variable | Description |
 |----------|-------------|
@@ -159,6 +179,8 @@ Both `.env.example` files document every variable with generation commands. The 
 | `NEXTAUTH_URL` | Public URL of the web app |
 | `OUTLIVE_BACKEND_URL` | FastAPI backend URL |
 | `OUTLIVE_SERVICE_KEY` | Must match backend's `SERVICE_API_KEY` |
+
+</details>
 
 ## Makefile Commands
 
@@ -195,6 +217,29 @@ Both `.env.example` files document every variable with generation commands. The 
     └── prisma/           # Auth schema (shared database)
 ```
 
+## FAQ
+
+<details>
+<summary><strong>Do I need a GPU?</strong></summary>
+
+No. The app itself runs on any machine. For local AI features, Ollama handles model inference and works on CPU (slower) or GPU (faster). Cloud LLM options require no local GPU at all.
+
+</details>
+
+<details>
+<summary><strong>Can I use this without AI features?</strong></summary>
+
+Yes. All tracking, logging, and visualization works without any LLM configured. The AI insights feature is optional.
+
+</details>
+
+<details>
+<summary><strong>Is my data sent anywhere?</strong></summary>
+
+Not by default. Everything runs locally. If you explicitly configure a cloud LLM (OpenAI, Anthropic), only the AI query context is sent to that provider. Zero telemetry, zero analytics.
+
+</details>
+
 ## Contributing
 
 Contributions welcome. Please:
@@ -210,4 +255,6 @@ MIT License. See [LICENSE](LICENSE).
 
 ---
 
-Built for people who take their health seriously and want full control of their data.
+<p align="center">
+  Built for people who take their health seriously and want full control of their data.
+</p>
