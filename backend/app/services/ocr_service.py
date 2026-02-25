@@ -347,7 +347,7 @@ Return: {"markers": [...], "confidence": 0.0-1.0}"""
     }
 
     try:
-        async with httpx.AsyncClient(timeout=90.0) as client:
+        async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.post(url, json=payload)
             resp.raise_for_status()
             result = resp.json()
@@ -398,7 +398,7 @@ Return: {"markers": [...], "confidence": 0.0-1.0}"""
         return markers, confidence
 
     except httpx.TimeoutException:
-        logger.error("LLM parsing timed out after 90s")
+        logger.error("LLM parsing timed out after 30s")
         return [], 0.0
     except json.JSONDecodeError as e:
         logger.error(f"LLM returned invalid JSON: {e}")
@@ -412,26 +412,46 @@ def extract_markers_regex(raw_text: str) -> list[BloodworkMarker]:
     """Fallback regex-based marker extraction when LLM fails."""
     markers = []
 
-    # Common patterns for lab results
-    # Pattern: Name followed by value and optional unit
-    # e.g., "Glucose 95 mg/dL", "HDL 55", "HbA1c 5.4 %"
-    patterns = [
-        # Pattern 1: Name Value Unit [Reference]
-        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-\(\)]+?)\s+(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+(?:/[a-zA-Z]+)?)?(?:\s*[\[\(]?\s*(?P<ref_low>\d+\.?\d*)\s*[-–]\s*(?P<ref_high>\d+\.?\d*)\s*[\]\)]?)?',
-        # Pattern 2: Name: Value
-        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-]+?):\s*(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+)?',
-    ]
+    # Blacklist - terms that are NOT biomarkers
+    blacklist = {
+        # Months
+        'jan', 'january', 'feb', 'february', 'mar', 'march', 'apr', 'april',
+        'may', 'jun', 'june', 'jul', 'july', 'aug', 'august', 'sep', 'september',
+        'oct', 'october', 'nov', 'november', 'dec', 'december',
+        # Days
+        'mon', 'monday', 'tue', 'tuesday', 'wed', 'wednesday', 'thu', 'thursday',
+        'fri', 'friday', 'sat', 'saturday', 'sun', 'sunday',
+        # Common non-biomarker terms
+        'date', 'time', 'patient', 'name', 'dob', 'age', 'sex', 'gender',
+        'doctor', 'physician', 'lab', 'report', 'page', 'result', 'test',
+        'specimen', 'collected', 'received', 'reported', 'ordered', 'status',
+        'normal', 'abnormal', 'high', 'low', 'reference', 'range', 'units',
+        'fasting', 'random', 'am', 'pm', 'flag', 'comment', 'note',
+    }
 
-    # Known biomarker names to look for
+    # Known biomarker names to look for (whitelist)
     known_markers = {
         'glucose', 'hdl', 'ldl', 'cholesterol', 'triglycerides', 'hemoglobin', 'hematocrit',
         'wbc', 'rbc', 'platelets', 'creatinine', 'bun', 'sodium', 'potassium', 'chloride',
         'calcium', 'albumin', 'protein', 'bilirubin', 'ast', 'alt', 'alp', 'ggt',
-        'tsh', 'hba1c', 'a1c', 'insulin', 'ferritin', 'iron', 'vitamin d', 'b12',
+        'tsh', 'hba1c', 'a1c', 'insulin', 'ferritin', 'iron', 'vitamin', 'b12',
         'testosterone', 'estradiol', 'cortisol', 'crp', 'homocysteine', 'apob', 'lp(a)',
-        'egfr', 'mcv', 'mch', 'mchc', 'rdw', 'mpv', 'uric acid', 'magnesium', 'zinc',
-        'folate', 'dhea', 'vldl', 'fibrinogen',
+        'egfr', 'mcv', 'mch', 'mchc', 'rdw', 'mpv', 'uric', 'magnesium', 'zinc',
+        'folate', 'dhea', 'vldl', 'fibrinogen', 'globulin', 'ratio', 'count',
+        'neutrophil', 'lymphocyte', 'monocyte', 'eosinophil', 'basophil',
+        'co2', 'bicarbonate', 'anion', 'osmolality', 'phosphorus', 'phosphate',
+        'ld', 'ldh', 'ck', 'cpk', 'troponin', 'bnp', 'procalcitonin',
+        'psa', 'free', 'total', 't3', 't4', 'ft3', 'ft4', 'thyroid',
+        'sed', 'esr', 'sedimentation', 'sed rate',
     }
+
+    # Patterns for lab results
+    patterns = [
+        # Pattern 1: Name Value Unit [Reference] - more specific
+        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-\(\),]+?)\s+(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+(?:/[a-zA-Z]+)?)?(?:\s*[\[\(]?\s*(?P<ref_low>\d+\.?\d*)\s*[-–]\s*(?P<ref_high>\d+\.?\d*)\s*[\]\)]?)?',
+        # Pattern 2: Name: Value
+        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-]+?):\s*(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+)?',
+    ]
 
     lines = raw_text.split('\n')
     for line in lines:
@@ -445,10 +465,14 @@ def extract_markers_regex(raw_text: str) -> list[BloodworkMarker]:
                 name = match.group('name').strip()
                 name_lower = name.lower()
 
-                # Check if this looks like a biomarker
-                is_known = any(known in name_lower for known in known_markers)
-                if not is_known and len(name) < 3:
+                # Skip if it's in blacklist
+                if name_lower in blacklist or any(b in name_lower.split() for b in blacklist):
                     continue
+
+                # Check if this looks like a biomarker (must match whitelist)
+                is_known = any(known in name_lower for known in known_markers)
+                if not is_known:
+                    continue  # Only extract known biomarkers
 
                 try:
                     value = float(match.group('value'))
@@ -483,7 +507,7 @@ def extract_markers_regex(raw_text: str) -> list[BloodworkMarker]:
     return unique_markers
 
 
-async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = True) -> tuple[list[BloodworkMarker], str | None, float]:
+async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = False) -> tuple[list[BloodworkMarker], str | None, float]:
     """Process a single image through the OCR pipeline."""
 
     # Step 1: Extract text with Tesseract
@@ -493,30 +517,37 @@ async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = True) 
     markers: list[BloodworkMarker] = []
     confidence = 0.0
 
-    if len(raw_text) < 50:
+    if len(raw_text) < 30:
         logger.warning("Not enough text extracted from image")
         return markers, raw_text, confidence
 
-    # Step 2: Try fast regex extraction first
-    markers = extract_markers_regex(raw_text)
-    if markers:
-        confidence = 0.6
-        logger.info(f"Regex extracted {len(markers)} markers")
+    # Step 2: Always try LLM first (fast with mistral)
+    logger.info("Parsing with LLM")
+    llm_markers, llm_confidence = await parse_markers_with_llm(raw_text)
+    if llm_markers:
+        markers = llm_markers
+        confidence = llm_confidence
+        logger.info(f"LLM extracted {len(markers)} markers with confidence {confidence}")
 
-    # Step 3: If regex found few markers, try LLM for better extraction
-    if len(markers) < 3:
-        logger.info("Trying LLM for better extraction")
-        llm_markers, llm_confidence = await parse_markers_with_llm(raw_text)
-        if llm_markers:
-            # Merge LLM markers with regex markers (LLM takes precedence)
+    # Step 3: If LLM failed or found few markers, also try regex
+    if len(markers) < 5:
+        logger.info("Also trying regex extraction")
+        regex_markers = extract_markers_regex(raw_text)
+        if regex_markers:
+            # Merge: add regex markers not already found by LLM
             marker_dict = {m.name.lower(): m for m in markers}
-            for m in llm_markers:
-                marker_dict[m.name.lower()] = m
+            added = 0
+            for m in regex_markers:
+                if m.name.lower() not in marker_dict:
+                    marker_dict[m.name.lower()] = m
+                    added += 1
             markers = list(marker_dict.values())
-            confidence = max(confidence, llm_confidence)
-            logger.info(f"After LLM: {len(markers)} total markers")
+            if added > 0:
+                logger.info(f"Regex added {added} more markers, total: {len(markers)}")
+            if not confidence:
+                confidence = 0.5
 
-    # Step 4: If still no markers, try vision model as last resort
+    # Step 4: Vision model disabled by default (too slow)
     if not markers and use_vision_fallback:
         logger.info("Falling back to vision model")
         markers, _, confidence = await process_with_vision(img)
