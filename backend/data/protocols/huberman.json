@@ -1,0 +1,234 @@
+{
+  "expert": {
+    "name": "Andrew Huberman",
+    "focus_areas": ["neuroscience", "sleep", "focus", "dopamine", "cold_exposure", "supplements"],
+    "bio": "Stanford neuroscientist and host of the Huberman Lab podcast. Known for science-backed protocols on sleep, focus, and performance.",
+    "website": "https://hubermanlab.com"
+  },
+  "supplements": [
+    {
+      "name": "L-Theanine",
+      "description": "Amino acid from tea that promotes calm focus and improves sleep quality",
+      "mechanisms": ["GABA modulation", "alpha wave promotion", "anxiety reduction"]
+    },
+    {
+      "name": "Magnesium Threonate",
+      "description": "Highly bioavailable form of magnesium that crosses blood-brain barrier for cognitive and sleep support",
+      "mechanisms": ["sleep support", "cognitive enhancement", "synaptic plasticity"]
+    },
+    {
+      "name": "Apigenin",
+      "description": "Flavonoid from chamomile that promotes relaxation and sleep",
+      "mechanisms": ["GABA-A modulation", "anxiolytic", "sleep induction"]
+    },
+    {
+      "name": "Glycine",
+      "description": "Amino acid that lowers core body temperature and improves sleep quality",
+      "mechanisms": ["thermoregulation", "NMDA receptor modulation", "collagen synthesis"]
+    },
+    {
+      "name": "GABA",
+      "description": "Inhibitory neurotransmitter supplement for relaxation",
+      "mechanisms": ["neural inhibition", "relaxation", "anxiety reduction"]
+    },
+    {
+      "name": "Alpha-GPC",
+      "description": "Choline source that enhances focus, memory, and athletic performance",
+      "mechanisms": ["acetylcholine precursor", "cognitive enhancement", "growth hormone support"]
+    },
+    {
+      "name": "L-Tyrosine",
+      "description": "Amino acid precursor to dopamine and norepinephrine for focus and motivation",
+      "mechanisms": ["dopamine precursor", "norepinephrine precursor", "cognitive enhancement"]
+    },
+    {
+      "name": "Phenylethylamine (PEA)",
+      "description": "Trace amine that enhances mood and focus",
+      "mechanisms": ["dopamine release", "mood enhancement", "focus"]
+    },
+    {
+      "name": "Rhodiola Rosea",
+      "description": "Adaptogenic herb that reduces fatigue and enhances stress resilience",
+      "mechanisms": ["cortisol modulation", "fatigue reduction", "adaptogenic"]
+    },
+    {
+      "name": "Tongkat Ali",
+      "description": "Herbal extract supporting testosterone and reducing cortisol",
+      "mechanisms": ["testosterone support", "cortisol reduction", "libido enhancement"]
+    },
+    {
+      "name": "Fadogia Agrestis",
+      "description": "Herbal extract that may support luteinizing hormone and testosterone",
+      "mechanisms": ["LH support", "testosterone support", "athletic performance"]
+    },
+    {
+      "name": "Ashwagandha",
+      "description": "Adaptogenic herb that reduces cortisol and anxiety while supporting testosterone",
+      "mechanisms": ["cortisol reduction", "anxiolytic", "testosterone support"]
+    },
+    {
+      "name": "Inositol",
+      "description": "B-vitamin-like compound that supports mood and sleep when taken in high doses",
+      "mechanisms": ["serotonin modulation", "anxiety reduction", "sleep support"]
+    },
+    {
+      "name": "Acetyl-L-Carnitine (ALCAR)",
+      "description": "Amino acid derivative supporting mitochondrial function and cognitive performance",
+      "mechanisms": ["mitochondrial support", "fat metabolism", "cognitive enhancement"]
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Morning Sunlight Exposure",
+      "category": "circadian",
+      "description": "View bright sunlight within 30-60 minutes of waking for 10-30 minutes (depending on cloud cover). Do not wear sunglasses. Sets circadian rhythm and cortisol pulse.",
+      "duration_mins": 15,
+      "frequency": "daily"
+    },
+    {
+      "name": "Cold Exposure",
+      "category": "cold_exposure",
+      "description": "Cold shower or ice bath at 45-55°F for 1-3 minutes. Creates sustained dopamine increase of 250-300% lasting 3+ hours.",
+      "duration_mins": 3,
+      "frequency": "3x/week"
+    },
+    {
+      "name": "Deliberate Cold Exposure Protocol",
+      "category": "cold_exposure",
+      "description": "11 minutes total cold exposure per week, divided into 2-4 sessions. Water temp should be uncomfortable but safe.",
+      "duration_mins": 3,
+      "frequency": "3-4x/week"
+    },
+    {
+      "name": "Non-Sleep Deep Rest (NSDR)",
+      "category": "recovery",
+      "description": "Yoga Nidra or NSDR protocol: 10-30 minutes of guided relaxation to restore dopamine and reduce fatigue",
+      "duration_mins": 20,
+      "frequency": "daily"
+    },
+    {
+      "name": "Physiological Sigh",
+      "category": "stress_relief",
+      "description": "Double inhale through nose followed by long exhale through mouth. Fastest way to reduce stress in real-time.",
+      "duration_mins": 1,
+      "frequency": "as_needed"
+    },
+    {
+      "name": "90-Minute Focus Blocks",
+      "category": "productivity",
+      "description": "Work in 90-minute ultradian cycles matching natural brain rhythms. Take breaks between blocks.",
+      "duration_mins": 90,
+      "frequency": "daily"
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Huberman Sleep Stack",
+      "category": "sleep",
+      "description": "Supplement stack for improved sleep onset, depth, and architecture. Take 30-60 minutes before bed.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://hubermanlab.com/toolkit-for-sleep",
+      "supplements": [
+        {"name": "Magnesium Threonate", "dose": 145, "unit": "mg", "timing": "before_bed", "rationale": "Crosses BBB for cognitive and sleep benefits"},
+        {"name": "L-Theanine", "dose": 200, "unit": "mg", "timing": "before_bed", "rationale": "Promotes relaxation without sedation", "conditions": {"notes": "Skip if vivid dreams are unwanted"}},
+        {"name": "Apigenin", "dose": 50, "unit": "mg", "timing": "before_bed", "rationale": "Chamomile-derived sleep support"},
+        {"name": "Glycine", "dose": 2000, "unit": "mg", "timing": "before_bed", "rationale": "Lowers core body temperature for sleep onset"}
+      ],
+      "interventions": [
+        {"name": "Morning Sunlight Exposure", "rationale": "Sets circadian rhythm for proper melatonin release at night"}
+      ]
+    },
+    {
+      "name": "Huberman Focus Protocol",
+      "category": "supplements",
+      "description": "Supplement and behavioral stack for enhanced focus and cognitive performance during work blocks.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://hubermanlab.com/toolkit-for-focus",
+      "supplements": [
+        {"name": "Alpha-GPC", "dose": 300, "unit": "mg", "timing": "morning", "rationale": "Enhances acetylcholine for focus"},
+        {"name": "L-Tyrosine", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Dopamine precursor for motivation", "conditions": {"notes": "Take on empty stomach"}},
+        {"name": "Phenylethylamine (PEA)", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Acute focus enhancement"}
+      ],
+      "interventions": [
+        {"name": "Morning Sunlight Exposure", "rationale": "Triggers healthy cortisol pulse for alertness"},
+        {"name": "Cold Exposure", "rationale": "Sustained dopamine increase for motivation", "conditions": {"recovery_state": ["good", "moderate"]}}
+      ]
+    },
+    {
+      "name": "Huberman Testosterone Support",
+      "category": "supplements",
+      "description": "Natural testosterone optimization through supplements, applicable for men seeking hormonal balance.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://hubermanlab.com/toolkit-for-testosterone",
+      "supplements": [
+        {"name": "Tongkat Ali", "dose": 400, "unit": "mg", "timing": "morning", "rationale": "Supports free testosterone and reduces SHBG"},
+        {"name": "Fadogia Agrestis", "dose": 600, "unit": "mg", "timing": "morning", "rationale": "May support LH and testosterone", "conditions": {"notes": "Cycle 3 weeks on, 1 week off"}},
+        {"name": "Ashwagandha", "dose": 600, "unit": "mg", "timing": "evening", "rationale": "Reduces cortisol, indirectly supports testosterone"},
+        {"name": "Zinc", "dose": 30, "unit": "mg", "timing": "evening", "rationale": "Essential for testosterone synthesis"}
+      ]
+    },
+    {
+      "name": "Huberman Dopamine Protocol",
+      "category": "interventions",
+      "description": "Behavioral and supplement protocol for sustainable dopamine optimization without crashes.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://hubermanlab.com/controlling-your-dopamine",
+      "supplements": [
+        {"name": "L-Tyrosine", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Dopamine precursor, take occasionally not daily"}
+      ],
+      "interventions": [
+        {"name": "Cold Exposure", "rationale": "Natural 250-300% dopamine increase lasting hours"},
+        {"name": "Morning Sunlight Exposure", "rationale": "Dopamine release tied to light exposure"},
+        {"name": "90-Minute Focus Blocks", "rationale": "Natural dopamine from accomplishment without external stimulation"}
+      ]
+    },
+    {
+      "name": "Huberman Stress & Anxiety Protocol",
+      "category": "interventions",
+      "description": "Tools for managing acute and chronic stress through breathing, supplements, and NSDR.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://hubermanlab.com/toolkit-for-managing-stress",
+      "supplements": [
+        {"name": "L-Theanine", "dose": 200, "unit": "mg", "timing": "as_needed", "rationale": "Reduces anxiety without sedation"},
+        {"name": "Ashwagandha", "dose": 300, "unit": "mg", "timing": "evening", "rationale": "Chronic cortisol reduction"},
+        {"name": "Inositol", "dose": 900, "unit": "mg", "timing": "before_bed", "rationale": "Supports serotonin, reduces anxious rumination"}
+      ],
+      "interventions": [
+        {"name": "Physiological Sigh", "rationale": "Fastest real-time stress reduction method"},
+        {"name": "Non-Sleep Deep Rest (NSDR)", "rationale": "Restores dopamine and reduces accumulated stress"}
+      ]
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "fasting",
+      "guidance": "Delay first meal 2-3 hours after waking to extend morning focus and fat oxidation. Stay hydrated with water, salt, and caffeine if desired.",
+      "conditions": null
+    },
+    {
+      "topic": "caffeine_timing",
+      "guidance": "Delay caffeine 90-120 minutes after waking to avoid afternoon crash. Clear adenosine naturally first.",
+      "conditions": null
+    },
+    {
+      "topic": "pre_workout_nutrition",
+      "guidance": "For morning workouts, fasted training is fine. For afternoon, eat a light meal 2-3 hours before.",
+      "conditions": null
+    },
+    {
+      "topic": "carb_timing",
+      "guidance": "Save larger carbohydrate portions for evening to support serotonin production and sleep.",
+      "conditions": null
+    },
+    {
+      "topic": "fermented_foods",
+      "guidance": "Include 2-4 servings of fermented foods daily (kimchi, sauerkraut, kefir) for gut microbiome diversity.",
+      "conditions": null
+    }
+  ]
+}

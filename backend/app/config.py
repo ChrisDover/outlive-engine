@@ -59,6 +59,9 @@ class Settings(BaseSettings):
     # ── Service Auth (Next.js → FastAPI) ──────────────────────────────────
     SERVICE_API_KEY: str = ""
 
+    # ── Telegram Bot ────────────────────────────────────────────────────────
+    TELEGRAM_BOT_TOKEN: str = ""  # Get from @BotFather on Telegram
+
     @property
     def asyncpg_dsn(self) -> str:
         """Return a plain asyncpg DSN (without the +asyncpg dialect)."""

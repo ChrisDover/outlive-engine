@@ -14,7 +14,8 @@ from app.models.database import get_pool
 from app.models.schemas import DailyProtocolResponse, ProtocolSourceResponse, ProtocolSourceUpdate
 from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
-from app.services.daily_plan_service import generate_daily_plan
+from app.services.daily_plan_service import generate_daily_plan, generate_morning_brief
+from app.models.schemas import MorningBriefResponse
 
 router = APIRouter(prefix="/protocols", tags=["protocols"])
 
@@ -77,6 +78,25 @@ async def generate_daily(
         created_at=row["created_at"],
         updated_at=row["updated_at"],
     )
+
+
+@router.post("/morning-brief")
+async def get_morning_brief(
+    target_date: date = Query(default_factory=date.today),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    """
+    Generate a personalized morning brief.
+
+    This is the primary interface for daily AI coaching - a conversational,
+    friendly brief that explains what to do today and why, based on:
+    - Your wearable data (recovery, sleep)
+    - Your bloodwork markers
+    - Your genomic profile
+    - Expert protocols from our knowledge base
+    """
+    brief = await generate_morning_brief(current_user["id"], target_date)
+    return brief
 
 
 @router.get("/library", response_model=list[ProtocolSourceResponse])

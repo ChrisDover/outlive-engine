@@ -1,0 +1,218 @@
+{
+  "expert": {
+    "name": "David Sinclair",
+    "focus_areas": ["longevity", "NAD+", "sirtuins", "epigenetics", "aging_reversal"],
+    "bio": "Harvard professor and geneticist known for research on aging, sirtuins, and NAD+. Author of 'Lifespan: Why We Age and Why We Don't Have To'.",
+    "website": "https://sinclair.hms.harvard.edu"
+  },
+  "supplements": [
+    {
+      "name": "NMN (Nicotinamide Mononucleotide)",
+      "description": "NAD+ precursor that restores cellular NAD+ levels, supporting sirtuins and cellular energy",
+      "mechanisms": ["NAD+ precursor", "sirtuin activation", "mitochondrial function", "DNA repair"]
+    },
+    {
+      "name": "Resveratrol",
+      "description": "Polyphenol from grapes that activates sirtuins and mimics caloric restriction benefits",
+      "mechanisms": ["sirtuin activator", "AMPK activation", "anti-inflammatory", "cardioprotective"]
+    },
+    {
+      "name": "Metformin",
+      "description": "Diabetes drug with longevity benefits through AMPK activation (prescription required)",
+      "mechanisms": ["AMPK activation", "mTOR inhibition", "insulin sensitivity", "anti-aging"]
+    },
+    {
+      "name": "Quercetin",
+      "description": "Flavonoid with senolytic properties that helps clear senescent cells",
+      "mechanisms": ["senolytic", "antioxidant", "anti-inflammatory", "cardiovascular support"]
+    },
+    {
+      "name": "Fisetin",
+      "description": "Flavonoid with potent senolytic activity, clearing damaged cells",
+      "mechanisms": ["senolytic", "neuroprotection", "anti-inflammatory", "antioxidant"]
+    },
+    {
+      "name": "Spermidine",
+      "description": "Polyamine that induces autophagy and cellular renewal",
+      "mechanisms": ["autophagy induction", "cellular renewal", "cardiovascular support", "cognitive protection"]
+    },
+    {
+      "name": "Alpha Lipoic Acid",
+      "description": "Antioxidant that regenerates other antioxidants and supports mitochondrial function",
+      "mechanisms": ["antioxidant", "mitochondrial support", "glucose metabolism", "heavy metal chelation"]
+    },
+    {
+      "name": "Coenzyme Q10 (CoQ10)",
+      "description": "Essential for mitochondrial energy production, declines with age",
+      "mechanisms": ["electron transport chain", "antioxidant", "energy production", "cardiovascular support"]
+    },
+    {
+      "name": "Omega-3 (EPA/DHA)",
+      "description": "Essential fatty acids supporting brain health and reducing inflammation",
+      "mechanisms": ["anti-inflammatory", "brain health", "cardiovascular support", "membrane fluidity"]
+    },
+    {
+      "name": "Vitamin D3",
+      "description": "Hormone-like vitamin essential for immune function and longevity",
+      "mechanisms": ["immune modulation", "bone health", "gene expression", "telomere maintenance"]
+    },
+    {
+      "name": "Vitamin K2",
+      "description": "Works with D3 to direct calcium properly and protect cardiovascular system",
+      "mechanisms": ["calcium metabolism", "cardiovascular protection", "bone health"]
+    },
+    {
+      "name": "TMG (Trimethylglycine)",
+      "description": "Methyl donor that supports methylation when taking NMN/NR",
+      "mechanisms": ["methylation support", "homocysteine reduction", "liver support"]
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Intermittent Fasting",
+      "category": "nutrition",
+      "description": "Skip one meal per day or practice 16:8 fasting to activate sirtuins and autophagy",
+      "duration_mins": null,
+      "frequency": "daily"
+    },
+    {
+      "name": "Cold Exposure",
+      "category": "cold_exposure",
+      "description": "Brief cold exposure to activate brown fat and stress response pathways",
+      "duration_mins": 3,
+      "frequency": "daily"
+    },
+    {
+      "name": "Exercise (Vigorous)",
+      "category": "training",
+      "description": "High-intensity exercise activates AMPK and sirtuins, mimicking caloric restriction",
+      "duration_mins": 30,
+      "frequency": "3-4x/week"
+    },
+    {
+      "name": "Heat Exposure (Sauna)",
+      "category": "heat_exposure",
+      "description": "Sauna use induces heat shock proteins and provides cardiovascular benefits",
+      "duration_mins": 20,
+      "frequency": "3-4x/week"
+    },
+    {
+      "name": "Hypoxia Training",
+      "category": "training",
+      "description": "Brief periods of reduced oxygen (altitude training, breath holds) activates HIF pathway",
+      "duration_mins": 15,
+      "frequency": "2-3x/week"
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Sinclair Longevity Stack",
+      "category": "longevity",
+      "description": "David Sinclair's personal supplement protocol targeting NAD+, sirtuins, and aging pathways. Core longevity interventions.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://sinclair.hms.harvard.edu",
+      "supplements": [
+        {"name": "NMN (Nicotinamide Mononucleotide)", "dose": 1000, "unit": "mg", "timing": "morning", "rationale": "Restores NAD+ levels which decline 50% by middle age"},
+        {"name": "Resveratrol", "dose": 1000, "unit": "mg", "timing": "morning", "rationale": "Sirtuin activator, take with fat for absorption (e.g., olive oil, yogurt)"},
+        {"name": "TMG (Trimethylglycine)", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Methyl donor to offset NMN's methylation demands"},
+        {"name": "Vitamin D3", "dose": 4000, "unit": "IU", "timing": "morning", "rationale": "Immune function and longevity"},
+        {"name": "Vitamin K2", "dose": 180, "unit": "mcg", "timing": "morning", "rationale": "Synergistic with D3"},
+        {"name": "Omega-3 (EPA/DHA)", "dose": 2000, "unit": "mg", "timing": "morning", "rationale": "Brain and cardiovascular health"}
+      ]
+    },
+    {
+      "name": "NAD+ Restoration Protocol",
+      "category": "longevity",
+      "description": "Focused protocol for restoring NAD+ levels through NMN and supporting compounds.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://sinclair.hms.harvard.edu",
+      "supplements": [
+        {"name": "NMN (Nicotinamide Mononucleotide)", "dose": 1000, "unit": "mg", "timing": "morning", "rationale": "Direct NAD+ precursor"},
+        {"name": "Resveratrol", "dose": 1000, "unit": "mg", "timing": "morning", "rationale": "Activates sirtuins that use NAD+"},
+        {"name": "TMG (Trimethylglycine)", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Supports methylation pathway"}
+      ]
+    },
+    {
+      "name": "Senolytic Protocol",
+      "category": "longevity",
+      "description": "Periodic senolytic protocol to clear senescent cells. Not for daily use - typically done as intermittent course.",
+      "frequency": "weekly",
+      "evidence_level": "moderate",
+      "source_url": "https://sinclair.hms.harvard.edu",
+      "supplements": [
+        {"name": "Quercetin", "dose": 1000, "unit": "mg", "timing": "morning", "rationale": "Senolytic activity, take for 2-3 consecutive days monthly"},
+        {"name": "Fisetin", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Potent senolytic, combine with quercetin"}
+      ]
+    },
+    {
+      "name": "Sinclair Fasting Protocol",
+      "category": "nutrition",
+      "description": "Intermittent fasting approach to activate longevity pathways without extreme restriction.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://sinclair.hms.harvard.edu",
+      "interventions": [
+        {"name": "Intermittent Fasting", "rationale": "Activates sirtuins and autophagy through metabolic switching"}
+      ]
+    },
+    {
+      "name": "Sinclair Exercise Protocol",
+      "category": "training",
+      "description": "Exercise as a longevity intervention through AMPK and sirtuin activation.",
+      "frequency": "3-4x/week",
+      "evidence_level": "high",
+      "source_url": "https://sinclair.hms.harvard.edu",
+      "interventions": [
+        {"name": "Exercise (Vigorous)", "rationale": "HIIT or vigorous exercise mimics caloric restriction pathways"},
+        {"name": "Cold Exposure", "rationale": "Activates brown fat and stress response", "conditions": {"recovery_state": ["good"]}}
+      ]
+    },
+    {
+      "name": "Mitochondrial Support Protocol",
+      "category": "supplements",
+      "description": "Support mitochondrial function and energy production which declines with age.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://sinclair.hms.harvard.edu",
+      "supplements": [
+        {"name": "Coenzyme Q10 (CoQ10)", "dose": 200, "unit": "mg", "timing": "morning", "rationale": "Essential for electron transport chain", "conditions": {"notes": "Especially important if on statins"}},
+        {"name": "Alpha Lipoic Acid", "dose": 300, "unit": "mg", "timing": "morning", "rationale": "Universal antioxidant, supports mitochondria"},
+        {"name": "NMN (Nicotinamide Mononucleotide)", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "NAD+ for mitochondrial function"}
+      ]
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "caloric_restriction",
+      "guidance": "Eat less often. Skip a meal when possible (typically breakfast). The hunger sensation indicates activation of longevity pathways.",
+      "conditions": null
+    },
+    {
+      "topic": "avoid_sugar",
+      "guidance": "Minimize sugar and refined carbohydrates. They spike insulin and accelerate aging through glycation and mTOR activation.",
+      "conditions": null
+    },
+    {
+      "topic": "plant_emphasis",
+      "guidance": "Emphasize plant-based foods rich in polyphenols. Eat the rainbow - colorful plants contain xenohormetic compounds.",
+      "conditions": null
+    },
+    {
+      "topic": "red_meat",
+      "guidance": "Limit red meat consumption. Associated with increased mTOR activation and potentially accelerated aging.",
+      "conditions": null
+    },
+    {
+      "topic": "olive_oil",
+      "guidance": "Use extra virgin olive oil liberally. Contains oleic acid and polyphenols supporting longevity. Good fat source for resveratrol absorption.",
+      "conditions": null
+    },
+    {
+      "topic": "avoid_smoking",
+      "guidance": "Never smoke. Smoking accelerates epigenetic aging dramatically and damages nearly every organ system.",
+      "conditions": null
+    }
+  ]
+}

@@ -2,28 +2,40 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { backendClient } from "@/lib/backend-client";
-import { RecoveryBanner } from "@/components/ui/RecoveryBanner";
 import { DashboardContent } from "./DashboardContent";
 import { WelcomeCard } from "@/components/ui/WelcomeCard";
 import { WearableConnectCard } from "@/components/ui/WearableConnectCard";
 import { ChatBox } from "@/components/ui/ChatBox";
+import { MorningBrief } from "@/components/ui/MorningBrief";
+import { QuickStats } from "@/components/ui/QuickStats";
 
 async function getDashboardData(backendUserId: string) {
   try {
     const today = new Date().toISOString().split("T")[0];
-    const [protocol, wearable, bloodwork, bodyComp, genomics, experiments] =
+    const [protocol, morningBrief, wearable, bloodwork, bodyComp, genomics, experiments, progressStats, adherence, goals] =
       await Promise.allSettled([
         backendClient(`/protocols/daily?date=${today}`, { userId: backendUserId }),
+        backendClient(`/protocols/morning-brief?target_date=${today}`, {
+          method: "POST",
+          userId: backendUserId
+        }),
         backendClient(`/wearables?date=${today}`, { userId: backendUserId }),
         backendClient("/bloodwork?limit=1", { userId: backendUserId }),
         backendClient("/body-composition?limit=1", { userId: backendUserId }),
         backendClient("/genomics/risks?limit=1", { userId: backendUserId }),
         backendClient("/experiments?limit=1", { userId: backendUserId }),
+        backendClient("/progress/stats", { userId: backendUserId }),
+        backendClient(`/progress/adherence/today`, { userId: backendUserId }),
+        backendClient("/progress/goals?status_filter=active", { userId: backendUserId }),
       ]);
 
     return {
       protocol: protocol.status === "fulfilled" ? protocol.value : null,
+      morningBrief: morningBrief.status === "fulfilled" ? morningBrief.value : null,
       wearable: wearable.status === "fulfilled" ? wearable.value : null,
+      progressStats: progressStats.status === "fulfilled" ? progressStats.value : null,
+      adherence: adherence.status === "fulfilled" ? adherence.value : [],
+      goals: goals.status === "fulfilled" ? goals.value : [],
       hasBloodwork:
         bloodwork.status === "fulfilled" &&
         Array.isArray(bloodwork.value) &&
@@ -44,7 +56,11 @@ async function getDashboardData(backendUserId: string) {
   } catch {
     return {
       protocol: null,
+      morningBrief: null,
       wearable: null,
+      progressStats: null,
+      adherence: [],
+      goals: [],
       hasBloodwork: false,
       hasBodyComp: false,
       hasGenomics: false,
@@ -102,7 +118,11 @@ export default async function DashboardPage() {
     ? await getDashboardData(user.backendUserId)
     : {
         protocol: null,
+        morningBrief: null,
         wearable: null,
+        progressStats: null,
+        adherence: [],
+        goals: [],
         hasBloodwork: false,
         hasBodyComp: false,
         hasGenomics: false,
@@ -120,19 +140,27 @@ export default async function DashboardPage() {
   const isNewUser =
     !data.hasBloodwork && !data.hasBodyComp && !data.hasGenomics && !data.hasExperiments;
 
+  // Extract wearable metrics for quick stats
+  const wearableMetrics = Array.isArray(data.wearable) && data.wearable.length > 0
+    ? data.wearable[0]?.metrics
+    : data.wearable?.metrics;
+
   return (
     <div className="max-w-4xl mx-auto space-y-[var(--space-lg)]">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">
-          {user?.name ? `Good morning, ${user.name}` : "Dashboard"}
-        </h1>
-        <p className="text-muted mt-1">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">
+            {user?.name ? `Good morning, ${user.name}` : "Dashboard"}
+          </h1>
+          <p className="text-muted mt-1">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
       </div>
 
       {/* Always show wearable card first when not connected — this is the #1 priority */}
@@ -140,6 +168,25 @@ export default async function DashboardPage() {
         <WearableConnectCard ouraConnected={hasOura} whoopConnected={hasWhoop} />
       )}
 
+      {/* NEW LAYOUT: AI Chat / Morning Brief at TOP (Primary Interface) */}
+      <div className="space-y-[var(--space-md)]">
+        {/* Morning Brief - the main AI coach interface */}
+        <MorningBrief brief={data.morningBrief} />
+
+        {/* Quick Stats Row */}
+        <QuickStats
+          hrv={wearableMetrics?.hrv}
+          sleepHours={wearableMetrics?.sleep_hours || wearableMetrics?.total_sleep}
+          recoveryScore={wearableMetrics?.recovery_score || wearableMetrics?.readiness_score}
+          streak={data.progressStats?.current_streak || 0}
+          weeklyAdherence={data.progressStats?.this_week?.rate || 0}
+        />
+
+        {/* Chat Box - always visible */}
+        <ChatBox />
+      </div>
+
+      {/* Welcome Card for new users */}
       {(isNewUser || !user?.onboardingComplete) && (
         <WelcomeCard
           name={user?.name ?? null}
@@ -150,9 +197,14 @@ export default async function DashboardPage() {
         />
       )}
 
-      <DashboardContent protocol={data.protocol} wearable={data.wearable} />
-
-      <ChatBox />
+      {/* Protocol Cards Section (Collapsible) */}
+      <DashboardContent
+        protocol={data.protocol}
+        wearable={data.wearable}
+        adherence={data.adherence}
+        goals={data.goals}
+        progressStats={data.progressStats}
+      />
     </div>
   );
 }

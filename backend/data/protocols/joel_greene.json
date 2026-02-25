@@ -1,0 +1,222 @@
+{
+  "expert": {
+    "name": "Joel Greene",
+    "focus_areas": ["gut_health", "AMPK", "immunity", "metabolic_health", "microbiome"],
+    "bio": "Author of 'The Immunity Code' and pioneer of gut-centric approaches to health optimization. Known for AMPK activation protocols and immunity resets.",
+    "website": "https://www.theimmunitycode.com"
+  },
+  "supplements": [
+    {
+      "name": "Apple Peel Powder",
+      "description": "Concentrated source of ursolic acid and quercetin for AMPK activation and gut health",
+      "mechanisms": ["AMPK activation", "muscle preservation", "gut barrier support", "senolytic"]
+    },
+    {
+      "name": "Black Cumin Seed Oil",
+      "description": "Powerful immune modulator containing thymoquinone",
+      "mechanisms": ["immune modulation", "anti-inflammatory", "antioxidant", "gut health"]
+    },
+    {
+      "name": "Akkermansia muciniphila",
+      "description": "Keystone probiotic species that maintains gut lining integrity",
+      "mechanisms": ["gut barrier integrity", "mucin production", "metabolic health", "immune modulation"]
+    },
+    {
+      "name": "Resistant Starch",
+      "description": "Prebiotic fiber that feeds beneficial gut bacteria and produces butyrate",
+      "mechanisms": ["prebiotic", "butyrate production", "blood sugar stability", "gut health"]
+    },
+    {
+      "name": "Pomegranate Extract",
+      "description": "Rich in ellagitannins that are converted to urolithin A by gut bacteria",
+      "mechanisms": ["mitophagy", "anti-inflammatory", "gut microbiome", "muscle health"]
+    },
+    {
+      "name": "Berberine",
+      "description": "Alkaloid that activates AMPK and improves metabolic markers",
+      "mechanisms": ["AMPK activation", "glucose metabolism", "gut microbiome", "lipid metabolism"]
+    },
+    {
+      "name": "Citrus Bergamot",
+      "description": "Polyphenol-rich extract supporting cardiovascular and metabolic health",
+      "mechanisms": ["cholesterol modulation", "AMPK activation", "antioxidant"]
+    },
+    {
+      "name": "Colostrum",
+      "description": "First milk rich in immunoglobulins and growth factors for gut repair",
+      "mechanisms": ["gut repair", "immune support", "growth factors", "antimicrobial peptides"]
+    },
+    {
+      "name": "Lactoferrin",
+      "description": "Iron-binding protein with antimicrobial and immune-modulating properties",
+      "mechanisms": ["antimicrobial", "iron regulation", "immune modulation", "gut health"]
+    },
+    {
+      "name": "Green Banana Flour",
+      "description": "High in resistant starch RS2, excellent prebiotic for beneficial bacteria",
+      "mechanisms": ["prebiotic", "resistant starch", "butyrate production", "blood sugar"]
+    },
+    {
+      "name": "Tributyrin",
+      "description": "Stable form of butyrate that reaches the colon for gut barrier support",
+      "mechanisms": ["gut barrier", "anti-inflammatory", "immune modulation", "colonocyte fuel"]
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Morning Fruit Hack",
+      "category": "nutrition",
+      "description": "Eat fruit with protein (collagen) on empty stomach in morning. Shifts gut bacteria and improves metabolic flexibility.",
+      "duration_mins": 15,
+      "frequency": "daily"
+    },
+    {
+      "name": "AMPK Activation Fast",
+      "category": "fasting",
+      "description": "24-36 hour fast with apple peel powder and black cumin to maximize AMPK activation",
+      "duration_mins": null,
+      "frequency": "weekly"
+    },
+    {
+      "name": "Immunity Reset",
+      "category": "fasting",
+      "description": "3-day modified fast focusing on gut rest and immune system reset. Bone broth and specific supplements only.",
+      "duration_mins": null,
+      "frequency": "monthly"
+    },
+    {
+      "name": "Prebiotic Loading",
+      "category": "nutrition",
+      "description": "Evening resistant starch consumption (green banana flour, cooled potatoes) to feed beneficial bacteria overnight",
+      "duration_mins": null,
+      "frequency": "daily"
+    },
+    {
+      "name": "Cold Thermogenesis",
+      "category": "cold_exposure",
+      "description": "Cold exposure for brown fat activation and metabolic flexibility",
+      "duration_mins": 5,
+      "frequency": "daily"
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Joel Greene AMPK Protocol",
+      "category": "supplements",
+      "description": "Stack for activating AMPK pathway, the master metabolic switch. Mimics effects of exercise and fasting.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://www.theimmunitycode.com",
+      "supplements": [
+        {"name": "Apple Peel Powder", "dose": 3, "unit": "g", "timing": "morning_fasted", "rationale": "Ursolic acid activates AMPK, take on empty stomach"},
+        {"name": "Berberine", "dose": 500, "unit": "mg", "timing": "with_food", "rationale": "AMPK activation and glucose control"},
+        {"name": "Black Cumin Seed Oil", "dose": 1, "unit": "tsp", "timing": "morning", "rationale": "Immune modulation and metabolic support"}
+      ],
+      "interventions": [
+        {"name": "Morning Fruit Hack", "rationale": "Primes gut bacteria for the day"}
+      ]
+    },
+    {
+      "name": "Gut Barrier Repair Protocol",
+      "category": "supplements",
+      "description": "Protocol for repairing and maintaining gut barrier integrity, foundation of immune health.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://www.theimmunitycode.com",
+      "supplements": [
+        {"name": "Colostrum", "dose": 3, "unit": "g", "timing": "morning_fasted", "rationale": "Growth factors and immunoglobulins for gut repair"},
+        {"name": "Lactoferrin", "dose": 250, "unit": "mg", "timing": "morning_fasted", "rationale": "Antimicrobial and immune support"},
+        {"name": "Tributyrin", "dose": 500, "unit": "mg", "timing": "with_food", "rationale": "Direct fuel for colonocytes"},
+        {"name": "Akkermansia muciniphila", "dose": 1, "unit": "billion CFU", "timing": "morning_fasted", "rationale": "Keystone species for mucin layer"}
+      ]
+    },
+    {
+      "name": "Microbiome Optimization Protocol",
+      "category": "supplements",
+      "description": "Prebiotic and probiotic stack for optimizing gut microbiome diversity and function.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://www.theimmunitycode.com",
+      "supplements": [
+        {"name": "Resistant Starch", "dose": 20, "unit": "g", "timing": "evening", "rationale": "Feeds beneficial bacteria, produces butyrate"},
+        {"name": "Green Banana Flour", "dose": 2, "unit": "tbsp", "timing": "evening", "rationale": "RS2 for microbiome"},
+        {"name": "Pomegranate Extract", "dose": 500, "unit": "mg", "timing": "with_food", "rationale": "Urolithin A production via gut bacteria"},
+        {"name": "Akkermansia muciniphila", "dose": 1, "unit": "billion CFU", "timing": "morning_fasted", "rationale": "Restore keystone species"}
+      ],
+      "interventions": [
+        {"name": "Prebiotic Loading", "rationale": "Evening prebiotics feed bacteria during overnight fast"}
+      ]
+    },
+    {
+      "name": "Immunity Reset Protocol",
+      "category": "interventions",
+      "description": "Periodic reset of immune system through fasting and targeted supplements. Clears senescent immune cells.",
+      "frequency": "monthly",
+      "evidence_level": "moderate",
+      "source_url": "https://www.theimmunitycode.com",
+      "supplements": [
+        {"name": "Apple Peel Powder", "dose": 5, "unit": "g", "timing": "morning_fasted", "rationale": "Enhanced AMPK during fast"},
+        {"name": "Black Cumin Seed Oil", "dose": 2, "unit": "tsp", "timing": "morning", "rationale": "Immune modulation during reset"},
+        {"name": "Colostrum", "dose": 5, "unit": "g", "timing": "evening", "rationale": "Gut support during fast"}
+      ],
+      "interventions": [
+        {"name": "Immunity Reset", "rationale": "3-day modified fast for immune cell renewal"}
+      ]
+    },
+    {
+      "name": "Metabolic Flexibility Protocol",
+      "category": "interventions",
+      "description": "Protocol for improving ability to switch between fuel sources and improving insulin sensitivity.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://www.theimmunitycode.com",
+      "supplements": [
+        {"name": "Berberine", "dose": 500, "unit": "mg", "timing": "with_meals", "rationale": "Glucose metabolism and AMPK"},
+        {"name": "Citrus Bergamot", "dose": 500, "unit": "mg", "timing": "with_food", "rationale": "Lipid metabolism support"},
+        {"name": "Apple Peel Powder", "dose": 3, "unit": "g", "timing": "morning_fasted", "rationale": "AMPK activation"}
+      ],
+      "interventions": [
+        {"name": "Cold Thermogenesis", "rationale": "Brown fat activation improves metabolic flexibility"},
+        {"name": "Morning Fruit Hack", "rationale": "Carb cycling through fruit timing"},
+        {"name": "AMPK Activation Fast", "rationale": "Weekly extended fast enhances metabolic switching", "conditions": {"recovery_state": ["good"]}}
+      ]
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "fruit_timing",
+      "guidance": "Eat fruit in the morning on an empty stomach, combined with protein (collagen). This shifts gut bacteria favorably and improves metabolic response to carbs throughout the day.",
+      "conditions": null
+    },
+    {
+      "topic": "resistant_starch",
+      "guidance": "Consume resistant starch (cooled potatoes, green bananas, plantains) in the evening. This feeds beneficial bacteria overnight and improves morning blood sugar.",
+      "conditions": null
+    },
+    {
+      "topic": "protein_distribution",
+      "guidance": "Front-load protein earlier in the day. Eat your largest protein serving at lunch rather than dinner for optimal muscle protein synthesis.",
+      "conditions": null
+    },
+    {
+      "topic": "vegetable_diversity",
+      "guidance": "Eat 30+ different plant foods per week. Diversity in plants creates diversity in gut bacteria. Include roots, leaves, seeds, and fungi.",
+      "conditions": null
+    },
+    {
+      "topic": "fermented_foods",
+      "guidance": "Include naturally fermented foods daily (sauerkraut, kimchi, kefir). These provide transient bacteria that support immune function.",
+      "conditions": null
+    },
+    {
+      "topic": "apple_consumption",
+      "guidance": "Eat whole apples with skin regularly. Apple peel contains ursolic acid, quercetin, and pectin that support AMPK and gut health.",
+      "conditions": null
+    },
+    {
+      "topic": "avoid_processed",
+      "guidance": "Eliminate processed foods and seed oils. These disrupt gut barrier and promote inflammation. Cook with stable fats (olive oil, butter, coconut oil).",
+      "conditions": null
+    }
+  ]
+}

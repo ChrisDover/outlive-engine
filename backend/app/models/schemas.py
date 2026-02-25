@@ -374,3 +374,268 @@ class OCRResponse(BaseModel):
     markers: list[BloodworkMarker]
     raw_text: str | None = None
     confidence: float | None = None
+
+
+# ── Knowledge Base ───────────────────────────────────────────────────────────
+
+class ProtocolCategory(str, Enum):
+    SLEEP = "sleep"
+    NUTRITION = "nutrition"
+    SUPPLEMENTS = "supplements"
+    TRAINING = "training"
+    INTERVENTIONS = "interventions"
+    LONGEVITY = "longevity"
+
+
+class EvidenceLevel(str, Enum):
+    HIGH = "high"
+    MODERATE = "moderate"
+    LOW = "low"
+    ANECDOTAL = "anecdotal"
+
+
+class ExpertCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=200)
+    focus_areas: list[str] = Field(default_factory=list)
+    bio: str | None = None
+    website: str | None = None
+
+
+class ExpertResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    name: str
+    focus_areas: list[str]
+    bio: str | None = None
+    website: str | None = None
+    created_at: datetime
+
+
+class SupplementCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=200)
+    description: str | None = None
+    mechanisms: list[str] = Field(default_factory=list)
+
+
+class SupplementResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    name: str
+    description: str | None = None
+    mechanisms: list[str]
+    created_at: datetime
+
+
+class InterventionCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=200)
+    category: str = Field(..., min_length=1, max_length=100)
+    description: str | None = None
+    duration_mins: int | None = None
+    frequency: str | None = None
+
+
+class InterventionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    name: str
+    category: str
+    description: str | None = None
+    duration_mins: int | None = None
+    frequency: str | None = None
+    created_at: datetime
+
+
+class ProtocolSupplementCreate(BaseModel):
+    supplement_id: UUID
+    dose: float | None = None
+    unit: str | None = None
+    timing: str | None = None
+    conditions: dict[str, Any] | None = None
+    rationale: str | None = None
+
+
+class ProtocolSupplementResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    supplement: SupplementResponse
+    dose: float | None = None
+    unit: str | None = None
+    timing: str | None = None
+    conditions: dict[str, Any] | None = None
+    rationale: str | None = None
+
+
+class ProtocolInterventionCreate(BaseModel):
+    intervention_id: UUID
+    conditions: dict[str, Any] | None = None
+    rationale: str | None = None
+
+
+class ProtocolInterventionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    intervention: InterventionResponse
+    conditions: dict[str, Any] | None = None
+    rationale: str | None = None
+
+
+class ProtocolCreate(BaseModel):
+    expert_id: UUID | None = None
+    name: str = Field(..., min_length=1, max_length=500)
+    category: ProtocolCategory
+    description: str | None = None
+    frequency: str | None = None
+    evidence_level: EvidenceLevel | None = None
+    source_url: str | None = None
+    supplements: list[ProtocolSupplementCreate] = Field(default_factory=list)
+    interventions: list[ProtocolInterventionCreate] = Field(default_factory=list)
+
+
+class ProtocolResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    expert_id: UUID | None = None
+    expert_name: str | None = None
+    name: str
+    category: str
+    description: str | None = None
+    frequency: str | None = None
+    evidence_level: str | None = None
+    source_url: str | None = None
+    supplements: list[ProtocolSupplementResponse] = Field(default_factory=list)
+    interventions: list[ProtocolInterventionResponse] = Field(default_factory=list)
+    created_at: datetime
+
+
+class NutritionPrincipleCreate(BaseModel):
+    expert_id: UUID | None = None
+    topic: str = Field(..., min_length=1, max_length=200)
+    guidance: str = Field(..., min_length=1)
+    conditions: dict[str, Any] | None = None
+
+
+class NutritionPrincipleResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    expert_id: UUID | None = None
+    expert_name: str | None = None
+    topic: str
+    guidance: str
+    conditions: dict[str, Any] | None = None
+    created_at: datetime
+
+
+# ── Progress Tracking ────────────────────────────────────────────────────────
+
+class AdherenceItemType(str, Enum):
+    SUPPLEMENT = "supplement"
+    INTERVENTION = "intervention"
+    NUTRITION = "nutrition"
+    TRAINING = "training"
+
+
+class GoalStatus(str, Enum):
+    ACTIVE = "active"
+    ACHIEVED = "achieved"
+    ABANDONED = "abandoned"
+
+
+class GoalCategory(str, Enum):
+    BIOMARKER = "biomarker"
+    FITNESS = "fitness"
+    HABIT = "habit"
+
+
+class DailyAdherenceCreate(BaseModel):
+    date: date
+    protocol_id: UUID | None = None
+    item_type: AdherenceItemType
+    item_name: str = Field(..., min_length=1, max_length=200)
+    completed: bool = False
+    notes: str | None = None
+
+
+class DailyAdherenceResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    user_id: UUID
+    date: date
+    protocol_id: UUID | None = None
+    item_type: str
+    item_name: str
+    completed: bool
+    notes: str | None = None
+    created_at: datetime
+
+
+class DailyAdherenceUpdate(BaseModel):
+    completed: bool | None = None
+    notes: str | None = None
+
+
+class GoalDefinitionCreate(BaseModel):
+    category: GoalCategory
+    target_metric: str = Field(..., min_length=1, max_length=200)
+    target_value: float | None = None
+    target_unit: str | None = None
+    deadline: date | None = None
+
+
+class GoalDefinitionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    user_id: UUID
+    category: str
+    target_metric: str
+    target_value: float | None = None
+    target_unit: str | None = None
+    deadline: date | None = None
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class GoalDefinitionUpdate(BaseModel):
+    target_value: float | None = None
+    target_unit: str | None = None
+    deadline: date | None = None
+    status: GoalStatus | None = None
+
+
+class WeeklySummaryResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    user_id: UUID
+    week_start: date
+    summary: dict[str, Any]
+    ai_analysis: str | None = None
+    created_at: datetime
+
+
+# ── Morning Brief ────────────────────────────────────────────────────────────
+
+class MorningBriefRequest(BaseModel):
+    include_context: bool = True
+
+
+class MorningBriefResponse(BaseModel):
+    date: date
+    greeting: str
+    top_priorities: list[str]
+    eating_plan: dict[str, Any]
+    supplement_plan: list[dict[str, Any]]
+    workout_plan: dict[str, Any]
+    interventions_plan: list[dict[str, Any]]
+    rationale: str
+    expert_citations: list[str]
+    recovery_status: dict[str, Any] | None = None

@@ -1,0 +1,242 @@
+{
+  "expert": {
+    "name": "Bryan Johnson",
+    "focus_areas": ["longevity", "sleep", "biomarkers", "nutrition", "supplements"],
+    "bio": "Entrepreneur and founder of Blueprint, a rigorous longevity protocol measuring 70+ biomarkers monthly. Known for achieving age reversal in multiple organs.",
+    "website": "https://blueprint.bryanjohnson.co"
+  },
+  "supplements": [
+    {
+      "name": "NMN (Nicotinamide Mononucleotide)",
+      "description": "NAD+ precursor that supports cellular energy and longevity pathways",
+      "mechanisms": ["NAD+ precursor", "sirtuin activator", "mitochondrial support"]
+    },
+    {
+      "name": "Lithium (microdose)",
+      "description": "Trace mineral supporting brain health and neuroprotection",
+      "mechanisms": ["neuroprotection", "GSK-3 inhibition", "BDNF support"]
+    },
+    {
+      "name": "Collagen Peptides",
+      "description": "Supports skin elasticity, joint health, and connective tissue",
+      "mechanisms": ["collagen synthesis", "skin health", "joint support"]
+    },
+    {
+      "name": "Creatine",
+      "description": "Supports muscle strength, cognitive function, and cellular energy",
+      "mechanisms": ["ATP production", "muscle strength", "cognitive support"]
+    },
+    {
+      "name": "EPA/DHA (Omega-3)",
+      "description": "Essential fatty acids for brain health and inflammation reduction",
+      "mechanisms": ["anti-inflammatory", "brain health", "cardiovascular support"]
+    },
+    {
+      "name": "Vitamin D3",
+      "description": "Essential for bone health, immune function, and hormonal balance",
+      "mechanisms": ["calcium absorption", "immune modulation", "gene expression"]
+    },
+    {
+      "name": "Vitamin K2 (MK-7)",
+      "description": "Directs calcium to bones and away from arteries",
+      "mechanisms": ["calcium metabolism", "cardiovascular protection", "bone health"]
+    },
+    {
+      "name": "Magnesium",
+      "description": "Essential mineral for 300+ enzymatic reactions",
+      "mechanisms": ["enzyme cofactor", "muscle relaxation", "sleep support"]
+    },
+    {
+      "name": "Zinc",
+      "description": "Trace mineral essential for immune function and hormone production",
+      "mechanisms": ["immune support", "testosterone production", "wound healing"]
+    },
+    {
+      "name": "Garlic (Aged)",
+      "description": "Cardiovascular support and immune modulation",
+      "mechanisms": ["cardiovascular support", "allicin activity", "immune modulation"]
+    },
+    {
+      "name": "Glucosamine Sulphate",
+      "description": "Joint health and cartilage support",
+      "mechanisms": ["cartilage synthesis", "joint lubrication", "anti-inflammatory"]
+    },
+    {
+      "name": "Hyaluronic Acid",
+      "description": "Supports skin hydration and joint lubrication",
+      "mechanisms": ["skin hydration", "joint lubrication", "wound healing"]
+    },
+    {
+      "name": "Lycopene",
+      "description": "Powerful antioxidant from tomatoes supporting cardiovascular health",
+      "mechanisms": ["antioxidant", "cardiovascular support", "skin protection"]
+    },
+    {
+      "name": "Lutein",
+      "description": "Carotenoid supporting eye health and cognitive function",
+      "mechanisms": ["eye health", "macular protection", "cognitive support"]
+    },
+    {
+      "name": "Zeaxanthin",
+      "description": "Carotenoid working synergistically with lutein for eye protection",
+      "mechanisms": ["eye health", "blue light protection", "antioxidant"]
+    },
+    {
+      "name": "Astaxanthin",
+      "description": "Potent carotenoid antioxidant supporting skin and recovery",
+      "mechanisms": ["antioxidant", "skin protection", "exercise recovery"]
+    },
+    {
+      "name": "Boron",
+      "description": "Trace mineral supporting bone health and hormone metabolism",
+      "mechanisms": ["bone health", "hormone metabolism", "cognitive function"]
+    },
+    {
+      "name": "Ginger",
+      "description": "Anti-inflammatory root supporting digestion and recovery",
+      "mechanisms": ["anti-inflammatory", "digestive support", "nausea relief"]
+    },
+    {
+      "name": "Cocoa Flavanols",
+      "description": "Polyphenols from cocoa supporting cardiovascular and cognitive health",
+      "mechanisms": ["cardiovascular support", "nitric oxide production", "cognitive enhancement"]
+    },
+    {
+      "name": "Spermidine",
+      "description": "Polyamine that induces autophagy and cellular renewal",
+      "mechanisms": ["autophagy induction", "cellular renewal", "longevity support"]
+    },
+    {
+      "name": "Fisetin",
+      "description": "Flavonoid with senolytic properties that clears senescent cells",
+      "mechanisms": ["senolytic", "antioxidant", "neuroprotection"]
+    },
+    {
+      "name": "Melatonin (low dose)",
+      "description": "Sleep hormone and potent antioxidant",
+      "mechanisms": ["sleep regulation", "antioxidant", "circadian rhythm support"]
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Blueprint Sleep Protocol",
+      "category": "sleep",
+      "description": "Wind down 2 hours before bed, blackout room, cool temperature (65-68F), consistent sleep/wake times",
+      "duration_mins": 480,
+      "frequency": "daily"
+    },
+    {
+      "name": "Blueprint Morning Light",
+      "category": "circadian",
+      "description": "10,000 lux light exposure within 30 minutes of waking",
+      "duration_mins": 30,
+      "frequency": "daily"
+    },
+    {
+      "name": "Blueprint Workout",
+      "category": "training",
+      "description": "High-intensity resistance training with focus on compound movements",
+      "duration_mins": 60,
+      "frequency": "daily"
+    },
+    {
+      "name": "Blueprint Red Light Therapy",
+      "category": "recovery",
+      "description": "Red and near-infrared light exposure for skin and mitochondrial health",
+      "duration_mins": 15,
+      "frequency": "daily"
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Blueprint Core Supplement Stack",
+      "category": "supplements",
+      "description": "Bryan Johnson's daily supplement protocol targeting longevity biomarkers and cellular health. Taken with first meal.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://blueprint.bryanjohnson.co/pages/supplements",
+      "supplements": [
+        {"name": "NMN (Nicotinamide Mononucleotide)", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "NAD+ support for cellular energy and longevity"},
+        {"name": "Lithium (microdose)", "dose": 1, "unit": "mg", "timing": "morning", "rationale": "Neuroprotection and brain health"},
+        {"name": "Collagen Peptides", "dose": 10, "unit": "g", "timing": "morning", "rationale": "Skin elasticity and connective tissue support"},
+        {"name": "Creatine", "dose": 2.5, "unit": "g", "timing": "morning", "rationale": "Muscle and cognitive support"},
+        {"name": "EPA/DHA (Omega-3)", "dose": 2000, "unit": "mg", "timing": "morning", "rationale": "Anti-inflammatory and brain health"},
+        {"name": "Vitamin D3", "dose": 2000, "unit": "IU", "timing": "morning", "rationale": "Immune and bone health", "conditions": {"bloodwork_thresholds": {"vitamin_d": "<60"}}},
+        {"name": "Vitamin K2 (MK-7)", "dose": 120, "unit": "mcg", "timing": "morning", "rationale": "Calcium metabolism and cardiovascular protection"},
+        {"name": "Magnesium", "dose": 400, "unit": "mg", "timing": "evening", "rationale": "Sleep support and enzymatic function"},
+        {"name": "Zinc", "dose": 15, "unit": "mg", "timing": "morning", "rationale": "Immune and hormone support"},
+        {"name": "Garlic (Aged)", "dose": 1200, "unit": "mg", "timing": "morning", "rationale": "Cardiovascular support"},
+        {"name": "Glucosamine Sulphate", "dose": 1500, "unit": "mg", "timing": "morning", "rationale": "Joint health"},
+        {"name": "Hyaluronic Acid", "dose": 200, "unit": "mg", "timing": "morning", "rationale": "Skin and joint lubrication"},
+        {"name": "Lycopene", "dose": 10, "unit": "mg", "timing": "morning", "rationale": "Antioxidant and cardiovascular support"},
+        {"name": "Lutein", "dose": 20, "unit": "mg", "timing": "morning", "rationale": "Eye and cognitive health"},
+        {"name": "Zeaxanthin", "dose": 4, "unit": "mg", "timing": "morning", "rationale": "Eye health synergy with lutein"},
+        {"name": "Astaxanthin", "dose": 12, "unit": "mg", "timing": "morning", "rationale": "Potent antioxidant"},
+        {"name": "Boron", "dose": 3, "unit": "mg", "timing": "morning", "rationale": "Bone and hormone support"},
+        {"name": "Ginger", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Anti-inflammatory"},
+        {"name": "Cocoa Flavanols", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Cardiovascular and cognitive support"},
+        {"name": "Spermidine", "dose": 10, "unit": "mg", "timing": "morning", "rationale": "Autophagy induction"},
+        {"name": "Fisetin", "dose": 500, "unit": "mg", "timing": "morning", "rationale": "Senolytic activity"}
+      ]
+    },
+    {
+      "name": "Blueprint Sleep Optimization",
+      "category": "sleep",
+      "description": "Comprehensive sleep protocol targeting 8+ hours of quality sleep with optimal architecture",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://blueprint.bryanjohnson.co/pages/sleep",
+      "supplements": [
+        {"name": "Magnesium", "dose": 400, "unit": "mg", "timing": "before_bed", "rationale": "Muscle relaxation and GABA support"},
+        {"name": "Melatonin (low dose)", "dose": 0.3, "unit": "mg", "timing": "before_bed", "rationale": "Circadian rhythm support"}
+      ],
+      "interventions": [
+        {"name": "Blueprint Sleep Protocol", "rationale": "Optimized sleep environment and timing"}
+      ]
+    },
+    {
+      "name": "Blueprint Training Protocol",
+      "category": "training",
+      "description": "Daily high-intensity resistance and mobility training for longevity",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://blueprint.bryanjohnson.co/pages/exercise",
+      "interventions": [
+        {"name": "Blueprint Workout", "rationale": "Compound movements for strength and metabolic health"},
+        {"name": "Blueprint Morning Light", "rationale": "Circadian alignment and energy", "conditions": {"recovery_state": ["good", "moderate"]}}
+      ]
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "meal_timing",
+      "guidance": "Eat all calories within a 6-hour window, finishing by 11am. This allows for 18-hour daily fast.",
+      "conditions": null
+    },
+    {
+      "topic": "caloric_restriction",
+      "guidance": "Maintain caloric intake around 1,950 calories per day for longevity benefits while supporting muscle mass.",
+      "conditions": null
+    },
+    {
+      "topic": "super_veggie",
+      "guidance": "Daily Super Veggie meal: black lentils, broccoli, cauliflower, mushrooms, garlic, ginger, lime, cumin, apple cider vinegar, hemp seeds, olive oil.",
+      "conditions": null
+    },
+    {
+      "topic": "protein",
+      "guidance": "Target 25% of calories from protein (~130g/day), primarily from plant sources with some collagen supplementation.",
+      "conditions": null
+    },
+    {
+      "topic": "no_alcohol",
+      "guidance": "Complete abstinence from alcohol for optimal sleep, liver health, and cognitive function.",
+      "conditions": null
+    },
+    {
+      "topic": "no_sugar",
+      "guidance": "Eliminate added sugars and minimize high-glycemic foods to maintain stable blood glucose.",
+      "conditions": null
+    }
+  ]
+}

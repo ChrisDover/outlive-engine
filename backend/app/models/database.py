@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS users (
     apple_user_id   TEXT UNIQUE,
     email           TEXT UNIQUE,        -- encrypted
     display_name    TEXT,
+    telegram_chat_id TEXT UNIQUE,       -- Telegram chat ID for bot integration
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
     deleted_at      TIMESTAMPTZ
@@ -227,6 +228,132 @@ CREATE TABLE IF NOT EXISTS genome_uploads (
     completed_at    TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS idx_genome_uploads_user ON genome_uploads(user_id);
+
+-- ── Knowledge Base: Experts ─────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS experts (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name            TEXT NOT NULL UNIQUE,
+    focus_areas     TEXT[],                   -- e.g. ['sleep', 'supplements', 'longevity']
+    bio             TEXT,
+    website         TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ── Knowledge Base: Supplements ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS supplements (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name            TEXT NOT NULL UNIQUE,
+    description     TEXT,
+    mechanisms      TEXT[],                   -- e.g. ['NAD+ precursor', 'sirtuin activator']
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ── Knowledge Base: Interventions ───────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS interventions (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name            TEXT NOT NULL UNIQUE,
+    category        TEXT NOT NULL,            -- e.g. cold_exposure, heat_exposure, meditation
+    description     TEXT,
+    duration_mins   INT,
+    frequency       TEXT,                     -- e.g. 'daily', '3x/week'
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ── Knowledge Base: Protocols ───────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS protocols (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    expert_id       UUID REFERENCES experts(id) ON DELETE SET NULL,
+    name            TEXT NOT NULL,
+    category        TEXT NOT NULL,            -- sleep, nutrition, supplements, training, interventions, longevity
+    description     TEXT,
+    frequency       TEXT,                     -- e.g. 'daily', 'weekly'
+    evidence_level  TEXT,                     -- e.g. 'high', 'moderate', 'anecdotal'
+    source_url      TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (expert_id, name)
+);
+CREATE INDEX IF NOT EXISTS idx_protocols_expert ON protocols(expert_id);
+CREATE INDEX IF NOT EXISTS idx_protocols_category ON protocols(category);
+
+-- ── Protocol-Supplement Relationships ───────────────────────────────────────
+CREATE TABLE IF NOT EXISTS protocol_supplements (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    protocol_id     UUID NOT NULL REFERENCES protocols(id) ON DELETE CASCADE,
+    supplement_id   UUID NOT NULL REFERENCES supplements(id) ON DELETE CASCADE,
+    dose            FLOAT,
+    unit            TEXT,                     -- e.g. 'mg', 'g', 'IU'
+    timing          TEXT,                     -- e.g. 'morning', 'with_food', 'before_bed'
+    conditions      JSONB,                    -- e.g. {"genome_markers": ["MTHFR"], "bloodwork_thresholds": {"vitaminD": "<30"}}
+    rationale       TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (protocol_id, supplement_id)
+);
+CREATE INDEX IF NOT EXISTS idx_protocol_supps_protocol ON protocol_supplements(protocol_id);
+
+-- ── Protocol-Intervention Relationships ─────────────────────────────────────
+CREATE TABLE IF NOT EXISTS protocol_interventions (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    protocol_id     UUID NOT NULL REFERENCES protocols(id) ON DELETE CASCADE,
+    intervention_id UUID NOT NULL REFERENCES interventions(id) ON DELETE CASCADE,
+    conditions      JSONB,                    -- recovery state conditions, etc.
+    rationale       TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (protocol_id, intervention_id)
+);
+CREATE INDEX IF NOT EXISTS idx_protocol_ints_protocol ON protocol_interventions(protocol_id);
+
+-- ── Nutrition Principles ────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS nutrition_principles (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    expert_id       UUID REFERENCES experts(id) ON DELETE SET NULL,
+    topic           TEXT NOT NULL,            -- e.g. 'meal_timing', 'macros', 'fasting'
+    guidance        TEXT NOT NULL,
+    conditions      JSONB,                    -- when this applies
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_nutrition_expert ON nutrition_principles(expert_id);
+
+-- ── Progress Tracking: Daily Adherence ──────────────────────────────────────
+CREATE TABLE IF NOT EXISTS daily_adherence (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    date            DATE NOT NULL,
+    protocol_id     UUID REFERENCES protocols(id) ON DELETE SET NULL,
+    item_type       TEXT NOT NULL,            -- supplement, intervention, nutrition, training
+    item_name       TEXT NOT NULL,
+    completed       BOOLEAN NOT NULL DEFAULT FALSE,
+    notes           TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user_id, date, item_type, item_name)
+);
+CREATE INDEX IF NOT EXISTS idx_adherence_user_date ON daily_adherence(user_id, date);
+
+-- ── Progress Tracking: Goal Definitions ─────────────────────────────────────
+CREATE TABLE IF NOT EXISTS goal_definitions (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    category        TEXT NOT NULL,            -- biomarker, fitness, habit
+    target_metric   TEXT NOT NULL,            -- e.g. 'apoB', 'vo2max', 'cold_plunge_streak'
+    target_value    FLOAT,
+    target_unit     TEXT,
+    deadline        DATE,
+    status          TEXT NOT NULL DEFAULT 'active',  -- active, achieved, abandoned
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_goals_user ON goal_definitions(user_id);
+
+-- ── Progress Tracking: Weekly Summaries ─────────────────────────────────────
+CREATE TABLE IF NOT EXISTS weekly_summaries (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    week_start      DATE NOT NULL,
+    summary_json    TEXT NOT NULL,            -- encrypted JSON with adherence stats
+    ai_analysis     TEXT,                     -- encrypted AI-generated insights
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user_id, week_start)
+);
+CREATE INDEX IF NOT EXISTS idx_weekly_summaries_user ON weekly_summaries(user_id);
 """
 
 

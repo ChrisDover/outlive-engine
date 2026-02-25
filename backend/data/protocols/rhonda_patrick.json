@@ -1,0 +1,221 @@
+{
+  "expert": {
+    "name": "Rhonda Patrick",
+    "focus_areas": ["nutrigenomics", "sauna", "omega-3", "sulforaphane", "micronutrients"],
+    "bio": "Biomedical scientist focused on nutritional health, aging, and prevention. Known for deep dives into micronutrients and heat/cold stress.",
+    "website": "https://foundmyfitness.com"
+  },
+  "supplements": [
+    {
+      "name": "Sulforaphane",
+      "description": "Compound from broccoli sprouts that activates Nrf2 pathway for detoxification and cellular protection",
+      "mechanisms": ["Nrf2 activation", "detoxification", "antioxidant response", "anti-cancer"]
+    },
+    {
+      "name": "Omega-3 (High EPA/DHA)",
+      "description": "Essential fatty acids critical for brain health, inflammation, and cardiovascular function",
+      "mechanisms": ["anti-inflammatory", "brain health", "cardiovascular", "cell membrane fluidity"]
+    },
+    {
+      "name": "Vitamin D3",
+      "description": "Hormone-like vitamin essential for immune function, bone health, and gene expression",
+      "mechanisms": ["immune modulation", "bone health", "gene expression", "mood regulation"]
+    },
+    {
+      "name": "Vitamin K2 (MK-4 and MK-7)",
+      "description": "Essential for proper calcium metabolism and cardiovascular protection",
+      "mechanisms": ["calcium metabolism", "cardiovascular protection", "bone health"]
+    },
+    {
+      "name": "Magnesium",
+      "description": "Critical mineral deficient in most diets, required for 300+ enzymatic reactions",
+      "mechanisms": ["enzyme cofactor", "DNA repair", "energy production", "muscle function"]
+    },
+    {
+      "name": "Methylfolate",
+      "description": "Active form of folate that bypasses MTHFR enzyme, essential for methylation",
+      "mechanisms": ["methylation", "homocysteine clearance", "DNA synthesis", "neurotransmitter production"]
+    },
+    {
+      "name": "Methylcobalamin (B12)",
+      "description": "Active form of B12 essential for methylation and neurological function",
+      "mechanisms": ["methylation", "nerve health", "energy production", "red blood cell formation"]
+    },
+    {
+      "name": "Nicotinamide Riboside (NR)",
+      "description": "NAD+ precursor supporting cellular energy and longevity pathways",
+      "mechanisms": ["NAD+ precursor", "sirtuin activation", "mitochondrial function"]
+    },
+    {
+      "name": "Quercetin",
+      "description": "Flavonoid with senolytic and anti-inflammatory properties",
+      "mechanisms": ["senolytic", "anti-inflammatory", "antioxidant", "zinc ionophore"]
+    },
+    {
+      "name": "Curcumin",
+      "description": "Active compound from turmeric with powerful anti-inflammatory effects",
+      "mechanisms": ["anti-inflammatory", "antioxidant", "NF-kB inhibition"]
+    },
+    {
+      "name": "Vitamin C",
+      "description": "Essential antioxidant vitamin supporting immune function and collagen synthesis",
+      "mechanisms": ["antioxidant", "collagen synthesis", "immune support", "iron absorption"]
+    },
+    {
+      "name": "Vitamin E (Mixed Tocopherols)",
+      "description": "Fat-soluble antioxidant protecting cell membranes",
+      "mechanisms": ["antioxidant", "cell membrane protection", "cardiovascular support"]
+    },
+    {
+      "name": "Selenium",
+      "description": "Trace mineral essential for thyroid function and glutathione production",
+      "mechanisms": ["thyroid support", "glutathione precursor", "antioxidant", "immune function"]
+    },
+    {
+      "name": "Probiotics (Multi-Strain)",
+      "description": "Beneficial bacteria supporting gut health and immune function",
+      "mechanisms": ["gut microbiome", "immune modulation", "vitamin synthesis", "barrier function"]
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Sauna (Finnish Style)",
+      "category": "heat_exposure",
+      "description": "174-190°F sauna for 20 minutes, 4-7x per week. Mimics cardiovascular exercise, induces heat shock proteins, and reduces all-cause mortality.",
+      "duration_mins": 20,
+      "frequency": "4-7x/week"
+    },
+    {
+      "name": "Sauna + Cold Contrast",
+      "category": "heat_exposure",
+      "description": "Alternate between sauna (20 min) and cold exposure (1-2 min) for 2-3 cycles. Enhances hormetic stress response.",
+      "duration_mins": 45,
+      "frequency": "2-3x/week"
+    },
+    {
+      "name": "Time-Restricted Eating",
+      "category": "nutrition",
+      "description": "Confine eating to 8-10 hour window, ideally starting earlier in the day to align with circadian rhythm.",
+      "duration_mins": null,
+      "frequency": "daily"
+    },
+    {
+      "name": "Broccoli Sprout Consumption",
+      "category": "nutrition",
+      "description": "Grow and consume fresh broccoli sprouts (50-100g) for maximum sulforaphane content.",
+      "duration_mins": null,
+      "frequency": "daily"
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Rhonda Patrick Longevity Stack",
+      "category": "supplements",
+      "description": "Core supplement stack focused on filling common nutrient gaps and supporting longevity pathways.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://foundmyfitness.com/supplements",
+      "supplements": [
+        {"name": "Omega-3 (High EPA/DHA)", "dose": 4000, "unit": "mg", "timing": "with_food", "rationale": "Target 4g combined EPA/DHA for optimal brain and cardiovascular benefits"},
+        {"name": "Vitamin D3", "dose": 4000, "unit": "IU", "timing": "with_food", "rationale": "Maintain blood levels 40-60 ng/mL", "conditions": {"bloodwork_thresholds": {"vitamin_d": "<40"}}},
+        {"name": "Vitamin K2 (MK-4 and MK-7)", "dose": 100, "unit": "mcg", "timing": "with_food", "rationale": "Synergistic with D3 for calcium metabolism"},
+        {"name": "Magnesium", "dose": 400, "unit": "mg", "timing": "evening", "rationale": "Most people deficient; critical for DNA repair"},
+        {"name": "Vitamin C", "dose": 1000, "unit": "mg", "timing": "morning", "rationale": "Antioxidant and collagen support"},
+        {"name": "Vitamin E (Mixed Tocopherols)", "dose": 400, "unit": "IU", "timing": "with_food", "rationale": "Fat-soluble antioxidant, take with omega-3"},
+        {"name": "Selenium", "dose": 200, "unit": "mcg", "timing": "morning", "rationale": "Thyroid and glutathione support"}
+      ]
+    },
+    {
+      "name": "MTHFR Methylation Support",
+      "category": "supplements",
+      "description": "Supplement protocol for individuals with MTHFR gene variants affecting methylation.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://foundmyfitness.com/genetics",
+      "supplements": [
+        {"name": "Methylfolate", "dose": 400, "unit": "mcg", "timing": "morning", "rationale": "Bypasses impaired MTHFR enzyme", "conditions": {"genome_markers": ["MTHFR_C677T", "MTHFR_A1298C"]}},
+        {"name": "Methylcobalamin (B12)", "dose": 1000, "unit": "mcg", "timing": "morning", "rationale": "Active form supports methylation cycle", "conditions": {"genome_markers": ["MTHFR_C677T", "MTHFR_A1298C"]}}
+      ]
+    },
+    {
+      "name": "Sulforaphane Protocol",
+      "category": "supplements",
+      "description": "Protocol for maximizing sulforaphane intake through broccoli sprouts or supplements for Nrf2 activation.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://foundmyfitness.com/sulforaphane",
+      "supplements": [
+        {"name": "Sulforaphane", "dose": 40, "unit": "mg", "timing": "morning", "rationale": "Nrf2 activation for detoxification and cellular protection. Best from fresh sprouts."}
+      ],
+      "interventions": [
+        {"name": "Broccoli Sprout Consumption", "rationale": "Fresh sprouts provide highest bioavailable sulforaphane"}
+      ]
+    },
+    {
+      "name": "Sauna Longevity Protocol",
+      "category": "interventions",
+      "description": "Heat stress protocol mimicking cardiovascular exercise benefits and inducing heat shock proteins.",
+      "frequency": "4-7x/week",
+      "evidence_level": "high",
+      "source_url": "https://foundmyfitness.com/sauna",
+      "interventions": [
+        {"name": "Sauna (Finnish Style)", "rationale": "174-190°F for 20+ minutes, 4-7x/week associated with 40% reduced all-cause mortality"}
+      ]
+    },
+    {
+      "name": "Omega-3 Optimization",
+      "category": "supplements",
+      "description": "High-dose omega-3 protocol for those with low omega-3 index or inflammatory conditions.",
+      "frequency": "daily",
+      "evidence_level": "high",
+      "source_url": "https://foundmyfitness.com/omega3",
+      "supplements": [
+        {"name": "Omega-3 (High EPA/DHA)", "dose": 4000, "unit": "mg", "timing": "with_food", "rationale": "Target omega-3 index of 8-12%", "conditions": {"bloodwork_thresholds": {"omega3_index": "<8"}}}
+      ]
+    },
+    {
+      "name": "Gut Microbiome Support",
+      "category": "supplements",
+      "description": "Protocol for supporting gut microbiome diversity and function.",
+      "frequency": "daily",
+      "evidence_level": "moderate",
+      "source_url": "https://foundmyfitness.com/gut",
+      "supplements": [
+        {"name": "Probiotics (Multi-Strain)", "dose": 50, "unit": "billion CFU", "timing": "with_food", "rationale": "Supports microbiome diversity"},
+        {"name": "Omega-3 (High EPA/DHA)", "dose": 2000, "unit": "mg", "timing": "with_food", "rationale": "Reduces gut inflammation"}
+      ]
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "time_restricted_eating",
+      "guidance": "Eat within an 8-10 hour window, starting earlier in the day (e.g., 8am-6pm). This aligns with circadian rhythm and improves metabolic markers.",
+      "conditions": null
+    },
+    {
+      "topic": "omega3_sources",
+      "guidance": "Prioritize wild-caught fatty fish (salmon, mackerel, sardines) 2-3x per week. Supplement to reach 4g EPA/DHA daily if not consuming fish.",
+      "conditions": null
+    },
+    {
+      "topic": "cruciferous_vegetables",
+      "guidance": "Consume cruciferous vegetables (broccoli, kale, Brussels sprouts) daily for sulforaphane and other isothiocyanates. Chop and let sit 40 minutes before cooking to maximize myrosinase activity.",
+      "conditions": null
+    },
+    {
+      "topic": "colorful_produce",
+      "guidance": "Eat a variety of colorful fruits and vegetables daily to obtain diverse polyphenols. Each color represents different phytonutrients.",
+      "conditions": null
+    },
+    {
+      "topic": "protein_distribution",
+      "guidance": "Distribute protein intake across meals (30-40g per meal) rather than loading at one meal. This optimizes muscle protein synthesis throughout the day.",
+      "conditions": null
+    },
+    {
+      "topic": "fiber",
+      "guidance": "Target 25-35g fiber daily from whole food sources for gut microbiome health and short-chain fatty acid production.",
+      "conditions": null
+    }
+  ]
+}
