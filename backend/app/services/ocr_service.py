@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import fitz  # PyMuPDF
+import httpx
 import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
@@ -321,8 +322,6 @@ def normalize_marker_name(name: str) -> str:
 
 async def parse_markers_with_llm(raw_text: str) -> tuple[list[BloodworkMarker], float]:
     """Use LLM to extract structured biomarker data from OCR text."""
-    import httpx
-
     settings = get_settings()
     url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
     model = settings.AIRLLM_MODEL
@@ -380,17 +379,24 @@ Return JSON with all markers found and a confidence score (0.0-1.0) based on tex
             {"role": "user", "content": user_message},
         ],
         "temperature": 0.1,
-        "response_format": {"type": "json_object"},
     }
 
     try:
-        async with httpx.AsyncClient(timeout=60.0) as client:
+        async with httpx.AsyncClient(timeout=90.0) as client:
             resp = await client.post(url, json=payload)
             resp.raise_for_status()
             result = resp.json()
 
         content = result["choices"][0]["message"]["content"]
-        parsed = json.loads(content)
+        logger.debug(f"LLM response content: {content[:500]}...")
+
+        # Try to extract JSON from response (LLM might include extra text)
+        json_match = re.search(r'\{[\s\S]*\}', content)
+        if not json_match:
+            logger.warning(f"No JSON found in LLM response: {content[:200]}")
+            return [], 0.0
+
+        parsed = json.loads(json_match.group())
 
         markers = []
         for m in parsed.get("markers", []):
@@ -426,9 +432,90 @@ Return JSON with all markers found and a confidence score (0.0-1.0) based on tex
         confidence = parsed.get("confidence", 0.8 if markers else 0.0)
         return markers, confidence
 
-    except Exception as e:
-        logger.error(f"LLM parsing failed: {e}")
+    except httpx.TimeoutException:
+        logger.error("LLM parsing timed out after 90s")
         return [], 0.0
+    except json.JSONDecodeError as e:
+        logger.error(f"LLM returned invalid JSON: {e}")
+        return [], 0.0
+    except Exception as e:
+        logger.exception(f"LLM parsing failed: {type(e).__name__}: {e}")
+        return [], 0.0
+
+
+def extract_markers_regex(raw_text: str) -> list[BloodworkMarker]:
+    """Fallback regex-based marker extraction when LLM fails."""
+    markers = []
+
+    # Common patterns for lab results
+    # Pattern: Name followed by value and optional unit
+    # e.g., "Glucose 95 mg/dL", "HDL 55", "HbA1c 5.4 %"
+    patterns = [
+        # Pattern 1: Name Value Unit [Reference]
+        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-\(\)]+?)\s+(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+(?:/[a-zA-Z]+)?)?(?:\s*[\[\(]?\s*(?P<ref_low>\d+\.?\d*)\s*[-–]\s*(?P<ref_high>\d+\.?\d*)\s*[\]\)]?)?',
+        # Pattern 2: Name: Value
+        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-]+?):\s*(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+)?',
+    ]
+
+    # Known biomarker names to look for
+    known_markers = {
+        'glucose', 'hdl', 'ldl', 'cholesterol', 'triglycerides', 'hemoglobin', 'hematocrit',
+        'wbc', 'rbc', 'platelets', 'creatinine', 'bun', 'sodium', 'potassium', 'chloride',
+        'calcium', 'albumin', 'protein', 'bilirubin', 'ast', 'alt', 'alp', 'ggt',
+        'tsh', 'hba1c', 'a1c', 'insulin', 'ferritin', 'iron', 'vitamin d', 'b12',
+        'testosterone', 'estradiol', 'cortisol', 'crp', 'homocysteine', 'apob', 'lp(a)',
+        'egfr', 'mcv', 'mch', 'mchc', 'rdw', 'mpv', 'uric acid', 'magnesium', 'zinc',
+        'folate', 'dhea', 'vldl', 'fibrinogen',
+    }
+
+    lines = raw_text.split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+
+        for pattern in patterns:
+            match = re.search(pattern, line, re.IGNORECASE)
+            if match:
+                name = match.group('name').strip()
+                name_lower = name.lower()
+
+                # Check if this looks like a biomarker
+                is_known = any(known in name_lower for known in known_markers)
+                if not is_known and len(name) < 3:
+                    continue
+
+                try:
+                    value = float(match.group('value'))
+                    unit = match.group('unit') or '' if 'unit' in match.groupdict() else ''
+                    ref_low = float(match.group('ref_low')) if match.group('ref_low') else None
+                    ref_high = float(match.group('ref_high')) if match.group('ref_high') else None
+
+                    # Normalize marker name
+                    normalized_name = normalize_marker_name(name)
+
+                    marker = BloodworkMarker(
+                        name=normalized_name,
+                        value=value,
+                        unit=unit,
+                        reference_low=ref_low,
+                        reference_high=ref_high,
+                        flag=None,
+                    )
+                    markers.append(marker)
+                    break  # Found a match for this line
+                except (ValueError, AttributeError):
+                    continue
+
+    # Deduplicate by name
+    seen = set()
+    unique_markers = []
+    for m in markers:
+        if m.name.lower() not in seen:
+            seen.add(m.name.lower())
+            unique_markers.append(m)
+
+    return unique_markers
 
 
 async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = True) -> tuple[list[BloodworkMarker], str | None, float]:
@@ -446,18 +533,24 @@ async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = True) 
         markers, confidence = await parse_markers_with_llm(raw_text)
         logger.info(f"LLM extracted {len(markers)} markers with confidence {confidence}")
 
-    # Step 3: If text extraction failed or got no markers, try vision model
+    # Step 3: If LLM failed, try regex-based extraction
+    if not markers and len(raw_text) > 50:
+        logger.info("LLM failed, trying regex extraction")
+        markers = extract_markers_regex(raw_text)
+        if markers:
+            confidence = 0.5  # Lower confidence for regex extraction
+            logger.info(f"Regex extracted {len(markers)} markers")
+
+    # Step 4: If still no markers, try vision model as last resort
     if not markers and use_vision_fallback:
         logger.info("Falling back to vision model")
-        markers, raw_text, confidence = await process_with_vision(img)
+        markers, _, confidence = await process_with_vision(img)
 
     return markers, raw_text, confidence
 
 
 async def process_with_vision(img: Image.Image) -> tuple[list[BloodworkMarker], str | None, float]:
     """Use vision model for direct image-to-markers extraction."""
-    import httpx
-
     settings = get_settings()
     url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
 
@@ -510,8 +603,14 @@ Return ONLY valid JSON: {"markers": [...], "raw_text": "all visible text", "conf
 
         return [], content, 0.3
 
+    except httpx.TimeoutException:
+        logger.error("Vision model timed out after 120s")
+        return [], None, 0.0
+    except json.JSONDecodeError as e:
+        logger.error(f"Vision model returned invalid JSON: {e}")
+        return [], None, 0.0
     except Exception as e:
-        logger.error(f"Vision model failed: {e}")
+        logger.exception(f"Vision model failed: {type(e).__name__}: {e}")
         return [], None, 0.0
 
 
