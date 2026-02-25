@@ -141,6 +141,103 @@ async def delete_panel(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
 
 
+@router.delete("", status_code=status.HTTP_200_OK)
+@limiter.limit("10/minute")
+async def bulk_delete_panels(
+    request: Request,
+    panel_ids: list[UUID] = Query(..., description="List of panel IDs to delete"),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, int]:
+    """Bulk soft-delete multiple bloodwork panels."""
+    pool = get_pool()
+    now = datetime.now(timezone.utc)
+
+    deleted = 0
+    for panel_id in panel_ids:
+        result = await pool.execute(
+            "UPDATE bloodwork_panels SET deleted_at = $1 WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL",
+            now,
+            panel_id,
+            current_user["id"],
+        )
+        if result != "UPDATE 0":
+            deleted += 1
+
+    return {"deleted": deleted}
+
+
+@router.get("/trends/{marker_name}")
+async def get_marker_trends(
+    marker_name: str,
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """Get historical values for a specific marker across all panels."""
+    pool = get_pool()
+    key = _enc_key()
+
+    rows = await pool.fetch(
+        "SELECT id, panel_date, markers_json FROM bloodwork_panels "
+        "WHERE user_id = $1 AND deleted_at IS NULL "
+        "ORDER BY panel_date ASC",
+        current_user["id"],
+    )
+
+    trends = []
+    marker_name_lower = marker_name.lower()
+
+    for row in rows:
+        markers = json.loads(decrypt_field(row["markers_json"], key))
+        for marker in markers:
+            if marker.get("name", "").lower() == marker_name_lower:
+                trends.append({
+                    "date": row["panel_date"].isoformat(),
+                    "value": marker.get("value"),
+                    "unit": marker.get("unit", ""),
+                    "flag": marker.get("flag"),
+                    "reference_low": marker.get("reference_low"),
+                    "reference_high": marker.get("reference_high"),
+                    "panel_id": str(row["id"]),
+                })
+                break
+
+    return trends
+
+
+@router.get("/markers/unique")
+async def get_unique_markers(
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """Get list of unique markers across all panels with counts."""
+    pool = get_pool()
+    key = _enc_key()
+
+    rows = await pool.fetch(
+        "SELECT markers_json FROM bloodwork_panels "
+        "WHERE user_id = $1 AND deleted_at IS NULL",
+        current_user["id"],
+    )
+
+    marker_counts: dict[str, dict] = {}
+
+    for row in rows:
+        markers = json.loads(decrypt_field(row["markers_json"], key))
+        for marker in markers:
+            name = marker.get("name", "").strip()
+            if not name:
+                continue
+            name_lower = name.lower()
+            if name_lower not in marker_counts:
+                marker_counts[name_lower] = {
+                    "name": name,
+                    "count": 0,
+                    "unit": marker.get("unit", ""),
+                }
+            marker_counts[name_lower]["count"] += 1
+
+    # Sort by count descending
+    return sorted(marker_counts.values(), key=lambda x: x["count"], reverse=True)
+
+
 # ── Bulk OCR Upload ──────────────────────────────────────────────────────────
 
 
