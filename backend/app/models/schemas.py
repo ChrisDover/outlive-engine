@@ -96,7 +96,7 @@ class RevokeRequest(BaseModel):
 class BloodworkMarker(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     value: float
-    unit: str = Field(..., min_length=1, max_length=50)
+    unit: str = Field(default="", max_length=50)  # Allow empty unit from OCR
     reference_low: float | None = None
     reference_high: float | None = None
     flag: str | None = None  # H, L, or None
@@ -105,6 +105,11 @@ class BloodworkMarker(BaseModel):
     @classmethod
     def strip_name(cls, v: str) -> str:
         return v.strip()
+
+    @field_validator("unit")
+    @classmethod
+    def strip_unit(cls, v: str) -> str:
+        return v.strip() if v else ""
 
 
 class BloodworkPanelCreate(BaseModel):
@@ -374,6 +379,26 @@ class OCRResponse(BaseModel):
     markers: list[BloodworkMarker]
     raw_text: str | None = None
     confidence: float | None = None
+
+
+class BulkOCRFileResult(BaseModel):
+    """Result for a single file in bulk OCR processing."""
+    filename: str
+    success: bool
+    markers: list[BloodworkMarker] = Field(default_factory=list)
+    raw_text: str | None = None
+    confidence: float | None = None
+    error: str | None = None
+    panel_id: UUID | None = None  # If auto-saved
+
+
+class BulkOCRResponse(BaseModel):
+    """Response for bulk OCR processing."""
+    total_files: int
+    successful: int
+    failed: int
+    total_markers: int
+    results: list[BulkOCRFileResult]
 
 
 # ── Knowledge Base ───────────────────────────────────────────────────────────

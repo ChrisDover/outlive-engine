@@ -1,22 +1,29 @@
-"""Bloodwork panel CRUD routes."""
+"""Bloodwork panel CRUD routes with bulk OCR upload support."""
 
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+import logging
+from datetime import date, datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, UploadFile, status
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 from app.config import get_settings
 from app.models.database import get_pool
-from app.models.schemas import BloodworkPanelCreate, BloodworkPanelResponse
+from app.models.schemas import (
+    BloodworkPanelCreate,
+    BloodworkPanelResponse,
+    BulkOCRFileResult,
+    BulkOCRResponse,
+)
 from app.security.auth import get_current_user
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/bloodwork", tags=["bloodwork"])
 limiter = Limiter(key_func=get_remote_address)
 
@@ -132,3 +139,166 @@ async def delete_panel(
     )
     if result == "UPDATE 0":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
+
+
+# ── Bulk OCR Upload ──────────────────────────────────────────────────────────
+
+
+@router.post("/upload", response_model=BulkOCRResponse)
+@limiter.limit("10/minute")
+async def bulk_upload_bloodwork(
+    request: Request,
+    files: list[UploadFile] = File(..., description="PDF or image files of lab reports"),
+    panel_date: date = Form(default=None, description="Date for all panels (defaults to today)"),
+    lab_name: str = Form(default=None, description="Lab name for all panels"),
+    auto_save: bool = Form(default=True, description="Automatically save extracted panels"),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> BulkOCRResponse:
+    """
+    Bulk upload bloodwork files (PDF or images) for OCR extraction.
+
+    Supports:
+    - Multiple files at once
+    - PDF files (extracts all pages)
+    - Image files (PNG, JPG, etc.)
+
+    The OCR pipeline:
+    1. Preprocesses images (enhance contrast, deskew)
+    2. Uses Tesseract for text extraction
+    3. Uses LLM to parse biomarkers from text
+    4. Falls back to vision model if text OCR fails
+
+    Set auto_save=true to automatically create bloodwork panels.
+    """
+    from app.services.ocr_service import process_single_file
+
+    if not files:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No files provided",
+        )
+
+    # Validate file count
+    if len(files) > 20:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Maximum 20 files per upload",
+        )
+
+    results: list[BulkOCRFileResult] = []
+    successful = 0
+    failed = 0
+    total_markers = 0
+
+    panel_date_value = panel_date or date.today()
+    pool = get_pool()
+    key = _enc_key()
+    now = datetime.now(timezone.utc)
+
+    for upload_file in files:
+        filename = upload_file.filename or "unknown"
+        content_type = upload_file.content_type or ""
+
+        # Validate file type
+        valid_types = [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/jpg",
+            "image/gif",
+            "image/webp",
+            "image/tiff",
+        ]
+        is_valid = (
+            content_type in valid_types
+            or filename.lower().endswith((".pdf", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".tiff"))
+        )
+
+        if not is_valid:
+            results.append(BulkOCRFileResult(
+                filename=filename,
+                success=False,
+                error=f"Unsupported file type: {content_type}",
+            ))
+            failed += 1
+            continue
+
+        try:
+            # Read file bytes
+            file_bytes = await upload_file.read()
+
+            # Validate file size (max 50MB)
+            if len(file_bytes) > 50 * 1024 * 1024:
+                results.append(BulkOCRFileResult(
+                    filename=filename,
+                    success=False,
+                    error="File too large (max 50MB)",
+                ))
+                failed += 1
+                continue
+
+            logger.info(f"Processing file: {filename} ({len(file_bytes)} bytes)")
+
+            # Process with OCR
+            ocr_result = await process_single_file(file_bytes, filename, content_type)
+
+            if not ocr_result.markers:
+                results.append(BulkOCRFileResult(
+                    filename=filename,
+                    success=False,
+                    markers=[],
+                    raw_text=ocr_result.raw_text,
+                    confidence=ocr_result.confidence,
+                    error="No markers could be extracted. The image may be unclear or not contain lab results.",
+                ))
+                failed += 1
+                continue
+
+            # Auto-save if requested
+            panel_id = None
+            if auto_save:
+                enc_markers = encrypt_field(
+                    json.dumps([m.model_dump() for m in ocr_result.markers]), key
+                )
+                row = await pool.fetchrow(
+                    """
+                    INSERT INTO bloodwork_panels (user_id, panel_date, lab_name, markers_json, notes, created_at, updated_at)
+                    VALUES ($1, $2, $3, $4, $5, $6, $6)
+                    RETURNING id
+                    """,
+                    current_user["id"],
+                    panel_date_value,
+                    lab_name,
+                    enc_markers,
+                    encrypt_field(f"Extracted from {filename}", key),
+                    now,
+                )
+                panel_id = row["id"]
+
+            results.append(BulkOCRFileResult(
+                filename=filename,
+                success=True,
+                markers=ocr_result.markers,
+                raw_text=ocr_result.raw_text,
+                confidence=ocr_result.confidence,
+                panel_id=panel_id,
+            ))
+            successful += 1
+            total_markers += len(ocr_result.markers)
+
+        except Exception as e:
+            logger.exception(f"Failed to process {filename}")
+            results.append(BulkOCRFileResult(
+                filename=filename,
+                success=False,
+                error=str(e),
+            ))
+            failed += 1
+
+    return BulkOCRResponse(
+        total_files=len(files),
+        successful=successful,
+        failed=failed,
+        total_markers=total_markers,
+        results=results,
+    )
