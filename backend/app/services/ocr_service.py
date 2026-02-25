@@ -324,53 +324,18 @@ async def parse_markers_with_llm(raw_text: str) -> tuple[list[BloodworkMarker], 
     """Use LLM to extract structured biomarker data from OCR text."""
     settings = get_settings()
     url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
-    model = settings.AIRLLM_MODEL
+    # Use mistral for OCR parsing - it's faster than llama3.1
+    model = "mistral"
 
-    system_prompt = """You are an expert at extracting biomarker data from lab report text. Your job is to find and extract ALL biomarkers/test results from the text, even if the OCR quality is imperfect.
+    system_prompt = """Extract biomarkers from lab report text. Return JSON only.
 
-IMPORTANT RULES:
-1. Extract EVERY test result you can identify, even partial ones
-2. For each biomarker, provide:
-   - name: The biomarker name (use full standard names when possible)
-   - value: The numeric result (must be a number)
-   - unit: The unit of measurement (can be empty string if not visible)
-   - reference_low: Lower bound of reference range (null if not shown)
-   - reference_high: Upper bound of reference range (null if not shown)
-   - flag: "H" if high/abnormal high, "L" if low/abnormal low, null otherwise
+For each biomarker: {"name": "...", "value": number, "unit": "...", "reference_low": number|null, "reference_high": number|null, "flag": "H"|"L"|null}
 
-3. Common biomarker patterns to look for:
-   - CBC: WBC, RBC, Hemoglobin, Hematocrit, Platelets, MCV, MCH, MCHC, RDW
-   - Metabolic Panel: Glucose, BUN, Creatinine, Sodium, Potassium, Chloride, CO2, Calcium
-   - Liver: AST, ALT, ALP, Bilirubin, Albumin, Total Protein
-   - Lipids: Total Cholesterol, HDL, LDL, Triglycerides, VLDL, ApoB, Lp(a)
-   - Thyroid: TSH, T3, T4, Free T3, Free T4
-   - Diabetes: Glucose, HbA1c, Insulin
-   - Inflammation: CRP, hs-CRP, ESR
-   - Vitamins: Vitamin D, Vitamin B12, Folate
-   - Iron: Iron, Ferritin, TIBC, Transferrin Saturation
-   - Hormones: Testosterone, Estradiol, DHEA-S, Cortisol
+Return: {"markers": [...], "confidence": 0.0-1.0}"""
 
-4. Reference range formats to recognize:
-   - "70-100", "70 - 100", "(70-100)", "[70-100]"
-   - "< 100" means reference_high = 100
-   - "> 40" means reference_low = 40
-   - Some labs show ranges in separate columns
+    user_message = f"""Extract biomarkers from this lab text as JSON:
 
-5. Flag indicators to recognize:
-   - "H", "HIGH", "*", "↑" = flag "H"
-   - "L", "LOW", "↓" = flag "L"
-   - Text like "ABNORMAL" next to a value
-
-Return ONLY valid JSON: {"markers": [...], "confidence": 0.0-1.0}
-If no markers found: {"markers": [], "confidence": 0.0}"""
-
-    user_message = f"""Extract all biomarkers from this lab report text. Look carefully for any test results even if the text is noisy from OCR:
-
----
-{raw_text}
----
-
-Return JSON with all markers found and a confidence score (0.0-1.0) based on text quality."""
+{raw_text[:3000]}"""
 
     payload = {
         "model": model,
@@ -528,18 +493,28 @@ async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = True) 
     markers: list[BloodworkMarker] = []
     confidence = 0.0
 
-    # Step 2: If we got meaningful text, parse with LLM
-    if len(raw_text) > 50:  # Arbitrary threshold for "meaningful" text
-        markers, confidence = await parse_markers_with_llm(raw_text)
-        logger.info(f"LLM extracted {len(markers)} markers with confidence {confidence}")
+    if len(raw_text) < 50:
+        logger.warning("Not enough text extracted from image")
+        return markers, raw_text, confidence
 
-    # Step 3: If LLM failed, try regex-based extraction
-    if not markers and len(raw_text) > 50:
-        logger.info("LLM failed, trying regex extraction")
-        markers = extract_markers_regex(raw_text)
-        if markers:
-            confidence = 0.5  # Lower confidence for regex extraction
-            logger.info(f"Regex extracted {len(markers)} markers")
+    # Step 2: Try fast regex extraction first
+    markers = extract_markers_regex(raw_text)
+    if markers:
+        confidence = 0.6
+        logger.info(f"Regex extracted {len(markers)} markers")
+
+    # Step 3: If regex found few markers, try LLM for better extraction
+    if len(markers) < 3:
+        logger.info("Trying LLM for better extraction")
+        llm_markers, llm_confidence = await parse_markers_with_llm(raw_text)
+        if llm_markers:
+            # Merge LLM markers with regex markers (LLM takes precedence)
+            marker_dict = {m.name.lower(): m for m in markers}
+            for m in llm_markers:
+                marker_dict[m.name.lower()] = m
+            markers = list(marker_dict.values())
+            confidence = max(confidence, llm_confidence)
+            logger.info(f"After LLM: {len(markers)} total markers")
 
     # Step 4: If still no markers, try vision model as last resort
     if not markers and use_vision_fallback:
