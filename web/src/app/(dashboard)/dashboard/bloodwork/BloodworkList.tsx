@@ -88,18 +88,16 @@ export function BloodworkList({ panels: initialPanels }: BloodworkListProps) {
 
     setBulkDeleting(true);
     try {
-      const params = new URLSearchParams();
-      selectedIds.forEach((id) => params.append("panel_ids", id));
-
-      const res = await fetch(`/api/backend/bloodwork?${params.toString()}`, {
-        method: "DELETE",
+      const res = await fetch(`/api/backend/bloodwork/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Array.from(selectedIds)),
       });
       if (!res.ok) throw new Error("Failed to delete");
 
       const data = await res.json();
       setPanels((prev) => prev.filter((p) => !selectedIds.has(p.id)));
       setSelectedIds(new Set());
-      alert(`Deleted ${data.deleted} panel(s)`);
     } catch (e) {
       alert("Failed to delete panels. Please try again.");
     } finally {

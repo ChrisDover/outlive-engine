@@ -141,11 +141,11 @@ async def delete_panel(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
 
 
-@router.delete("", status_code=status.HTTP_200_OK)
+@router.post("/bulk-delete", status_code=status.HTTP_200_OK)
 @limiter.limit("10/minute")
 async def bulk_delete_panels(
     request: Request,
-    panel_ids: list[UUID] = Query(..., description="List of panel IDs to delete"),
+    panel_ids: list[UUID],
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, int]:
     """Bulk soft-delete multiple bloodwork panels."""
