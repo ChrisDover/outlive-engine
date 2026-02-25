@@ -41,11 +41,12 @@ Return your answer as a JSON object with keys:
 async def _chat_completion(
     system_prompt: str,
     user_message: str,
-    model: str = "gpt-4o",
+    model: str | None = None,
 ) -> dict[str, Any]:
     """Call the AirLLM-compatible chat completions endpoint."""
     settings = get_settings()
     url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
+    model = model or settings.AIRLLM_MODEL
 
     payload = {
         "model": model,
@@ -66,11 +67,12 @@ async def _chat_completion(
 async def chat_completion_multi(
     messages: list[dict[str, str]],
     temperature: float = 0.5,
-    model: str = "gpt-4o",
+    model: str | None = None,
 ) -> dict[str, Any]:
     """Call the LLM with a full multi-turn message history. 120s timeout for local models."""
     settings = get_settings()
     url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
+    model = model or settings.AIRLLM_MODEL
 
     payload = {
         "model": model,
