@@ -8,6 +8,9 @@ import { WearableConnectCard } from "@/components/ui/WearableConnectCard";
 import { ChatBox } from "@/components/ui/ChatBox";
 import { MorningBrief } from "@/components/ui/MorningBrief";
 import { QuickStats } from "@/components/ui/QuickStats";
+import { RecoveryBanner } from "@/components/ui/RecoveryBanner";
+import { CircaseptanCard } from "@/components/ui/CircaseptanCard";
+import { WearableTrends } from "@/components/ui/WearableTrends";
 
 async function getDashboardData(backendUserId: string) {
   try {
@@ -102,12 +105,14 @@ export default async function DashboardPage() {
       name: true,
       ouraAccessToken: true,
       whoopAccessToken: true,
+      withingsAccessToken: true,
     },
   });
 
   const hasOura = !!user?.ouraAccessToken;
   const hasWhoop = !!user?.whoopAccessToken;
-  const hasWearableTokens = hasOura || hasWhoop;
+  const hasWithings = !!user?.withingsAccessToken;
+  const hasWearableTokens = hasOura || hasWhoop || hasWithings;
 
   // Trigger wearable sync if tokens exist (non-blocking)
   if (user?.backendUserId && hasWearableTokens) {
@@ -145,6 +150,14 @@ export default async function DashboardPage() {
     ? data.wearable[0]?.metrics
     : data.wearable?.metrics;
 
+  // Extract enhanced protocol data
+  const protocolData = data.protocol?.protocol || data.protocol;
+  const recoveryZone = protocolData?.recovery_zone?.toLowerCase() ||
+    (wearableMetrics?.recovery_score >= 67 ? 'green' :
+     wearableMetrics?.recovery_score >= 34 ? 'yellow' : 'red');
+  const circaseptanDay = protocolData?.circaseptan_day;
+  const adaptations = protocolData?.adaptations || [];
+
   return (
     <div className="max-w-4xl mx-auto space-y-[var(--space-lg)]">
       {/* Header */}
@@ -165,26 +178,58 @@ export default async function DashboardPage() {
 
       {/* Always show wearable card first when not connected — this is the #1 priority */}
       {!hasWearableTokens && (
-        <WearableConnectCard ouraConnected={hasOura} whoopConnected={hasWhoop} />
+        <WearableConnectCard ouraConnected={hasOura} whoopConnected={hasWhoop} withingsConnected={hasWithings} />
       )}
 
-      {/* NEW LAYOUT: AI Chat / Morning Brief at TOP (Primary Interface) */}
-      <div className="space-y-[var(--space-md)]">
-        {/* Morning Brief - the main AI coach interface */}
-        <MorningBrief brief={data.morningBrief} />
-
-        {/* Quick Stats Row */}
-        <QuickStats
-          hrv={wearableMetrics?.hrv}
-          sleepHours={wearableMetrics?.sleep_hours || wearableMetrics?.total_sleep}
+      {/* Recovery Banner - Full Width at Top */}
+      {hasWearableTokens && wearableMetrics && (
+        <RecoveryBanner
+          zone={recoveryZone as 'green' | 'yellow' | 'red'}
           recoveryScore={wearableMetrics?.recovery_score || wearableMetrics?.readiness_score}
-          streak={data.progressStats?.current_streak || 0}
-          weeklyAdherence={data.progressStats?.this_week?.rate || 0}
+          hrv={wearableMetrics?.hrv}
+          rhr={wearableMetrics?.resting_hr || wearableMetrics?.rhr}
+          sleepScore={wearableMetrics?.sleep_score}
+          sleepHours={wearableMetrics?.sleep_hours || wearableMetrics?.total_sleep}
+          circaseptanDay={circaseptanDay ? {
+            name: circaseptanDay.name,
+            focus: circaseptanDay.focus,
+            dayOfWeek: circaseptanDay.day_of_week,
+          } : undefined}
+          adaptations={adaptations}
         />
+      )}
 
-        {/* Chat Box - always visible */}
-        <ChatBox />
+      {/* Two Column Layout: Circaseptan + Morning Brief */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--space-md)]">
+        {/* Circaseptan Card - Left Column */}
+        {circaseptanDay && (
+          <div className="md:col-span-1">
+            <CircaseptanCard profile={circaseptanDay} />
+          </div>
+        )}
+
+        {/* Morning Brief - Right Column (spans 2 cols if circaseptan present, else 3) */}
+        <div className={circaseptanDay ? "md:col-span-2" : "md:col-span-3"}>
+          <MorningBrief brief={data.morningBrief} />
+        </div>
       </div>
+
+      {/* Quick Stats Row */}
+      <QuickStats
+        hrv={wearableMetrics?.hrv}
+        sleepHours={wearableMetrics?.sleep_hours || wearableMetrics?.total_sleep}
+        recoveryScore={wearableMetrics?.recovery_score || wearableMetrics?.readiness_score}
+        streak={data.progressStats?.current_streak || 0}
+        weeklyAdherence={data.progressStats?.this_week?.rate || 0}
+      />
+
+      {/* Wearable Trends */}
+      {hasWearableTokens && (
+        <WearableTrends />
+      )}
+
+      {/* Chat Box - always visible */}
+      <ChatBox />
 
       {/* Welcome Card for new users */}
       {(isNewUser || !user?.onboardingComplete) && (

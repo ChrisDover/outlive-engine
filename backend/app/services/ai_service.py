@@ -1,4 +1,9 @@
-"""AI service wrapping AirLLM via an OpenAI-compatible API."""
+"""AI service - local Ollama by default, optional external APIs.
+
+Supports:
+- Local: Ollama (llama3.1, llava, etc.)
+- External: Anthropic Claude, OpenAI GPT (requires user acknowledgment)
+"""
 
 from __future__ import annotations
 
@@ -9,7 +14,9 @@ from uuid import UUID
 import httpx
 
 from app.config import get_settings
+from app.models.database import get_pool
 from app.models.schemas import AIInsightResponse, BloodworkMarker, OCRResponse
+from app.security.encryption import decrypt_field, derive_key
 
 logger = logging.getLogger(__name__)
 
@@ -64,12 +71,118 @@ async def _chat_completion(
         return resp.json()
 
 
-async def chat_completion_multi(
+async def _get_user_ai_config(user_id: UUID | None) -> dict[str, Any]:
+    """Get user's AI configuration preferences."""
+    if not user_id:
+        return {"use_local_only": True, "external_provider": None, "external_api_key": None}
+
+    pool = get_pool()
+    row = await pool.fetchrow(
+        """
+        SELECT use_local_only, external_provider, external_api_key,
+               acknowledged_external_warning, preferred_model
+        FROM ai_preferences
+        WHERE user_id = $1
+        """,
+        user_id,
+    )
+
+    if not row:
+        return {"use_local_only": True, "external_provider": None, "external_api_key": None}
+
+    return dict(row)
+
+
+async def _call_anthropic(
     messages: list[dict[str, str]],
+    api_key: str,
+    model: str = "claude-3-haiku-20240307",
     temperature: float = 0.5,
-    model: str | None = None,
 ) -> dict[str, Any]:
-    """Call the LLM with a full multi-turn message history. 120s timeout for local models."""
+    """Call Anthropic Claude API."""
+    # Convert messages to Anthropic format
+    system_message = None
+    anthropic_messages = []
+
+    for msg in messages:
+        if msg["role"] == "system":
+            system_message = msg["content"]
+        else:
+            anthropic_messages.append({
+                "role": msg["role"],
+                "content": msg["content"],
+            })
+
+    payload = {
+        "model": model,
+        "max_tokens": 4096,
+        "temperature": temperature,
+        "messages": anthropic_messages,
+    }
+    if system_message:
+        payload["system"] = system_message
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        resp = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            json=payload,
+            headers={
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+
+        # Convert to OpenAI-compatible format
+        return {
+            "choices": [{
+                "message": {
+                    "role": "assistant",
+                    "content": data["content"][0]["text"],
+                }
+            }],
+            "model": data.get("model"),
+            "usage": {
+                "prompt_tokens": data.get("usage", {}).get("input_tokens"),
+                "completion_tokens": data.get("usage", {}).get("output_tokens"),
+            },
+        }
+
+
+async def _call_openai(
+    messages: list[dict[str, str]],
+    api_key: str,
+    model: str = "gpt-4o-mini",
+    temperature: float = 0.5,
+) -> dict[str, Any]:
+    """Call OpenAI API."""
+    payload = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+    }
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        resp = await client.post(
+            "https://api.openai.com/v1/chat/completions",
+            json=payload,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _call_local_ollama(
+    messages: list[dict[str, str]],
+    model: str | None = None,
+    temperature: float = 0.5,
+) -> dict[str, Any]:
+    """Call local Ollama API."""
     settings = get_settings()
     url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
     model = model or settings.AIRLLM_MODEL
@@ -84,6 +197,59 @@ async def chat_completion_multi(
         resp = await client.post(url, json=payload)
         resp.raise_for_status()
         return resp.json()
+
+
+async def chat_completion_multi(
+    messages: list[dict[str, str]],
+    temperature: float = 0.5,
+    model: str | None = None,
+    user_id: UUID | None = None,
+    require_local: bool = False,
+) -> dict[str, Any]:
+    """
+    Call the LLM with a full multi-turn message history.
+
+    Routes to local or external AI based on user preferences.
+    Falls back to local if external fails.
+
+    Args:
+        messages: Chat message history
+        temperature: Sampling temperature
+        model: Model override (optional)
+        user_id: User ID for preference lookup (optional)
+        require_local: Force local AI regardless of preferences
+    """
+    settings = get_settings()
+
+    # Get user preferences if user_id provided
+    config = await _get_user_ai_config(user_id) if user_id and not require_local else None
+
+    # Determine which AI to use
+    use_external = (
+        config
+        and not config.get("use_local_only", True)
+        and config.get("external_api_key")
+        and config.get("acknowledged_external_warning", False)
+        and not require_local
+    )
+
+    if use_external:
+        try:
+            key = derive_key(settings.FIELD_ENCRYPTION_KEY)
+            api_key = decrypt_field(config["external_api_key"], key)
+            provider = config.get("external_provider", "anthropic")
+
+            if provider == "anthropic":
+                return await _call_anthropic(messages, api_key, model or "claude-3-haiku-20240307", temperature)
+            elif provider == "openai":
+                return await _call_openai(messages, api_key, model or "gpt-4o-mini", temperature)
+            else:
+                logger.warning(f"Unknown provider {provider}, falling back to local")
+        except Exception as e:
+            logger.warning(f"External AI failed ({e}), falling back to local")
+
+    # Default: use local Ollama
+    return await _call_local_ollama(messages, model, temperature)
 
 
 async def analyze_with_ai(

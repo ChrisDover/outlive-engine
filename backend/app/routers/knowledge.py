@@ -329,7 +329,7 @@ async def list_protocols(
                 dose=sr["dose"],
                 unit=sr["unit"],
                 timing=sr["timing"],
-                conditions=sr["conditions"],
+                conditions=json.loads(sr["conditions"]) if isinstance(sr["conditions"], str) else sr["conditions"],
                 rationale=sr["rationale"],
             )
             for sr in supp_rows
@@ -359,7 +359,7 @@ async def list_protocols(
                     frequency=ir["frequency"],
                     created_at=ir["created_at"],
                 ),
-                conditions=ir["conditions"],
+                conditions=json.loads(ir["conditions"]) if isinstance(ir["conditions"], str) else ir["conditions"],
                 rationale=ir["rationale"],
             )
             for ir in int_rows

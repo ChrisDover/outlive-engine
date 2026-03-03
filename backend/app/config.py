@@ -42,10 +42,11 @@ class Settings(BaseSettings):
     TLS_KEY_PATH: str = ""
 
     # ── AI / LLM ──────────────────────────────────────────────────────────
-    # Default: Ollama local. Set to OpenAI/Anthropic URL for cloud models.
+    # Local Ollama for all AI processing - no external APIs
     AIRLLM_BASE_URL: str = "http://localhost:11434/v1"
-    AIRLLM_API_KEY: str = ""       # Only needed for cloud LLM providers
-    AIRLLM_MODEL: str = "llama3.1" # Model name (ollama model or cloud model ID)
+    AIRLLM_API_KEY: str = ""       # Not needed for Ollama
+    AIRLLM_MODEL: str = "llama3.1" # Default model for quick tasks
+    AIRLLM_LARGE_MODEL: str = "llama3.1:70b"  # Larger model for genome analysis (if available)
 
     # ── CORS ──────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]

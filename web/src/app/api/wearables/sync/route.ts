@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { backendClient } from "@/lib/backend-client";
 import { fetchOuraData } from "@/lib/oura-client";
 import { fetchWhoopData } from "@/lib/whoop-client";
+import { fetchWithingsBodyComposition, normalizeWithingsMetrics } from "@/lib/withings-client";
 
 export async function POST() {
   const session = await getServerSession(authOptions);
@@ -20,6 +21,8 @@ export async function POST() {
       ouraRefreshToken: true,
       whoopAccessToken: true,
       whoopRefreshToken: true,
+      withingsAccessToken: true,
+      withingsUserId: true,
     },
   });
 
@@ -52,6 +55,21 @@ export async function POST() {
       }
     } catch (err) {
       errors.push(`Whoop: ${err instanceof Error ? err.message : "unknown error"}`);
+    }
+  }
+
+  // Fetch Withings data if connected (body composition from scale)
+  if (user.withingsAccessToken && user.withingsUserId) {
+    try {
+      const bodyComp = await fetchWithingsBodyComposition(session.user.id);
+      // Get the most recent measurement
+      if (bodyComp.length > 0) {
+        const latest = bodyComp[0];
+        const data = normalizeWithingsMetrics(latest);
+        entries.push(data);
+      }
+    } catch (err) {
+      errors.push(`Withings: ${err instanceof Error ? err.message : "unknown error"}`);
     }
   }
 

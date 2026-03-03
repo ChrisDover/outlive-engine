@@ -1,0 +1,1433 @@
+{
+  "snp_knowledge": [
+    {
+      "rsid": "rs1801133",
+      "gene": "MTHFR",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "methylation",
+      "condition": "MTHFR C677T - Reduced enzyme activity affecting folate metabolism",
+      "risk_level": "moderate",
+      "description": "The T allele reduces MTHFR enzyme activity by ~35% (heterozygous) or ~70% (homozygous), impairing conversion of folate to methylfolate.",
+      "supplements": [
+        {"name": "Methylfolate (5-MTHF)", "dose": "400-800 mcg", "timing": "morning", "rationale": "Bypasses the MTHFR enzyme deficiency"},
+        {"name": "Methylcobalamin (B12)", "dose": "1000 mcg", "timing": "morning", "rationale": "Works synergistically with methylfolate"},
+        {"name": "Riboflavin (B2)", "dose": "25-50 mg", "timing": "morning", "rationale": "MTHFR enzyme cofactor"},
+        {"name": "Betaine (TMG)", "dose": "500-1000 mg", "timing": "with meals", "rationale": "Alternative methylation pathway"}
+      ],
+      "avoid": [
+        {"item": "Folic acid", "reason": "Synthetic form may accumulate and block folate receptors"},
+        {"item": "High alcohol intake", "reason": "Depletes B vitamins and impairs methylation"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Increase leafy greens, liver, legumes for natural folate"},
+        {"type": "testing", "action": "Monitor homocysteine levels quarterly"}
+      ],
+      "tests_recommended": ["Homocysteine", "RBC Folate", "B12", "MMA"],
+      "drug_interactions": [
+        {"drug": "Methotrexate", "effect": "Increased toxicity risk"},
+        {"drug": "Metformin", "effect": "Can deplete B12"}
+      ],
+      "expert_source": "Rhonda Patrick, Ben Lynch",
+      "pubmed_ids": ["19812671", "22223407"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs1801131",
+      "gene": "MTHFR",
+      "risk_allele": "C",
+      "normal_allele": "A",
+      "category": "methylation",
+      "condition": "MTHFR A1298C - Reduced BH4 production",
+      "risk_level": "moderate",
+      "description": "This variant reduces BH4 production, affecting dopamine, serotonin, and nitric oxide synthesis.",
+      "supplements": [
+        {"name": "Methylfolate (5-MTHF)", "dose": "400 mcg", "timing": "morning", "rationale": "Supports overall methylation"},
+        {"name": "SAMe", "dose": "200-400 mg", "timing": "morning empty stomach", "rationale": "Direct methyl donor"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "lifestyle", "action": "Regular exercise to boost natural BH4 production"}
+      ],
+      "tests_recommended": ["Homocysteine", "Neurotransmitter metabolites"],
+      "drug_interactions": [],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["18950526"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1805087",
+      "gene": "MTR",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "methylation",
+      "condition": "MTR A2756G - Altered B12-dependent methionine synthase",
+      "risk_level": "moderate",
+      "description": "Affects methionine synthase activity, impacting homocysteine to methionine conversion. May increase B12 requirements.",
+      "supplements": [
+        {"name": "Methylcobalamin", "dose": "1000-2000 mcg", "timing": "morning", "rationale": "Higher B12 needs"},
+        {"name": "Methylfolate", "dose": "400 mcg", "timing": "morning", "rationale": "Works with MTR enzyme"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "B12-rich foods: organ meats, shellfish, nutritional yeast"}
+      ],
+      "tests_recommended": ["B12", "MMA", "Homocysteine"],
+      "drug_interactions": [],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["12766867"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1801394",
+      "gene": "MTRR",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "methylation",
+      "condition": "MTRR A66G - Reduced methionine synthase reductase",
+      "risk_level": "moderate",
+      "description": "Reduces ability to regenerate active B12, compounding MTR issues. Higher B12 requirements.",
+      "supplements": [
+        {"name": "Methylcobalamin", "dose": "1000-2000 mcg", "timing": "morning", "rationale": "Compensate for reduced recycling"},
+        {"name": "Riboflavin", "dose": "25 mg", "timing": "morning", "rationale": "MTRR cofactor"}
+      ],
+      "avoid": [],
+      "interventions": [],
+      "tests_recommended": ["B12", "MMA", "Homocysteine"],
+      "drug_interactions": [],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["11807892"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs234706",
+      "gene": "CBS",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "methylation",
+      "condition": "CBS C699T - Upregulated cystathionine beta-synthase",
+      "risk_level": "moderate",
+      "description": "Upregulated CBS drains homocysteine toward sulfur pathway, potentially depleting methionine and SAMe.",
+      "supplements": [
+        {"name": "Molybdenum", "dose": "150-300 mcg", "timing": "morning", "rationale": "Supports sulfite processing"},
+        {"name": "Low-dose B6", "dose": "25 mg max", "timing": "morning", "rationale": "CBS cofactor - too much speeds pathway"}
+      ],
+      "avoid": [
+        {"item": "High sulfur foods if symptomatic", "reason": "May overwhelm sulfur processing"},
+        {"item": "High-dose B6", "reason": "Accelerates already fast CBS"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Monitor sulfur food tolerance: eggs, garlic, cruciferous"}
+      ],
+      "tests_recommended": ["Homocysteine", "Ammonia", "Sulfate"],
+      "drug_interactions": [],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["15060115"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs567754",
+      "gene": "BHMT",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "methylation",
+      "condition": "BHMT-08 - Reduced betaine-homocysteine methyltransferase",
+      "risk_level": "low",
+      "description": "Reduces alternative homocysteine recycling pathway via betaine. Important if MTHFR compromised.",
+      "supplements": [
+        {"name": "Betaine (TMG)", "dose": "500-1500 mg", "timing": "with meals", "rationale": "Substrate for BHMT pathway"},
+        {"name": "Phosphatidylcholine", "dose": "1-2g", "timing": "with meals", "rationale": "Precursor to betaine"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "Beets, spinach, quinoa are natural betaine sources"}
+      ],
+      "tests_recommended": ["Homocysteine"],
+      "drug_interactions": [],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["15956292"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs4680",
+      "gene": "COMT",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "methylation",
+      "condition": "COMT Val158Met - Slower dopamine/catecholamine breakdown",
+      "risk_level": "context-dependent",
+      "description": "Met/Met (AA) has 3-4x slower COMT. Benefits: better focus. Risks: anxiety, estrogen dominance.",
+      "supplements": [
+        {"name": "Magnesium", "dose": "300-400 mg", "timing": "evening", "rationale": "COMT cofactor"},
+        {"name": "DIM", "dose": "100-200 mg", "timing": "with meals", "rationale": "Supports estrogen metabolism"}
+      ],
+      "avoid": [
+        {"item": "High-dose methyl donors", "reason": "Can overstimulate catecholamines"},
+        {"item": "Excessive caffeine", "reason": "Increases anxiety"}
+      ],
+      "interventions": [
+        {"type": "lifestyle", "action": "Stress management - meditation, breathing"}
+      ],
+      "tests_recommended": ["Estrogen metabolites", "Catecholamines"],
+      "drug_interactions": [
+        {"drug": "Levodopa", "effect": "Slower breakdown"},
+        {"drug": "ADHD stimulants", "effect": "May need lower doses"}
+      ],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["17913709"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs6323",
+      "gene": "MAOA",
+      "risk_allele": "T",
+      "normal_allele": "G",
+      "category": "neurotransmitter",
+      "condition": "MAOA R297R - Altered monoamine oxidase A",
+      "risk_level": "moderate",
+      "description": "Affects serotonin, dopamine, norepinephrine breakdown. Low activity linked to aggression, high activity to depression risk.",
+      "supplements": [
+        {"name": "Riboflavin", "dose": "25-50 mg", "timing": "morning", "rationale": "MAO cofactor"}
+      ],
+      "avoid": [
+        {"item": "Tyramine-rich foods if on MAOIs", "reason": "Hypertensive crisis risk"}
+      ],
+      "interventions": [
+        {"type": "lifestyle", "action": "Regular exercise for mood regulation"}
+      ],
+      "tests_recommended": ["Neurotransmitter metabolites"],
+      "drug_interactions": [
+        {"drug": "MAO inhibitors", "effect": "Critical interaction"},
+        {"drug": "SSRIs", "effect": "Serotonin syndrome risk"}
+      ],
+      "expert_source": "Ben Lynch",
+      "pubmed_ids": ["12505085"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs429358",
+      "gene": "APOE",
+      "risk_allele": "C",
+      "normal_allele": "T",
+      "category": "neurodegenerative",
+      "condition": "APOE e4 - Increased Alzheimer's and cardiovascular risk",
+      "risk_level": "high",
+      "description": "APOE e4 is the strongest genetic risk factor for late-onset Alzheimer's. One copy 3x risk, two copies 12x.",
+      "supplements": [
+        {"name": "Omega-3 (DHA)", "dose": "2-3g", "timing": "with meals", "rationale": "Critical - e4 carriers have impaired DHA transport"},
+        {"name": "Phosphatidylcholine", "dose": "1-2g", "timing": "with meals", "rationale": "Brain lipid support"},
+        {"name": "Lion's Mane", "dose": "500-1000 mg", "timing": "morning", "rationale": "NGF support"},
+        {"name": "Curcumin", "dose": "500 mg", "timing": "with fat", "rationale": "Anti-amyloid"}
+      ],
+      "avoid": [
+        {"item": "Saturated fat excess", "reason": "Impaired lipid clearance"},
+        {"item": "Alcohol excess", "reason": "More damaging to APOE4 brains"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Mediterranean or ketogenic diet"},
+        {"type": "exercise", "action": "Aerobic exercise critical"},
+        {"type": "sleep", "action": "Prioritize 7-8 hours - sleep clears amyloid"}
+      ],
+      "tests_recommended": ["ApoB", "Lp(a)", "hsCRP", "Fasting insulin"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick, Dale Bredesen",
+      "pubmed_ids": ["23571586"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs6025",
+      "gene": "F5",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "cardiovascular",
+      "condition": "Factor V Leiden - Increased clotting risk",
+      "risk_level": "high",
+      "description": "Most common inherited clotting disorder. Increases DVT and PE risk significantly.",
+      "supplements": [
+        {"name": "Nattokinase", "dose": "2000 FU", "timing": "empty stomach", "rationale": "Fibrinolytic"},
+        {"name": "Fish Oil", "dose": "2-3g", "timing": "with meals", "rationale": "Mild blood-thinning"}
+      ],
+      "avoid": [
+        {"item": "Smoking", "reason": "Dramatically increases clot risk"},
+        {"item": "Prolonged immobility", "reason": "DVT risk"},
+        {"item": "Estrogen birth control", "reason": "Very high clot risk combined"}
+      ],
+      "interventions": [
+        {"type": "travel", "action": "Compression socks for flights, walk hourly"}
+      ],
+      "tests_recommended": ["D-dimer", "PT/INR"],
+      "drug_interactions": [
+        {"drug": "Oral contraceptives", "effect": "Avoid estrogen-containing"}
+      ],
+      "expert_source": "Cleveland Clinic",
+      "pubmed_ids": ["7750866"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs1799963",
+      "gene": "F2",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "cardiovascular",
+      "condition": "Prothrombin G20210A - Elevated prothrombin",
+      "risk_level": "high",
+      "description": "Increases prothrombin levels by 30%, elevating clot risk. Second most common thrombophilia.",
+      "supplements": [
+        {"name": "Nattokinase", "dose": "2000 FU", "timing": "empty stomach", "rationale": "Fibrinolytic support"},
+        {"name": "Fish Oil", "dose": "2-3g", "timing": "with meals", "rationale": "Mild anticoagulant"}
+      ],
+      "avoid": [
+        {"item": "Smoking", "reason": "Compounds clot risk"},
+        {"item": "Estrogen therapy", "reason": "Increased thrombosis risk"}
+      ],
+      "interventions": [
+        {"type": "lifestyle", "action": "Stay active, avoid prolonged sitting"},
+        {"type": "hydration", "action": "Maintain good hydration"}
+      ],
+      "tests_recommended": ["D-dimer", "PT/INR", "Fibrinogen"],
+      "drug_interactions": [],
+      "expert_source": "Cleveland Clinic",
+      "pubmed_ids": ["8614419"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs11591147",
+      "gene": "PCSK9",
+      "risk_allele": "T",
+      "normal_allele": "G",
+      "category": "cardiovascular",
+      "condition": "PCSK9 Loss-of-function - Lower LDL cholesterol",
+      "risk_level": "protective",
+      "description": "Loss-of-function variants reduce LDL-C and significantly lower cardiovascular disease risk.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "monitoring", "action": "Still monitor lipids, but likely favorable profile"}
+      ],
+      "tests_recommended": ["Lipid panel", "ApoB"],
+      "drug_interactions": [
+        {"drug": "PCSK9 inhibitors", "effect": "May not need if naturally low LDL"}
+      ],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["16554528"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs10455872",
+      "gene": "LPA",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "cardiovascular",
+      "condition": "Lp(a) Elevated - Increased cardiovascular risk",
+      "risk_level": "high",
+      "description": "Associated with elevated Lp(a), an independent cardiovascular risk factor not modifiable by lifestyle.",
+      "supplements": [
+        {"name": "Niacin", "dose": "500-2000 mg", "timing": "with meals", "rationale": "Only supplement shown to lower Lp(a)"},
+        {"name": "Fish Oil", "dose": "2-4g", "timing": "with meals", "rationale": "Anti-inflammatory support"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "monitoring", "action": "Aggressive apoB management even more critical"},
+        {"type": "testing", "action": "Test Lp(a) once - it's stable over lifetime"}
+      ],
+      "tests_recommended": ["Lp(a)", "ApoB", "CAC score"],
+      "drug_interactions": [],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["19474068"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs1333049",
+      "gene": "9p21",
+      "risk_allele": "C",
+      "normal_allele": "G",
+      "category": "cardiovascular",
+      "condition": "9p21 Risk Locus - Coronary artery disease risk",
+      "risk_level": "moderate",
+      "description": "Strongest common genetic risk factor for CAD. Mechanism involves cell cycle regulation.",
+      "supplements": [
+        {"name": "Fish Oil", "dose": "2-3g", "timing": "with meals", "rationale": "Anti-inflammatory"},
+        {"name": "CoQ10", "dose": "100-200 mg", "timing": "with fat", "rationale": "Cardiovascular support"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "lifestyle", "action": "Aggressive cardiovascular risk factor management"},
+        {"type": "monitoring", "action": "Consider early CAC scoring"}
+      ],
+      "tests_recommended": ["CAC score", "ApoB", "hsCRP"],
+      "drug_interactions": [],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["17478679"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs7903146",
+      "gene": "TCF7L2",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "metabolic",
+      "condition": "TCF7L2 - Type 2 Diabetes risk",
+      "risk_level": "high",
+      "description": "Strongest genetic risk factor for T2D. Impairs insulin secretion and incretin signaling.",
+      "supplements": [
+        {"name": "Berberine", "dose": "500 mg 2-3x daily", "timing": "before meals", "rationale": "Improves insulin sensitivity"},
+        {"name": "Chromium", "dose": "200-400 mcg", "timing": "with meals", "rationale": "Insulin signaling"},
+        {"name": "Alpha Lipoic Acid", "dose": "300-600 mg", "timing": "before meals", "rationale": "Glucose uptake"}
+      ],
+      "avoid": [
+        {"item": "Refined carbohydrates", "reason": "Impaired insulin response"},
+        {"item": "Sugary drinks", "reason": "Overwhelms insulin system"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Low glycemic, time-restricted eating"},
+        {"type": "exercise", "action": "Post-meal walks, resistance training"},
+        {"type": "monitoring", "action": "Consider CGM"}
+      ],
+      "tests_recommended": ["Fasting glucose", "Fasting insulin", "HbA1c", "HOMA-IR"],
+      "drug_interactions": [],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["16415884"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs9939609",
+      "gene": "FTO",
+      "risk_allele": "A",
+      "normal_allele": "T",
+      "category": "metabolic",
+      "condition": "FTO - Obesity susceptibility",
+      "risk_level": "moderate",
+      "description": "Strongest obesity risk gene. Affects appetite regulation and energy expenditure. Each A allele +3kg average.",
+      "supplements": [
+        {"name": "Fiber supplement", "dose": "10-15g", "timing": "before meals", "rationale": "Enhance satiety"},
+        {"name": "Berberine", "dose": "500 mg", "timing": "before meals", "rationale": "Metabolic support"}
+      ],
+      "avoid": [
+        {"item": "Ultra-processed foods", "reason": "Hyperpalatable foods compound FTO effects"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "High protein diet for satiety"},
+        {"type": "exercise", "action": "Regular exercise can overcome genetic predisposition"},
+        {"type": "monitoring", "action": "Track food intake - higher vigilance needed"}
+      ],
+      "tests_recommended": ["Body composition", "Metabolic panel"],
+      "drug_interactions": [],
+      "expert_source": "Tim Ferriss",
+      "pubmed_ids": ["17434869"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs1801282",
+      "gene": "PPARG",
+      "risk_allele": "G",
+      "normal_allele": "C",
+      "category": "metabolic",
+      "condition": "PPARG Pro12Ala - Improved insulin sensitivity",
+      "risk_level": "protective",
+      "description": "The Ala variant improves insulin sensitivity and reduces T2D risk. More efficient fat storage.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "Can tolerate higher carbs than average - still moderate"}
+      ],
+      "tests_recommended": ["Fasting insulin", "HOMA-IR"],
+      "drug_interactions": [
+        {"drug": "Thiazolidinediones", "effect": "PPARG agonists - enhanced response possible"}
+      ],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["9614170"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs17300539",
+      "gene": "ADIPOQ",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "metabolic",
+      "condition": "Adiponectin -11391G>A - Lower adiponectin",
+      "risk_level": "moderate",
+      "description": "Associated with lower adiponectin levels, reducing insulin sensitivity and increasing inflammation.",
+      "supplements": [
+        {"name": "Fish Oil", "dose": "2-3g", "timing": "with meals", "rationale": "May increase adiponectin"},
+        {"name": "Berberine", "dose": "500 mg", "timing": "before meals", "rationale": "Increases adiponectin"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "exercise", "action": "Regular exercise increases adiponectin"},
+        {"type": "diet", "action": "Mediterranean diet supports adiponectin"}
+      ],
+      "tests_recommended": ["Adiponectin", "Fasting insulin"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["15677783"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1800795",
+      "gene": "IL6",
+      "risk_allele": "C",
+      "normal_allele": "G",
+      "category": "inflammation",
+      "condition": "IL-6 -174G>C - Increased inflammatory response",
+      "risk_level": "moderate",
+      "description": "Higher baseline IL-6 levels. Linked to cardiovascular disease and age-related decline.",
+      "supplements": [
+        {"name": "Fish Oil (EPA/DHA)", "dose": "2-3g", "timing": "with meals", "rationale": "Anti-inflammatory"},
+        {"name": "Curcumin", "dose": "500-1000 mg", "timing": "with fat", "rationale": "Reduces IL-6"}
+      ],
+      "avoid": [
+        {"item": "Seed oils", "reason": "Pro-inflammatory"},
+        {"item": "Excess sugar", "reason": "Drives inflammation"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Anti-inflammatory Mediterranean diet"},
+        {"type": "sleep", "action": "7-8 hours - sleep deprivation increases IL-6"}
+      ],
+      "tests_recommended": ["hsCRP", "IL-6", "Fibrinogen"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["9872316"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1800629",
+      "gene": "TNF",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "inflammation",
+      "condition": "TNF-alpha -308G>A - Increased TNF production",
+      "risk_level": "moderate",
+      "description": "Higher TNF-alpha production. Associated with increased inflammation and autoimmune risk.",
+      "supplements": [
+        {"name": "Fish Oil", "dose": "3-4g", "timing": "with meals", "rationale": "Reduces TNF production"},
+        {"name": "Curcumin", "dose": "1000 mg", "timing": "with fat", "rationale": "TNF inhibitor"},
+        {"name": "Boswellia", "dose": "300-500 mg", "timing": "with meals", "rationale": "Anti-inflammatory"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "Strict anti-inflammatory diet"},
+        {"type": "lifestyle", "action": "Stress management - cortisol increases TNF"}
+      ],
+      "tests_recommended": ["hsCRP", "TNF-alpha", "ESR"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["7584134"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1205",
+      "gene": "CRP",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "inflammation",
+      "condition": "CRP genetic variant - Elevated baseline CRP",
+      "risk_level": "moderate",
+      "description": "Genetically elevated CRP levels. Important to distinguish from lifestyle-driven inflammation.",
+      "supplements": [
+        {"name": "Fish Oil", "dose": "2-3g", "timing": "with meals", "rationale": "Lowers CRP"},
+        {"name": "Curcumin", "dose": "500 mg", "timing": "with fat", "rationale": "Anti-inflammatory"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "monitoring", "action": "Use genetic context when interpreting hsCRP results"}
+      ],
+      "tests_recommended": ["hsCRP serial measurements"],
+      "drug_interactions": [],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["18403759"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs16944",
+      "gene": "IL1B",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "inflammation",
+      "condition": "IL-1B -511C>T - Increased IL-1B production",
+      "risk_level": "moderate",
+      "description": "Higher IL-1B production associated with chronic inflammation and periodontal disease risk.",
+      "supplements": [
+        {"name": "Fish Oil", "dose": "2-3g", "timing": "with meals", "rationale": "Anti-inflammatory"},
+        {"name": "Vitamin D", "dose": "4000-5000 IU", "timing": "morning", "rationale": "Immune modulation"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "dental", "action": "Extra attention to oral health - higher periodontal risk"}
+      ],
+      "tests_recommended": ["hsCRP", "Periodontal assessment"],
+      "drug_interactions": [],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["11159943"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs762551",
+      "gene": "CYP1A2",
+      "risk_allele": "C",
+      "normal_allele": "A",
+      "category": "detox",
+      "condition": "CYP1A2 - Slow caffeine metabolizer",
+      "risk_level": "moderate",
+      "description": "Slower caffeine metabolism. Higher cardiovascular risk with excess caffeine, sleep disruption.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Caffeine after noon", "reason": "Affects sleep 8+ hours"},
+        {"item": "More than 200mg caffeine/day", "reason": "Higher cardiovascular risk"}
+      ],
+      "interventions": [
+        {"type": "timing", "action": "Last caffeine by 10-11am"},
+        {"type": "alternative", "action": "L-theanine to smooth caffeine effects"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [
+        {"drug": "Fluvoxamine", "effect": "Further slows caffeine metabolism"},
+        {"drug": "Ciprofloxacin", "effect": "Further slows caffeine metabolism"}
+      ],
+      "expert_source": "Andrew Huberman",
+      "pubmed_ids": ["16522833"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs3892097",
+      "gene": "CYP2D6",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "detox",
+      "condition": "CYP2D6*4 - Poor metabolizer",
+      "risk_level": "high",
+      "description": "Non-functional CYP2D6 allele. Affects metabolism of 25% of drugs including codeine, tamoxifen, antidepressants.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Codeine", "reason": "Cannot convert to morphine - ineffective"},
+        {"item": "Tramadol", "reason": "Reduced activation"}
+      ],
+      "interventions": [
+        {"type": "medical", "action": "Inform physicians of CYP2D6 status for drug selection"}
+      ],
+      "tests_recommended": ["Pharmacogenomic panel"],
+      "drug_interactions": [
+        {"drug": "Codeine", "effect": "Ineffective - no conversion to morphine"},
+        {"drug": "Tamoxifen", "effect": "Reduced effectiveness"},
+        {"drug": "Many SSRIs", "effect": "Dosing adjustments needed"}
+      ],
+      "expert_source": "FDA pharmacogenomics",
+      "pubmed_ids": ["16958828"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs2740574",
+      "gene": "CYP3A4",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "detox",
+      "condition": "CYP3A4*1B - Altered drug metabolism",
+      "risk_level": "moderate",
+      "description": "Affects metabolism of 50% of drugs. Important for statins, immunosuppressants, many medications.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Grapefruit juice with medications", "reason": "CYP3A4 inhibitor - drug accumulation"}
+      ],
+      "interventions": [
+        {"type": "medical", "action": "Inform physicians for drug dosing"}
+      ],
+      "tests_recommended": ["Pharmacogenomic panel"],
+      "drug_interactions": [
+        {"drug": "Statins (some)", "effect": "May need dose adjustment"},
+        {"drug": "Calcium channel blockers", "effect": "Altered metabolism"}
+      ],
+      "expert_source": "FDA pharmacogenomics",
+      "pubmed_ids": ["11685227"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs4025935",
+      "gene": "GSTM1",
+      "risk_allele": "null",
+      "normal_allele": "present",
+      "category": "detox",
+      "condition": "GSTM1 null - Reduced glutathione conjugation",
+      "risk_level": "moderate",
+      "description": "Absent GSTM1 enzyme reduces Phase II detoxification. Higher oxidative stress, cancer risk from carcinogens.",
+      "supplements": [
+        {"name": "NAC", "dose": "600-1200 mg", "timing": "morning", "rationale": "Glutathione precursor"},
+        {"name": "Sulforaphane", "dose": "10-30 mg", "timing": "with meals", "rationale": "Upregulates other GSTs"},
+        {"name": "Alpha Lipoic Acid", "dose": "300-600 mg", "timing": "morning", "rationale": "Antioxidant, glutathione recycling"}
+      ],
+      "avoid": [
+        {"item": "Tobacco smoke", "reason": "Cannot detoxify carcinogens effectively"},
+        {"item": "Charred meats", "reason": "Reduced PAH clearance"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Cruciferous vegetables daily for other GST induction"}
+      ],
+      "tests_recommended": ["Glutathione levels"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["11967225"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs4986852",
+      "gene": "GSTP1",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "detox",
+      "condition": "GSTP1 Ile105Val - Reduced detoxification",
+      "risk_level": "moderate",
+      "description": "Reduced GSTP1 activity affects detoxification of certain carcinogens and drugs.",
+      "supplements": [
+        {"name": "NAC", "dose": "600-1200 mg", "timing": "morning", "rationale": "Glutathione support"},
+        {"name": "Sulforaphane", "dose": "10-30 mg", "timing": "with meals", "rationale": "Phase II enzyme inducer"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "Antioxidant-rich diet, cruciferous vegetables"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [
+        {"drug": "Certain chemotherapies", "effect": "Altered metabolism"}
+      ],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["10323752"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs2228570",
+      "gene": "VDR",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "vitamins",
+      "condition": "VDR FokI - Reduced vitamin D receptor function",
+      "risk_level": "moderate",
+      "description": "Less efficient vitamin D receptor. May need higher vitamin D levels for same biological effect.",
+      "supplements": [
+        {"name": "Vitamin D3", "dose": "5000-10000 IU", "timing": "with fat", "rationale": "Higher doses may be needed"},
+        {"name": "Vitamin K2", "dose": "200 mcg", "timing": "with D3", "rationale": "Ensures proper calcium handling"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "testing", "action": "Target higher 25(OH)D levels: 60-80 ng/mL"}
+      ],
+      "tests_recommended": ["25-OH Vitamin D", "Calcium", "PTH"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["12627875"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs2282679",
+      "gene": "GC",
+      "risk_allele": "C",
+      "normal_allele": "A",
+      "category": "vitamins",
+      "condition": "GC - Lower vitamin D binding protein",
+      "risk_level": "moderate",
+      "description": "Lower circulating 25(OH)D due to reduced binding protein. Higher supplementation needed.",
+      "supplements": [
+        {"name": "Vitamin D3", "dose": "4000-5000 IU", "timing": "with fat", "rationale": "Compensate for lower binding"},
+        {"name": "Vitamin K2 (MK-7)", "dose": "100-200 mcg", "timing": "with D3", "rationale": "Calcium direction"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "sun", "action": "Regular sun exposure"},
+        {"type": "testing", "action": "Monitor levels quarterly, target 50-70 ng/mL"}
+      ],
+      "tests_recommended": ["25-OH Vitamin D", "Calcium"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["20418485"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs7501331",
+      "gene": "BCMO1",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "vitamins",
+      "condition": "BCMO1 - Reduced beta-carotene conversion",
+      "risk_level": "moderate",
+      "description": "Impaired conversion of beta-carotene to vitamin A. Need preformed vitamin A (retinol).",
+      "supplements": [
+        {"name": "Retinol (Vitamin A)", "dose": "5000-10000 IU", "timing": "with fat", "rationale": "Preformed A needed"},
+        {"name": "Cod liver oil", "dose": "1 tsp", "timing": "morning", "rationale": "Natural retinol source"}
+      ],
+      "avoid": [
+        {"item": "Relying on beta-carotene for vitamin A", "reason": "Poor conversion"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Include liver, egg yolks, dairy for preformed vitamin A"}
+      ],
+      "tests_recommended": ["Retinol levels"],
+      "drug_interactions": [],
+      "expert_source": "Chris Masterjohn",
+      "pubmed_ids": ["22113863"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs33972313",
+      "gene": "SLC23A1",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "vitamins",
+      "condition": "SLC23A1 - Reduced vitamin C transport",
+      "risk_level": "moderate",
+      "description": "Impaired vitamin C absorption and tissue accumulation. Higher intake may be needed.",
+      "supplements": [
+        {"name": "Vitamin C", "dose": "1000-2000 mg", "timing": "divided doses", "rationale": "Higher intake needed"},
+        {"name": "Liposomal Vitamin C", "dose": "1000 mg", "timing": "morning", "rationale": "Better absorption"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "High vitamin C foods throughout day: citrus, peppers, berries"}
+      ],
+      "tests_recommended": ["Plasma vitamin C"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["20200263"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs2802292",
+      "gene": "FOXO3",
+      "risk_allele": "G",
+      "normal_allele": "T",
+      "category": "longevity",
+      "condition": "FOXO3 - Longevity variant",
+      "risk_level": "protective",
+      "description": "G allele associated with exceptional longevity. Found in centenarians. Stress resistance gene.",
+      "supplements": [
+        {"name": "Resveratrol", "dose": "150-500 mg", "timing": "morning", "rationale": "Activates FOXO3"},
+        {"name": "Pterostilbene", "dose": "50-100 mg", "timing": "morning", "rationale": "More bioavailable FOXO3 activator"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "fasting", "action": "Intermittent fasting activates FOXO3"},
+        {"type": "exercise", "action": "Exercise upregulates FOXO3"},
+        {"type": "cold", "action": "Cold exposure activates FOXO3"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "David Sinclair",
+      "pubmed_ids": ["18316725"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs2736100",
+      "gene": "TERT",
+      "risk_allele": "C",
+      "normal_allele": "A",
+      "category": "longevity",
+      "condition": "TERT - Telomerase activity variant",
+      "risk_level": "informational",
+      "description": "Affects telomerase activity and telomere length. Complex effects - associated with both longevity and cancer risk.",
+      "supplements": [
+        {"name": "Astragalus", "dose": "500-1000 mg", "timing": "morning", "rationale": "TA-65 precursor, telomerase support"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "lifestyle", "action": "Stress reduction - chronic stress shortens telomeres"},
+        {"type": "exercise", "action": "Regular exercise maintains telomere length"}
+      ],
+      "tests_recommended": ["Telomere length testing if curious"],
+      "drug_interactions": [],
+      "expert_source": "David Sinclair",
+      "pubmed_ids": ["19412176"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs5882",
+      "gene": "CETP",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "longevity",
+      "condition": "CETP - Higher HDL cholesterol",
+      "risk_level": "protective",
+      "description": "Reduced CETP activity leads to higher HDL and larger HDL particles. Associated with longevity.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [],
+      "tests_recommended": ["Lipid panel", "HDL particle size"],
+      "drug_interactions": [
+        {"drug": "CETP inhibitors", "effect": "May not need - naturally favorable"}
+      ],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["18268147"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1801260",
+      "gene": "CLOCK",
+      "risk_allele": "C",
+      "normal_allele": "T",
+      "category": "sleep",
+      "condition": "CLOCK 3111T>C - Delayed circadian rhythm",
+      "risk_level": "moderate",
+      "description": "Associated with being a night owl, delayed sleep phase, and possible metabolic effects.",
+      "supplements": [
+        {"name": "Melatonin", "dose": "0.5-3 mg", "timing": "1-2 hours before desired bedtime", "rationale": "Help shift rhythm earlier"}
+      ],
+      "avoid": [
+        {"item": "Late-night light exposure", "reason": "Further delays already-delayed rhythm"},
+        {"item": "Late eating", "reason": "Metabolic disruption"}
+      ],
+      "interventions": [
+        {"type": "light", "action": "Morning bright light exposure to advance rhythm"},
+        {"type": "timing", "action": "Consistent sleep schedule even on weekends"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Andrew Huberman",
+      "pubmed_ids": ["9465003"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs2304672",
+      "gene": "PER2",
+      "risk_allele": "G",
+      "normal_allele": "C",
+      "category": "sleep",
+      "condition": "PER2 - Morning person variant",
+      "risk_level": "informational",
+      "description": "Associated with being a morning person (early chronotype). Natural early risers.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Forcing late-night schedule", "reason": "Against natural rhythm"}
+      ],
+      "interventions": [
+        {"type": "lifestyle", "action": "Align schedule with natural early chronotype"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Andrew Huberman",
+      "pubmed_ids": ["11232563"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs228697",
+      "gene": "PER3",
+      "risk_allele": "G",
+      "normal_allele": "C",
+      "category": "sleep",
+      "condition": "PER3 - Sleep duration needs",
+      "risk_level": "informational",
+      "description": "Affects sleep duration needs. Some variants require more sleep for optimal cognitive function.",
+      "supplements": [
+        {"name": "Magnesium Glycinate", "dose": "300-400 mg", "timing": "before bed", "rationale": "Sleep quality support"}
+      ],
+      "avoid": [
+        {"item": "Sleep restriction", "reason": "May need full 8+ hours"}
+      ],
+      "interventions": [
+        {"type": "sleep", "action": "Prioritize adequate sleep duration for your genetics"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Andrew Huberman",
+      "pubmed_ids": ["16220323"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1815739",
+      "gene": "ACTN3",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "athletic",
+      "condition": "ACTN3 R577X - Muscle fiber type",
+      "risk_level": "informational",
+      "description": "XX genotype (TT) lacks alpha-actinin-3, shifting toward slow-twitch fibers. Better endurance, less power.",
+      "supplements": [
+        {"name": "Creatine", "dose": "5g", "timing": "daily", "rationale": "Important for power despite genetics"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "training", "action": "XX: Endurance sports advantage. RR: Power/sprint advantage. RX: Mixed."}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Athletic genetics research",
+      "pubmed_ids": ["12879365"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs4343",
+      "gene": "ACE",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "athletic",
+      "condition": "ACE I/D - Endurance vs power",
+      "risk_level": "informational",
+      "description": "I allele favors endurance (more efficient oxygen use). D allele favors power/strength.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "training", "action": "II: Focus on endurance. DD: Power training advantage. ID: Balanced."}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [
+        {"drug": "ACE inhibitors", "effect": "DD genotype may have enhanced response"}
+      ],
+      "expert_source": "Athletic genetics research",
+      "pubmed_ids": ["10694833"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs8192678",
+      "gene": "PPARGC1A",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "athletic",
+      "condition": "PGC-1alpha - Mitochondrial biogenesis",
+      "risk_level": "informational",
+      "description": "Affects mitochondrial biogenesis and aerobic capacity. Key for endurance performance.",
+      "supplements": [
+        {"name": "PQQ", "dose": "10-20 mg", "timing": "morning", "rationale": "Supports mitochondrial biogenesis"},
+        {"name": "CoQ10", "dose": "100-200 mg", "timing": "with fat", "rationale": "Mitochondrial function"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "training", "action": "Zone 2 training particularly important for mitochondrial density"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Peter Attia",
+      "pubmed_ids": ["12629531"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1799983",
+      "gene": "NOS3",
+      "risk_allele": "T",
+      "normal_allele": "G",
+      "category": "cardiovascular",
+      "condition": "eNOS - Reduced nitric oxide production",
+      "risk_level": "moderate",
+      "description": "Reduced NO production affects blood vessel dilation and cardiovascular health.",
+      "supplements": [
+        {"name": "L-Citrulline", "dose": "3-6g", "timing": "pre-exercise", "rationale": "Boosts NO"},
+        {"name": "Beetroot powder", "dose": "5-10g", "timing": "pre-workout", "rationale": "Nitrate source"}
+      ],
+      "avoid": [
+        {"item": "Alcohol-based mouthwash", "reason": "Kills NO-producing oral bacteria"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Nitrate-rich foods: beets, arugula, spinach"},
+        {"type": "breathing", "action": "Nasal breathing - nose produces NO"}
+      ],
+      "tests_recommended": ["Blood pressure", "Endothelial function"],
+      "drug_interactions": [
+        {"drug": "PDE5 inhibitors", "effect": "Enhanced effect possible"}
+      ],
+      "expert_source": "Bryan Johnson",
+      "pubmed_ids": ["8530099"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1042522",
+      "gene": "TP53",
+      "risk_allele": "C",
+      "normal_allele": "G",
+      "category": "cancer",
+      "condition": "TP53 Arg72Pro - Tumor suppressor variant",
+      "risk_level": "moderate",
+      "description": "TP53 is the most important tumor suppressor. Variant affects apoptosis efficiency.",
+      "supplements": [
+        {"name": "Sulforaphane", "dose": "10-30 mg", "timing": "with meals", "rationale": "Supports p53 function"},
+        {"name": "Green Tea Extract", "dose": "300-500 mg", "timing": "between meals", "rationale": "DNA repair"}
+      ],
+      "avoid": [
+        {"item": "Smoking", "reason": "DNA damage"},
+        {"item": "Excessive alcohol", "reason": "Carcinogenic"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Cruciferous vegetables daily"}
+      ],
+      "tests_recommended": ["Age-appropriate cancer screenings"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["15489888"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs4988235",
+      "gene": "MCM6",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "digestion",
+      "condition": "Lactase Persistence - Lactose tolerance",
+      "risk_level": "informational",
+      "description": "G/G indicates likely lactose intolerance. A allele maintains lactase into adulthood.",
+      "supplements": [
+        {"name": "Lactase enzyme", "dose": "as needed", "timing": "with dairy", "rationale": "Provides missing enzyme"}
+      ],
+      "avoid": [
+        {"item": "Dairy if G/G", "reason": "GI distress likely"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Lactose-free options, hard cheeses, or plant milks"}
+      ],
+      "tests_recommended": ["Hydrogen breath test"],
+      "drug_interactions": [],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["11788828"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs7775228",
+      "gene": "HLA-DQ2.5",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "digestion",
+      "condition": "HLA-DQ2.5 - Celiac disease risk",
+      "risk_level": "high",
+      "description": "Major genetic risk factor for celiac disease. Not deterministic but required for celiac.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Gluten if symptomatic or diagnosed", "reason": "Triggers autoimmune response"}
+      ],
+      "interventions": [
+        {"type": "testing", "action": "Screen for celiac if GI symptoms or family history"}
+      ],
+      "tests_recommended": ["tTG-IgA", "Total IgA", "Consider endoscopy if positive"],
+      "drug_interactions": [],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["18350166"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs1800497",
+      "gene": "ANKK1/DRD2",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "dopamine",
+      "condition": "DRD2 Taq1A - Reduced dopamine receptors",
+      "risk_level": "moderate",
+      "description": "A1 allele associated with 30-40% fewer D2 receptors. Affects reward, addiction vulnerability.",
+      "supplements": [
+        {"name": "L-Tyrosine", "dose": "500-1000 mg", "timing": "morning empty stomach", "rationale": "Dopamine precursor"},
+        {"name": "Mucuna Pruriens", "dose": "100-200 mg", "timing": "morning", "rationale": "Natural L-DOPA"}
+      ],
+      "avoid": [
+        {"item": "Addictive behaviors", "reason": "Higher vulnerability"}
+      ],
+      "interventions": [
+        {"type": "lifestyle", "action": "Exercise for natural dopamine boost"},
+        {"type": "goals", "action": "Small wins for dopamine hits"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Andrew Huberman",
+      "pubmed_ids": ["9073993"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs53576",
+      "gene": "OXTR",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "behavior",
+      "condition": "Oxytocin Receptor - Social bonding",
+      "risk_level": "informational",
+      "description": "G allele associated with higher empathy and social bonding. A allele may need more intentional social connection.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "social", "action": "Prioritize close relationships"},
+        {"type": "touch", "action": "Physical affection increases oxytocin"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Behavioral genetics",
+      "pubmed_ids": ["19934046"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs25531",
+      "gene": "SLC6A4",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "behavior",
+      "condition": "Serotonin Transporter - Stress sensitivity",
+      "risk_level": "moderate",
+      "description": "Short allele associated with increased stress sensitivity and depression risk in adverse environments.",
+      "supplements": [
+        {"name": "5-HTP", "dose": "50-100 mg", "timing": "evening", "rationale": "Serotonin precursor - use cautiously"},
+        {"name": "Omega-3s", "dose": "2-3g", "timing": "with meals", "rationale": "Supports serotonin function"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "lifestyle", "action": "Stress management particularly important"},
+        {"type": "environment", "action": "Create supportive, low-stress environments"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [
+        {"drug": "SSRIs", "effect": "May affect response"}
+      ],
+      "expert_source": "Behavioral genetics",
+      "pubmed_ids": ["12869766"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1799971",
+      "gene": "OPRM1",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "pain",
+      "condition": "OPRM1 A118G - Altered opioid receptor",
+      "risk_level": "moderate",
+      "description": "Affects opioid receptor binding. G allele may have reduced pain relief from opioids, higher doses needed.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "medical", "action": "Inform physicians - may affect pain medication response"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [
+        {"drug": "Opioid analgesics", "effect": "May need higher doses for pain relief"},
+        {"drug": "Naltrexone", "effect": "Altered response"}
+      ],
+      "expert_source": "Pharmacogenomics",
+      "pubmed_ids": ["15640680"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs4149056",
+      "gene": "SLCO1B1",
+      "risk_allele": "C",
+      "normal_allele": "T",
+      "category": "drug_response",
+      "condition": "SLCO1B1 - Statin myopathy risk",
+      "risk_level": "high",
+      "description": "C allele significantly increases risk of statin-induced myopathy, especially with simvastatin.",
+      "supplements": [
+        {"name": "CoQ10", "dose": "100-200 mg", "timing": "with statin", "rationale": "May reduce myopathy risk"}
+      ],
+      "avoid": [
+        {"item": "Simvastatin high dose", "reason": "Highest myopathy risk"}
+      ],
+      "interventions": [
+        {"type": "medical", "action": "Consider alternative statins: pravastatin, rosuvastatin lower risk"}
+      ],
+      "tests_recommended": ["CK if starting statins"],
+      "drug_interactions": [
+        {"drug": "Simvastatin", "effect": "High myopathy risk - consider alternatives"},
+        {"drug": "Atorvastatin", "effect": "Moderate increased risk"}
+      ],
+      "expert_source": "FDA pharmacogenomics",
+      "pubmed_ids": ["18650507"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs12248560",
+      "gene": "CYP2C19",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "drug_response",
+      "condition": "CYP2C19*17 - Ultra-rapid metabolizer",
+      "risk_level": "moderate",
+      "description": "Ultra-rapid metabolism of CYP2C19 substrates. Clopidogrel more effective but some drugs less effective.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "medical", "action": "Inform physicians for drug selection and dosing"}
+      ],
+      "tests_recommended": ["Pharmacogenomic panel"],
+      "drug_interactions": [
+        {"drug": "Clopidogrel", "effect": "Enhanced antiplatelet effect"},
+        {"drug": "PPIs", "effect": "May need higher doses"},
+        {"drug": "Certain antidepressants", "effect": "Faster metabolism"}
+      ],
+      "expert_source": "FDA pharmacogenomics",
+      "pubmed_ids": ["16988205"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs9923231",
+      "gene": "VKORC1",
+      "risk_allele": "T",
+      "normal_allele": "C",
+      "category": "drug_response",
+      "condition": "VKORC1 - Warfarin sensitivity",
+      "risk_level": "high",
+      "description": "T allele requires lower warfarin doses. Critical for safe anticoagulation dosing.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Variable vitamin K intake on warfarin", "reason": "Affects INR stability"}
+      ],
+      "interventions": [
+        {"type": "medical", "action": "Use FDA warfarin dosing guidelines incorporating genetics"}
+      ],
+      "tests_recommended": ["INR monitoring"],
+      "drug_interactions": [
+        {"drug": "Warfarin", "effect": "Requires lower doses - TT genotype ~50% reduction"}
+      ],
+      "expert_source": "FDA pharmacogenomics",
+      "pubmed_ids": ["15930419"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs4148323",
+      "gene": "UGT1A1",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "detox",
+      "condition": "UGT1A1*6 - Gilbert's syndrome variant",
+      "risk_level": "low",
+      "description": "Reduced bilirubin conjugation causing benign elevated bilirubin (Gilbert's). Protective antioxidant effect.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Irinotecan without dose adjustment", "reason": "Reduced clearance"}
+      ],
+      "interventions": [
+        {"type": "monitoring", "action": "Mild jaundice during fasting/illness is normal"}
+      ],
+      "tests_recommended": ["Bilirubin if jaundiced"],
+      "drug_interactions": [
+        {"drug": "Irinotecan", "effect": "Reduced clearance - toxicity risk"},
+        {"drug": "Atazanavir", "effect": "May elevate bilirubin further"}
+      ],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["7626720"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs324650",
+      "gene": "NAT2",
+      "risk_allele": "A",
+      "normal_allele": "G",
+      "category": "detox",
+      "condition": "NAT2 - Slow acetylator",
+      "risk_level": "moderate",
+      "description": "Slower Phase II acetylation. Affects isoniazid, caffeine, and aromatic amine metabolism.",
+      "supplements": [],
+      "avoid": [
+        {"item": "Charred meats", "reason": "Reduced aromatic amine clearance"}
+      ],
+      "interventions": [
+        {"type": "medical", "action": "Inform physicians - affects drug dosing"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [
+        {"drug": "Isoniazid", "effect": "Increased toxicity risk - lower doses"},
+        {"drug": "Hydralazine", "effect": "Increased side effects"},
+        {"drug": "Procainamide", "effect": "Drug-induced lupus risk"}
+      ],
+      "expert_source": "Pharmacogenomics",
+      "pubmed_ids": ["10884376"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs1695",
+      "gene": "GSTP1",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "detox",
+      "condition": "GSTP1 Ile105Val - Altered detox capacity",
+      "risk_level": "moderate",
+      "description": "Reduced glutathione S-transferase Pi activity affecting detoxification of certain chemicals.",
+      "supplements": [
+        {"name": "NAC", "dose": "600-1200 mg", "timing": "morning", "rationale": "Glutathione precursor"},
+        {"name": "Milk Thistle", "dose": "200-400 mg", "timing": "with meals", "rationale": "Liver support"}
+      ],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "Cruciferous vegetables, sulfur-rich foods"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["10323752"],
+      "evidence_level": "moderate"
+    },
+    {
+      "rsid": "rs174537",
+      "gene": "FADS1",
+      "risk_allele": "T",
+      "normal_allele": "G",
+      "category": "nutrition",
+      "condition": "FADS1 - Fatty acid desaturase efficiency",
+      "risk_level": "moderate",
+      "description": "Affects conversion of plant omega-3s (ALA) to EPA/DHA. T allele = poor converter, needs preformed EPA/DHA.",
+      "supplements": [
+        {"name": "Fish Oil (EPA/DHA)", "dose": "2-3g", "timing": "with meals", "rationale": "Cannot rely on ALA conversion"},
+        {"name": "Algae Oil", "dose": "1-2g DHA", "timing": "with meals", "rationale": "Vegan preformed option"}
+      ],
+      "avoid": [
+        {"item": "Relying on flax/chia for omega-3", "reason": "Poor conversion"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "Direct EPA/DHA sources: fatty fish, fish oil, algae"}
+      ],
+      "tests_recommended": ["Omega-3 index"],
+      "drug_interactions": [],
+      "expert_source": "Rhonda Patrick",
+      "pubmed_ids": ["21829377"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs17782313",
+      "gene": "MC4R",
+      "risk_allele": "C",
+      "normal_allele": "T",
+      "category": "metabolic",
+      "condition": "MC4R - Appetite and weight regulation",
+      "risk_level": "moderate",
+      "description": "Common obesity risk variant. Affects satiety signaling and food reward.",
+      "supplements": [
+        {"name": "Fiber supplement", "dose": "10-15g", "timing": "before meals", "rationale": "Enhance satiety"}
+      ],
+      "avoid": [
+        {"item": "Ultra-processed foods", "reason": "Hyperpalatable - compounds effect"}
+      ],
+      "interventions": [
+        {"type": "diet", "action": "High protein for satiety, structured meals"},
+        {"type": "lifestyle", "action": "Extra vigilance on food environment"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Tim Ferriss",
+      "pubmed_ids": ["18454148"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs9930506",
+      "gene": "FTO",
+      "risk_allele": "G",
+      "normal_allele": "A",
+      "category": "metabolic",
+      "condition": "FTO intron variant - Obesity risk",
+      "risk_level": "moderate",
+      "description": "Additional FTO obesity risk variant. Affects energy balance and body composition.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "exercise", "action": "Physical activity can overcome FTO effects"},
+        {"type": "diet", "action": "Protein priority, whole foods"}
+      ],
+      "tests_recommended": [],
+      "drug_interactions": [],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["17434869"],
+      "evidence_level": "strong"
+    },
+    {
+      "rsid": "rs7566605",
+      "gene": "INSIG2",
+      "risk_allele": "C",
+      "normal_allele": "G",
+      "category": "metabolic",
+      "condition": "INSIG2 - Cholesterol and weight regulation",
+      "risk_level": "moderate",
+      "description": "Affects cholesterol and lipid metabolism. Associated with weight gain susceptibility.",
+      "supplements": [],
+      "avoid": [],
+      "interventions": [
+        {"type": "diet", "action": "Monitor lipids, weight management important"}
+      ],
+      "tests_recommended": ["Lipid panel"],
+      "drug_interactions": [],
+      "expert_source": "Standard genetics",
+      "pubmed_ids": ["16532022"],
+      "evidence_level": "moderate"
+    }
+  ]
+}

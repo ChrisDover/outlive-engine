@@ -1,0 +1,74 @@
+{
+  "profiles": [
+    {
+      "day_of_week": 0,
+      "name": "Monday - Cortisol Peak",
+      "focus": "immune_reset",
+      "training_emphasis": "Moderate compound movements, RPE 6-7. Cortisol naturally peaks Monday morning - leverage for strength work but avoid excessive volume that compounds stress.",
+      "nutrition_focus": "Anti-inflammatory emphasis. Prioritize omega-3s, colorful vegetables, avoid processed foods. Support immune system recovering from weekend.",
+      "intervention_focus": "Cold shower (2-3 min) to reset inflammation. Meditation to manage cortisol. Red light therapy for mitochondrial support.",
+      "hormonal_notes": "Cortisol peaks early Monday. Testosterone also elevated. Good window for challenging work but monitor recovery.",
+      "immune_notes": "Immune function often lower after weekend social exposure. Prioritize zinc, vitamin C, elderberry if needed. Extra sleep if possible."
+    },
+    {
+      "day_of_week": 1,
+      "name": "Tuesday - Anabolic Window",
+      "focus": "muscle_building",
+      "training_emphasis": "High intensity day, RPE 8-9. Testosterone-cortisol ratio favorable. Push compound lifts: squat, deadlift, bench. Volume can be higher.",
+      "nutrition_focus": "Higher carbohydrates around training (150-200g). Protein bolus post-workout (40-50g). Creatine timing optimal.",
+      "intervention_focus": "Sauna post-workout (15-20 min) for growth hormone release. Avoid cold immediately post-training to preserve hypertrophy signal.",
+      "hormonal_notes": "Anabolic hormones peaking mid-week. Best day for maximal effort. Growth hormone responsive to training stimulus.",
+      "immune_notes": "Immune system generally stable. Brief immunosuppression post-intense training is normal - support with glutamine."
+    },
+    {
+      "day_of_week": 2,
+      "name": "Wednesday - Anabolic Continuation",
+      "focus": "muscle_building",
+      "training_emphasis": "Upper body focus or accessory work. RPE 7-8. Continue building on Tuesday's stimulus. Good day for hypertrophy-focused training.",
+      "nutrition_focus": "Protein emphasis (1g/lb target). Moderate carbs. Include leucine-rich foods: eggs, whey, chicken breast.",
+      "intervention_focus": "Contrast therapy if recovered (hot/cold cycles). Mobility work. Sleep optimization critical - aim for 8+ hours.",
+      "hormonal_notes": "Anabolic environment continues. IGF-1 levels responsive. Good recovery day hormonal environment.",
+      "immune_notes": "Stable immune function. Good day for vitamin D optimization if levels suboptimal. Sun exposure if available."
+    },
+    {
+      "day_of_week": 3,
+      "name": "Thursday - Metabolic Flexibility",
+      "focus": "fat_oxidation",
+      "training_emphasis": "Zone 2 cardio emphasis (60-75% max HR). Fasted training beneficial. 45-60 min steady state or longer easy effort.",
+      "nutrition_focus": "Lower carbohydrate window (50-100g). Higher fat intake. Consider extended fast (16-20h) ending post-training. MCT oil, avocado, olive oil.",
+      "intervention_focus": "Cold exposure more beneficial today - enhances fat oxidation. Brown fat activation. Morning cold shower or cold plunge.",
+      "hormonal_notes": "Cortisol lowering mid-week. Good day for metabolic stress without high cortisol burden. Insulin sensitivity training.",
+      "immune_notes": "Fasting activates autophagy - immune system cleanup. Don't fast if fighting infection. Bone broth to break fast."
+    },
+    {
+      "day_of_week": 4,
+      "name": "Friday - Hormetic Stress",
+      "focus": "adaptation",
+      "training_emphasis": "Hard finish to training week. HIIT, heavy lifts, or challenging workout. RPE 8-9. Push limits before recovery weekend.",
+      "nutrition_focus": "Refeed opportunity - higher carbs post-workout (200-300g). Replenish glycogen. Reward meal acceptable. Still prioritize protein.",
+      "intervention_focus": "Full protocol day: training + sauna (20 min) + cold plunge (3-5 min). Maximum hormetic stress before weekend recovery.",
+      "hormonal_notes": "Testosterone may be lower end of week but still responsive to stimulus. Growth hormone spike from combined stressors.",
+      "immune_notes": "Immune system will be challenged by combined stressors. Ensure zinc, vitamin C, sleep. Don't push if already run down."
+    },
+    {
+      "day_of_week": 5,
+      "name": "Saturday - Social Recovery",
+      "focus": "recovery",
+      "training_emphasis": "Active recovery only. Mobility work, yoga, easy walk, recreational activity. RPE 3-4 maximum. No structured training.",
+      "nutrition_focus": "Flexible eating within reason. Social meals acceptable. Maintain protein intake. Hydration focus. Moderate alcohol if any.",
+      "intervention_focus": "Prioritize social connection - oxytocin benefits. Massage or self-myofascial release. Nature exposure. Sunlight.",
+      "hormonal_notes": "Recovery day allows hormone normalization. Avoid training that spikes cortisol. Let anabolic recovery processes complete.",
+      "immune_notes": "Social connection supports immune function. Laughter, touch increase immune markers. Avoid overindulgence that impairs immune function."
+    },
+    {
+      "day_of_week": 6,
+      "name": "Sunday - Melatonin Peak",
+      "focus": "gut_reset",
+      "training_emphasis": "Rest or very light Zone 2 only (30-45 min easy). Prepare body for Monday. No intensity. Walking, gentle cycling acceptable.",
+      "nutrition_focus": "Gut-friendly focus. Fermented foods: kimchi, sauerkraut, yogurt. Prebiotic fiber. Early dinner (finish eating by 6-7pm). 12-14h overnight fast.",
+      "intervention_focus": "Red light therapy evening. Blue light blocking after sunset. Prepare sleep environment. Gratitude practice.",
+      "hormonal_notes": "Melatonin production critical tonight. Dim lights early. Natural melatonin production supports immune function and recovery.",
+      "immune_notes": "Gut-immune axis day. 70% of immune system in gut. Feed beneficial bacteria. Avoid gut irritants. Set up strong Monday."
+    }
+  ]
+}

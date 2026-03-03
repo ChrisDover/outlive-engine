@@ -13,6 +13,10 @@ from app.config import get_settings
 from app.models.database import get_pool
 from app.security.encryption import decrypt_field, derive_key, encrypt_field
 from app.services.ai_service import chat_completion_multi
+from app.services.recovery_adapter import RecoveryZone, calculate_recovery_zone, get_recovery_summary
+from app.services.circaseptan_engine import get_circaseptan_profile, get_circaseptan_summary, get_circaseptan_day
+from app.services.protocol_synthesis import synthesize_daily_protocol
+from app.services.snp_service import analyze_genome_with_knowledge
 
 logger = logging.getLogger(__name__)
 
@@ -64,8 +68,30 @@ End with an encouraging note about their health journey.
 """
 
 
+def _repair_json(json_str: str) -> str:
+    """Attempt to repair common JSON issues from LLM outputs."""
+    # Remove markdown code blocks
+    repaired = re.sub(r'```json\s*', '', json_str)
+    repaired = re.sub(r'```\s*$', '', repaired)
+    # Fix values with units like "120g" -> 120 (for numeric fields)
+    repaired = re.sub(r':\s*(\d+)g\b', r': \1', repaired)
+    repaired = re.sub(r':\s*(\d+)mg\b', r': \1', repaired)
+    repaired = re.sub(r':\s*(\d+)%\b', r': \1', repaired)
+    # Remove trailing commas before closing brackets/braces
+    repaired = re.sub(r',\s*([}\]])', r'\1', json_str)
+    # Add missing commas between values (number/string followed by quote/bracket)
+    repaired = re.sub(r'(\d)\s*\n\s*"', r'\1,\n"', repaired)
+    repaired = re.sub(r'"\s*\n\s*"', r'",\n"', repaired)
+    repaired = re.sub(r'"\s*\n\s*\{', r'",\n{', repaired)
+    repaired = re.sub(r'\}\s*\n\s*\{', r'},\n{', repaired)
+    repaired = re.sub(r'\]\s*\n\s*"', r'],\n"', repaired)
+    # Fix unquoted keys (common LLM mistake)
+    repaired = re.sub(r'([{,]\s*)(\w+)(\s*:)', r'\1"\2"\3', repaired)
+    return repaired
+
+
 async def generate_daily_plan(user_id: UUID, target_date: date) -> dict[str, Any]:
-    """Generate a daily protocol by gathering health context and calling the LLM."""
+    """Generate a daily protocol using the synthesis engine and LLM enhancement."""
     pool = get_pool()
     settings = get_settings()
     key = derive_key(settings.FIELD_ENCRYPTION_KEY)
@@ -73,9 +99,39 @@ async def generate_daily_plan(user_id: UUID, target_date: date) -> dict[str, Any
     # Gather context including knowledge base protocols
     context = await _build_context(pool, key, user_id, target_date)
 
+    # Get user's SNP analysis
+    user_snps = await _get_user_snp_analysis(pool, user_id)
+
+    # Extract wearable data for recovery calculation
+    wearable_data = _extract_wearable_metrics(context.get("wearable_data", []))
+
+    # Use the new synthesis engine for intelligent protocol generation
+    try:
+        synthesized = await synthesize_daily_protocol(
+            user_id=user_id,
+            target_date=target_date,
+            user_snps=user_snps,
+            bloodwork=context.get("latest_bloodwork"),
+            wearable_data=wearable_data,
+            user_preferences=None,  # TODO: Load from user settings
+        )
+    except Exception as e:
+        logger.warning(f"Synthesis engine error, falling back to LLM: {e}")
+        synthesized = None
+
     # Fetch applicable protocols from knowledge base
     kb_protocols = await _get_applicable_protocols(pool, context)
     context["knowledge_base_protocols"] = kb_protocols
+
+    # Add synthesis data to context for LLM
+    if synthesized:
+        context["synthesis"] = {
+            "recovery_zone": synthesized.get("recovery_zone"),
+            "recovery_score": synthesized.get("recovery_score"),
+            "circaseptan_day": synthesized.get("circaseptan_name"),
+            "snp_recommendations": synthesized.get("snp_notes", []),
+            "snp_avoid": synthesized.get("snp_avoid", []),
+        }
 
     messages = [
         {"role": "system", "content": _DAILY_PLAN_SYSTEM_PROMPT},
@@ -89,7 +145,17 @@ async def generate_daily_plan(user_id: UUID, target_date: date) -> dict[str, Any
         # Try to parse JSON from LLM response
         json_match = re.search(r'\{[\s\S]*\}', content)
         if json_match:
-            protocol = json.loads(json_match.group())
+            json_str = json_match.group()
+            try:
+                protocol = json.loads(json_str)
+            except json.JSONDecodeError:
+                # Try to repair common JSON issues from LLMs
+                repaired = _repair_json(json_str)
+                try:
+                    protocol = json.loads(repaired)
+                except json.JSONDecodeError:
+                    logger.warning("Could not parse LLM JSON even after repair")
+                    protocol = {"summary": "Protocol generated but format error.", "rationale": content[:500]}
         else:
             protocol = {"summary": "Could not generate protocol — AI returned non-JSON.", "rationale": content}
 
@@ -102,18 +168,35 @@ async def generate_daily_plan(user_id: UUID, target_date: date) -> dict[str, Any
         }
         model_name = None
 
-    # Upsert into daily_protocols
+    # Merge synthesis data into final protocol
+    if synthesized:
+        protocol["recovery_zone"] = synthesized.get("recovery_zone")
+        protocol["recovery_score"] = synthesized.get("recovery_score")
+        protocol["recovery_summary"] = synthesized.get("recovery_summary")
+        protocol["circaseptan_day"] = synthesized.get("circaseptan_day")
+        protocol["circaseptan_name"] = synthesized.get("circaseptan_name")
+        protocol["circaseptan_summary"] = synthesized.get("circaseptan_summary")
+        protocol["snp_recommendations"] = synthesized.get("snp_notes", [])
+        protocol["ai_insights"] = synthesized.get("protocol_notes", [])
+
+    # Upsert into daily_protocols with new columns
     encrypted = encrypt_field(json.dumps(protocol), key)
     now = datetime.now(timezone.utc)
+    recovery_zone = protocol.get("recovery_zone")
+    circaseptan_day = protocol.get("circaseptan_day")
+    ai_insights = json.dumps(protocol.get("ai_insights", []))
 
     await pool.execute(
-        """INSERT INTO daily_protocols (user_id, date, protocol_json, created_at, updated_at)
-           VALUES ($1, $2, $3, $4, $5)
+        """INSERT INTO daily_protocols (user_id, date, protocol_json, recovery_zone, circaseptan_day, ai_insights, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
            ON CONFLICT (user_id, date)
-           DO UPDATE SET protocol_json = $3, updated_at = $5""",
+           DO UPDATE SET protocol_json = $3, recovery_zone = $4, circaseptan_day = $5, ai_insights = $6, updated_at = $8""",
         user_id,
         target_date,
         encrypted,
+        recovery_zone,
+        circaseptan_day,
+        ai_insights,
         now,
         now,
     )
@@ -122,12 +205,71 @@ async def generate_daily_plan(user_id: UUID, target_date: date) -> dict[str, Any
     return protocol
 
 
+async def _get_user_snp_analysis(pool, user_id: UUID) -> list[dict[str, Any]] | None:
+    """Get user's SNP analysis with knowledge base matches."""
+    try:
+        # Check if user has genomic variants
+        variants = await pool.fetch(
+            "SELECT rsid, genotype FROM genomic_variants WHERE user_id = $1",
+            user_id
+        )
+        if not variants:
+            return None
+
+        # Convert to format for SNP analysis
+        user_genotypes = {v["rsid"]: v["genotype"] for v in variants}
+
+        # Get SNP analysis using existing service
+        analysis = await analyze_genome_with_knowledge(pool, user_genotypes)
+        return analysis.get("findings", [])
+    except Exception as e:
+        logger.warning(f"Could not get SNP analysis: {e}")
+        return None
+
+
+def _extract_wearable_metrics(wearable_data: list[dict]) -> dict[str, Any]:
+    """Extract key wearable metrics for recovery calculation."""
+    metrics = {}
+
+    for source_data in wearable_data:
+        source_metrics = source_data.get("metrics", {})
+
+        # HRV
+        if "hrv" in source_metrics:
+            metrics["hrv"] = source_metrics["hrv"]
+        elif "hrv_rmssd" in source_metrics:
+            metrics["hrv"] = source_metrics["hrv_rmssd"]
+
+        # Recovery score
+        if "recovery_score" in source_metrics:
+            metrics["recovery_score"] = source_metrics["recovery_score"]
+        elif "readiness_score" in source_metrics:
+            metrics["recovery_score"] = source_metrics["readiness_score"]
+
+        # Sleep score
+        if "sleep_score" in source_metrics:
+            metrics["sleep_score"] = source_metrics["sleep_score"]
+
+        # Strain
+        if "strain" in source_metrics:
+            metrics["strain_yesterday"] = source_metrics["strain"]
+
+        # Resting HR
+        if "resting_hr" in source_metrics:
+            metrics["resting_hr"] = source_metrics["resting_hr"]
+        elif "resting_heart_rate" in source_metrics:
+            metrics["resting_hr"] = source_metrics["resting_heart_rate"]
+
+    return metrics
+
+
 async def generate_morning_brief(user_id: UUID, target_date: date) -> dict[str, Any]:
     """
     Generate a conversational morning brief based on the daily protocol.
 
     This is the primary interface for the AI health coach - a friendly,
     personalized message each morning explaining what to focus on and why.
+    Includes recovery zone and circaseptan rhythm information.
     """
     pool = get_pool()
     settings = get_settings()
@@ -135,28 +277,45 @@ async def generate_morning_brief(user_id: UUID, target_date: date) -> dict[str, 
 
     # First, ensure we have a daily plan
     row = await pool.fetchrow(
-        "SELECT protocol_json FROM daily_protocols WHERE user_id = $1 AND date = $2",
+        "SELECT protocol_json, recovery_zone, circaseptan_day FROM daily_protocols WHERE user_id = $1 AND date = $2",
         user_id,
         target_date,
     )
 
     if row:
         protocol = json.loads(decrypt_field(row["protocol_json"], key))
+        recovery_zone = row["recovery_zone"]
+        circaseptan_day = row["circaseptan_day"]
     else:
         # Generate one if it doesn't exist
         protocol = await generate_daily_plan(user_id, target_date)
+        recovery_zone = protocol.get("recovery_zone")
+        circaseptan_day = protocol.get("circaseptan_day")
 
     # Build context for the morning brief
     context = await _build_context(pool, key, user_id, target_date)
     recovery_status = _assess_recovery(context.get("wearable_data", []))
+
+    # Get circaseptan profile for additional context
+    circaseptan_profile = await get_circaseptan_profile(target_date)
+    circaseptan_summary = get_circaseptan_summary(target_date)
 
     brief_context = {
         "date": str(target_date),
         "day_of_week": target_date.strftime("%A"),
         "protocol": protocol,
         "recovery_status": recovery_status,
+        "recovery_zone": recovery_zone or protocol.get("recovery_zone"),
+        "circaseptan": {
+            "day": circaseptan_day,
+            "name": circaseptan_profile.get("name"),
+            "focus": circaseptan_profile.get("focus"),
+            "training_emphasis": circaseptan_profile.get("training_emphasis"),
+            "nutrition_focus": circaseptan_profile.get("nutrition_focus"),
+        },
         "genomic_risks": context.get("genomic_risks", []),
         "latest_bloodwork": context.get("latest_bloodwork"),
+        "snp_recommendations": protocol.get("snp_recommendations", []),
     }
 
     messages = [
@@ -173,8 +332,8 @@ async def generate_morning_brief(user_id: UUID, target_date: date) -> dict[str, 
         greeting = "Good morning! I had some trouble generating your personalized brief today, but your daily protocol is ready below."
         model_name = None
 
-    # Extract top priorities from protocol
-    top_priorities = _extract_priorities(protocol, recovery_status)
+    # Extract top priorities from protocol with recovery zone awareness
+    top_priorities = _extract_priorities(protocol, recovery_status, recovery_zone)
 
     return {
         "date": str(target_date),
@@ -188,13 +347,26 @@ async def generate_morning_brief(user_id: UUID, target_date: date) -> dict[str, 
                 "fat": protocol.get("nutrition", {}).get("fat"),
             },
             "meal_timing": protocol.get("nutrition", {}).get("meal_timing", "Standard meals"),
+            "circaseptan_focus": circaseptan_profile.get("nutrition_focus"),
         },
         "supplement_plan": protocol.get("supplements", []),
         "workout_plan": protocol.get("training", {}),
         "interventions_plan": protocol.get("interventions", []),
         "rationale": protocol.get("rationale", ""),
         "expert_citations": protocol.get("expert_citations", []),
-        "recovery_status": recovery_status,
+        "recovery_status": {
+            **recovery_status,
+            "zone": recovery_zone,
+            "summary": protocol.get("recovery_summary"),
+        },
+        "circaseptan": {
+            "day": circaseptan_day,
+            "name": circaseptan_profile.get("name"),
+            "focus": circaseptan_profile.get("focus"),
+            "summary": circaseptan_summary,
+        },
+        "snp_recommendations": protocol.get("snp_recommendations", []),
+        "ai_insights": protocol.get("ai_insights", []),
         "_model": model_name,
     }
 
@@ -254,33 +426,58 @@ def _assess_recovery(wearable_data: list[dict]) -> dict[str, Any]:
     return recovery
 
 
-def _extract_priorities(protocol: dict[str, Any], recovery: dict[str, Any]) -> list[str]:
-    """Extract top 3 priorities from the daily protocol."""
+def _extract_priorities(protocol: dict[str, Any], recovery: dict[str, Any], recovery_zone: str | None = None) -> list[str]:
+    """Extract top 3 priorities from the daily protocol with recovery zone awareness."""
     priorities = []
 
-    # Recovery-based priority
-    if recovery["status"] == "low":
-        priorities.append("Prioritize recovery today - light movement and stress management")
-    elif recovery["status"] == "good":
+    # Recovery zone based priority (new synthesis engine)
+    if recovery_zone == "RED":
+        priorities.append("RED zone: Active recovery only - walking, mobility, extra sleep")
+    elif recovery_zone == "YELLOW":
+        priorities.append("YELLOW zone: Moderate training - reduce intensity, listen to your body")
         training = protocol.get("training", {})
         if training.get("type"):
-            priorities.append(f"Training: {training.get('type')} - {training.get('duration', 45)} minutes")
+            priorities.append(f"Training: {training.get('type')} (reduced intensity)")
+    elif recovery_zone == "GREEN":
+        training = protocol.get("training", {})
+        if training.get("type"):
+            priorities.append(f"GREEN zone - Training: {training.get('type')} - {training.get('duration', 45)} min")
+    else:
+        # Fallback to legacy recovery status
+        if recovery["status"] == "low":
+            priorities.append("Prioritize recovery today - light movement and stress management")
+        elif recovery["status"] == "good":
+            training = protocol.get("training", {})
+            if training.get("type"):
+                priorities.append(f"Training: {training.get('type')} - {training.get('duration', 45)} minutes")
 
-    # Key supplements
+    # Key supplements (prioritize genetic recommendations)
     supplements = protocol.get("supplements", [])
-    if supplements:
-        top_supps = [s["name"] for s in supplements[:3]]
-        priorities.append(f"Take: {', '.join(top_supps)}")
+    genetic_supps = [s for s in supplements if s.get("genetic_priority")]
+    if genetic_supps:
+        top_supps = [s.get("name", "") for s in genetic_supps[:2]]
+        priorities.append(f"Genetic priority: {', '.join(top_supps)}")
+    elif supplements:
+        top_supps = [s.get("name", "") for s in supplements[:3] if s.get("name")]
+        if top_supps:
+            priorities.append(f"Take: {', '.join(top_supps)}")
 
-    # Key intervention
+    # Key intervention (adjusted for recovery zone)
     interventions = protocol.get("interventions", [])
-    if interventions:
-        top_int = interventions[0]
-        priorities.append(f"{top_int.get('type', 'Intervention')}: {top_int.get('duration', 10)} min")
+    if interventions and recovery_zone != "RED":
+        available_ints = [i for i in interventions if not i.get("skipped")]
+        if available_ints:
+            top_int = available_ints[0]
+            priorities.append(f"{top_int.get('type', 'Intervention')}: {top_int.get('duration', 10)} min")
+
+    # SNP recommendations
+    snp_notes = protocol.get("snp_recommendations", [])
+    if snp_notes and len(priorities) < 3:
+        priorities.append(snp_notes[0])
 
     # Sleep target
     sleep = protocol.get("sleep", {})
-    if sleep.get("target_hours"):
+    if sleep.get("target_hours") and len(priorities) < 3:
         priorities.append(f"Sleep target: {sleep['target_hours']} hours (bed by {sleep.get('bedtime', '10pm')})")
 
     return priorities[:3]

@@ -101,46 +101,6 @@ async def create_panel(
     return _row_to_response(row, key)
 
 
-@router.get("/{panel_id}", response_model=BloodworkPanelResponse)
-async def get_panel(
-    panel_id: UUID,
-    current_user: dict[str, Any] = Depends(get_current_user),
-) -> BloodworkPanelResponse:
-    """Get a single bloodwork panel by ID."""
-    pool = get_pool()
-    key = _enc_key()
-
-    row = await pool.fetchrow(
-        "SELECT id, user_id, panel_date, lab_name, markers_json, notes, created_at, updated_at "
-        "FROM bloodwork_panels WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
-        panel_id,
-        current_user["id"],
-    )
-    if row is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
-
-    return _row_to_response(row, key)
-
-
-@router.delete("/{panel_id}", status_code=status.HTTP_204_NO_CONTENT)
-@limiter.limit("60/minute")
-async def delete_panel(
-    request: Request,
-    panel_id: UUID,
-    current_user: dict[str, Any] = Depends(get_current_user),
-) -> None:
-    """Soft-delete a bloodwork panel."""
-    pool = get_pool()
-    result = await pool.execute(
-        "UPDATE bloodwork_panels SET deleted_at = $1 WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL",
-        datetime.now(timezone.utc),
-        panel_id,
-        current_user["id"],
-    )
-    if result == "UPDATE 0":
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
-
-
 @router.post("/bulk-delete", status_code=status.HTTP_200_OK)
 @limiter.limit("10/minute")
 async def bulk_delete_panels(
@@ -399,3 +359,46 @@ async def bulk_upload_bloodwork(
         total_markers=total_markers,
         results=results,
     )
+
+
+# ── Single Panel Routes (MUST be last due to {panel_id} catch-all) ───────────
+
+
+@router.get("/{panel_id}", response_model=BloodworkPanelResponse)
+async def get_panel(
+    panel_id: UUID,
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> BloodworkPanelResponse:
+    """Get a single bloodwork panel by ID."""
+    pool = get_pool()
+    key = _enc_key()
+
+    row = await pool.fetchrow(
+        "SELECT id, user_id, panel_date, lab_name, markers_json, notes, created_at, updated_at "
+        "FROM bloodwork_panels WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL",
+        panel_id,
+        current_user["id"],
+    )
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
+
+    return _row_to_response(row, key)
+
+
+@router.delete("/{panel_id}", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("60/minute")
+async def delete_panel(
+    request: Request,
+    panel_id: UUID,
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> None:
+    """Soft-delete a bloodwork panel."""
+    pool = get_pool()
+    result = await pool.execute(
+        "UPDATE bloodwork_panels SET deleted_at = $1 WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL",
+        datetime.now(timezone.utc),
+        panel_id,
+        current_user["id"],
+    )
+    if result == "UPDATE 0":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Panel not found")
