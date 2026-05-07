@@ -258,3 +258,8 @@ MIT License. See [LICENSE](LICENSE).
 <p align="center">
   Built for people who take their health seriously and want full control of their data.
 </p>
+
+
+---
+
+Built by Chris Dover ([chrisdmacro.base.eth](https://github.com/ChrisDover)). Also working on [agent commerce infrastructure](https://pollinateresearch.com/) and [MAKO](https://github.com/ChrisDover/mako-verifier).
