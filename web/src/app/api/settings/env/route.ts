@@ -6,12 +6,21 @@ import { join } from "path";
 
 const ENV_PATH = join(process.cwd(), ".env");
 
+// Writing the server's .env from the browser is a single-user self-host
+// convenience only. In a hosted/multi-user deployment any logged-in user could
+// otherwise tamper with shared OAuth credentials, so it is gated to local dev.
+const isLocalDev =
+  process.env.NODE_ENV === "development" &&
+  (process.env.NEXTAUTH_URL?.includes("localhost") ?? false);
+
 // Only these keys can be read/written through the UI
 const ALLOWED_KEYS = new Set([
   "OURA_CLIENT_ID",
   "OURA_CLIENT_SECRET",
   "WHOOP_CLIENT_ID",
   "WHOOP_CLIENT_SECRET",
+  "WITHINGS_CLIENT_ID",
+  "WITHINGS_CLIENT_SECRET",
 ]);
 
 function parseEnv(content: string): Map<string, string> {
@@ -56,6 +65,9 @@ export async function GET() {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  if (!isLocalDev) {
+    return NextResponse.json({ error: "Not available in this environment" }, { status: 403 });
+  }
 
   try {
     const content = await readFile(ENV_PATH, "utf-8");
@@ -83,6 +95,9 @@ export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!isLocalDev) {
+    return NextResponse.json({ error: "Not available in this environment" }, { status: 403 });
   }
 
   try {
