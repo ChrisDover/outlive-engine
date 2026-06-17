@@ -95,7 +95,8 @@ Browser → Next.js (web/) → FastAPI Backend (backend/)
 - **Local LLMs by default** via Ollama — your health data never hits external APIs
 - **Optional cloud LLM support** (OpenAI, Anthropic) if you choose — clearly gated behind explicit configuration
 - **Startup validation** — app refuses to start with default/missing secrets
-- **Rate limiting** on all auth and write endpoints
+- **Rate limiting** on backend write endpoints (FastAPI/slowapi). Note: the web auth routes (login, signup, magic-link) are not yet rate-limited in-app — front them with a reverse-proxy rate limit (see [SECURITY.md](SECURITY.md))
+- **Local-only admin endpoints** — server `.env` editing and process restart are gated to local development, not exposed in hosted deployments
 - **Audit logging** on every API request
 - **Token revocation** with refresh token rotation
 - **Constant-time key comparison** — timing-attack resistant service auth

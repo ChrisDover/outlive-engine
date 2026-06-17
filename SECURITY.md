@@ -40,6 +40,37 @@ Outlive Engine handles sensitive personal health data. Security is a core design
 - User identity is passed via `X-Outlive-User-Id` header
 - This key should be a cryptographically random string: `openssl rand -hex 32`
 
+> **Trust assumption:** the `X-Outlive-User-Id` header is only honored when the
+> request also presents a valid `SERVICE_API_KEY`, and that header is set
+> server-side by the Next.js proxy from the authenticated session — browsers
+> cannot reach the backend directly. This means **anyone holding the service key
+> can act as any user.** Keep the backend bound to localhost/private network,
+> never ship the key to clients, and rotate it on suspected exposure.
+
+### Local-only admin endpoints
+`POST /api/settings/restart` and `GET|POST /api/settings/env` (editing the
+server `.env` from the UI) are **single-user self-host conveniences** and are
+gated to local development (`NODE_ENV=development` on `localhost`). They return
+`403` otherwise. Do not re-enable them in a hosted/multi-user deployment — they
+would let any authenticated user tamper with shared OAuth credentials or restart
+the process.
+
+## Known Limitations / Hardening Notes
+
+- **Web auth routes are not rate-limited in-app.** `login`, `signup`, and
+  `request-magic-link` (Next.js) have no built-in throttle. Front them with a
+  reverse-proxy / WAF rate limit (e.g. nginx `limit_req`, Caddy, Cloudflare) to
+  blunt credential stuffing and magic-link email spam. (Backend FastAPI write
+  endpoints *are* rate-limited via slowapi.)
+- **Password signup does not verify email ownership** — accounts created with
+  email+password are marked verified immediately. Use the magic-link flow, or
+  add an email-confirmation step, if email ownership matters for your threat model.
+- **Magic-link tokens are single-use and short-lived (15 min) but stored in
+  plaintext** in `verification_tokens` and passed as a URL query parameter
+  (can appear in proxy/referrer logs). Treat the token store as sensitive.
+- **CSP allows `'unsafe-inline'` scripts** (a Next.js constraint). Tighten with
+  nonces/hashes if you customize the build.
+
 ## Audit Logging
 
 Every API request is logged to the `audit_log` table:
