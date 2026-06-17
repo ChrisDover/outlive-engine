@@ -26,7 +26,9 @@ export async function GET() {
   const redirectUri = process.env.WHOOP_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/oauth/whoop/callback`;
 
   if (!clientId) {
-    return NextResponse.json({ error: "Whoop OAuth not configured" }, { status: 500 });
+    return NextResponse.redirect(
+      new URL("/dashboard/settings?error=whoop_not_configured", process.env.NEXTAUTH_URL)
+    );
   }
 
   const codeVerifier = generateCodeVerifier();
@@ -46,7 +48,8 @@ export async function GET() {
     response_type: "code",
     client_id: clientId,
     redirect_uri: redirectUri,
-    scope: "read:recovery read:sleep read:cycles read:profile",
+    // `offline` is required for Whoop to return a refresh_token.
+    scope: "offline read:recovery read:sleep read:cycles read:profile",
     state: session.user.id,
     code_challenge: codeChallenge,
     code_challenge_method: "S256",

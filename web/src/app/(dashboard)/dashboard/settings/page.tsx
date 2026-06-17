@@ -2,10 +2,40 @@
 
 import { signOut, useSession } from "next-auth/react";
 import { SessionProvider } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { WhoopImport } from "./WhoopImport";
 import { DailyWhoopInput } from "./DailyWhoopInput";
+import { DataImport } from "./DataImport";
 import { ExternalAIWarning } from "@/components/ui/ExternalAIWarning";
+
+function StatusBanner() {
+  const params = useSearchParams();
+  const err = params.get("error");
+  const connected = params.get("connected");
+
+  if (connected) {
+    const name = connected.charAt(0).toUpperCase() + connected.slice(1);
+    return (
+      <div className="mb-[var(--space-md)] rounded-[var(--radius-md)] border border-[var(--recovery-green)] bg-[color-mix(in_srgb,var(--recovery-green)_8%,transparent)] p-[var(--space-sm)] text-sm text-[var(--recovery-green)]">
+        ✓ {name} connected.
+      </div>
+    );
+  }
+  if (!err) return null;
+
+  const provider = err.split("_")[0];
+  const name = provider.charAt(0).toUpperCase() + provider.slice(1);
+  const message = err.endsWith("not_configured")
+    ? `${name} isn't configured yet. Add its Client ID and Secret under API Credentials below, then restart the server.`
+    : `Couldn't connect ${name}. Please try again — and double-check the credentials and redirect URI in API Credentials.`;
+
+  return (
+    <div className="mb-[var(--space-md)] rounded-[var(--radius-md)] border border-[var(--amber)] bg-[color-mix(in_srgb,var(--amber)_8%,transparent)] p-[var(--space-sm)] text-sm text-[var(--amber)]">
+      {message}
+    </div>
+  );
+}
 
 function RestartServerButton() {
   const [restarting, setRestarting] = useState(false);
@@ -344,7 +374,10 @@ function AIConfiguration() {
   const [apiKey, setApiKey] = useState("");
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<{ local: any; external: any } | null>(null);
+  const [testResult, setTestResult] = useState<{
+    local: { available?: boolean; model?: string; error?: string };
+    external: { available?: boolean; provider?: string; error?: string };
+  } | null>(null);
 
   useEffect(() => {
     loadPreferences();
@@ -389,7 +422,7 @@ function AIConfiguration() {
     }
   }
 
-  async function updatePreferences(update: Record<string, any>) {
+  async function updatePreferences(update: Record<string, unknown>) {
     setSaving(true);
     try {
       const resp = await fetch("/api/backend/ai/preferences", {
@@ -581,6 +614,10 @@ function SettingsContent() {
     <div className="max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold text-foreground mb-[var(--space-lg)]">Settings</h1>
 
+      <Suspense fallback={null}>
+        <StatusBanner />
+      </Suspense>
+
       <div className="space-y-[var(--space-md)]">
         {/* Profile */}
         <div className="bg-card rounded-[var(--radius-md)] border border-[var(--surface-elevated)] p-[var(--space-lg)]">
@@ -605,6 +642,9 @@ function SettingsContent() {
 
         {/* Connected Wearables */}
         <WearableConnectionStatus />
+
+        {/* Import from Apple Health / CSV — no device API required */}
+        <DataImport />
 
         {/* Whoop Data Section */}
         <h2 className="text-xl font-semibold text-foreground mt-[var(--space-lg)]">

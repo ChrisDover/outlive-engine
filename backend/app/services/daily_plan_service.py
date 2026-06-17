@@ -24,10 +24,13 @@ _DAILY_PLAN_SYSTEM_PROMPT = """\
 You are a longevity-focused health advisor powering the Outlive Engine app.
 Generate a personalised daily protocol based on the user's health data AND the expert protocols from our knowledge base.
 
-Return ONLY valid JSON with this structure:
+Return ONLY valid JSON (no markdown, no prose outside the JSON) with this structure:
 {
   "training": {"type": str, "duration": int, "rpe": int, "exercises": [{"name": str, "sets": int, "reps": str}]},
-  "nutrition": {"tdee": int, "protein": int, "carbs": int, "fat": int, "meal_timing": str, "notes": str},
+  "nutrition": {
+    "tdee": int, "protein": int, "carbs": int, "fat": int, "meal_timing": str, "notes": str,
+    "meals": [{"name": str, "time": str, "calories": int, "protein": int, "items": [str]}]
+  },
   "supplements": [{"name": str, "dose": str, "unit": str, "timing": str, "rationale": str, "source_expert": str}],
   "interventions": [{"type": str, "duration": int, "notes": str, "source_expert": str}],
   "sleep": {"bedtime": str, "wake_time": str, "target_hours": float},
@@ -37,6 +40,10 @@ Return ONLY valid JSON with this structure:
 }
 
 Rules:
+- TOP PRIORITY: if the context includes "user_goals" or "user_directives", treat them as binding.
+  They are the user's own standing instructions (e.g. meal cutoff times, excluded foods, chosen
+  supplements, training goals) and MUST shape and override the default recommendations. Tailor the
+  meal plan, training, and supplements to honor them.
 - Incorporate expert protocols from the knowledge base when applicable to the user's context
 - Adapt training intensity to recovery status (HRV, sleep score, recovery score)
   - Low HRV (<50) or poor recovery: recommend light activity, Zone 2, or rest
@@ -49,6 +56,11 @@ Rules:
   - High ApoB (>90) → emphasize cardiovascular protocols
   - Low omega-3 index (<8%) → increase fish oil
 - Include "source_expert" for each recommendation citing the expert (e.g., "Huberman", "Bryan Johnson")
+- Provide a concrete meal plan: 3-4 meals in nutrition.meals, each with a name (e.g. "Breakfast"),
+  a suggested time, approximate calories and protein, and 2-4 specific food items. The meals should
+  roughly sum to the tdee/macro targets and respect any genomic/bloodwork guidance (e.g. APOE4 → lower
+  saturated fat, higher omega-3 foods).
+- Always include training, nutrition (with meals), and supplements — never leave them empty.
 - Keep summary to 2-3 sentences highlighting the day's focus
 - The rationale should explain WHY these specific recommendations based on the user's data
 """
@@ -133,13 +145,43 @@ async def generate_daily_plan(user_id: UUID, target_date: date) -> dict[str, Any
             "snp_avoid": synthesized.get("snp_avoid", []),
         }
 
+    # Compact the context so the local model gets a focused prompt. Dumping the
+    # entire knowledge base + yesterday's full protocol overwhelms a small model
+    # and degrades/empties the JSON output.
+    yp = context.get("yesterday_protocol")
+    llm_context = dict(context)
+    llm_context["yesterday_protocol"] = (yp.get("summary") if isinstance(yp, dict) else None)
+    llm_context["knowledge_base_protocols"] = [
+        {k: p[k] for k in ("name", "title", "category", "summary", "expert", "source_expert") if isinstance(p, dict) and p.get(k)}
+        for p in (kb_protocols or [])
+    ][:6]
+
+    # User's own goals + standing directives — the engine juxtaposes its plan
+    # against these and must respect them.
+    try:
+        from app.services.context_service import load_user_context
+
+        uctx = await load_user_context(pool, key, user_id)
+        if uctx.get("goals_md"):
+            llm_context["user_goals"] = uctx["goals_md"]
+        if uctx.get("directives"):
+            llm_context["user_directives"] = [
+                d.get("text") for d in uctx["directives"] if d.get("text")
+            ]
+    except Exception:
+        logger.warning("Could not load user context for protocol generation")
+
     messages = [
         {"role": "system", "content": _DAILY_PLAN_SYSTEM_PROMPT},
-        {"role": "user", "content": f"Generate today's protocol.\n\nHealth context:\n{json.dumps(context, default=str)}"},
+        {"role": "user", "content": f"Generate today's protocol.\n\nHealth context:\n{json.dumps(llm_context, default=str)}"},
     ]
 
     try:
-        response = await chat_completion_multi(messages, temperature=0.3)
+        response = await chat_completion_multi(
+            messages,
+            temperature=0.3,
+            response_format={"type": "json_object"},
+        )
         content = response["choices"][0]["message"]["content"]
 
         # Try to parse JSON from LLM response

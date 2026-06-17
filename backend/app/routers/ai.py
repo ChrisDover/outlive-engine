@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
 
 from app.models.schemas import (
     AIInsightRequest,
@@ -15,7 +17,7 @@ from app.models.schemas import (
     OCRResponse,
 )
 from app.security.auth import get_current_user
-from app.services.ai_service import analyze_with_ai
+from app.services.ai_service import analyze_with_ai, stream_chat_insight
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -33,6 +35,33 @@ async def generate_insights(
         question=body.question,
     )
     return result
+
+
+@router.post("/insights/stream")
+async def stream_insights(
+    body: AIInsightRequest,
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> StreamingResponse:
+    """Stream conversational health insights as Server-Sent Events."""
+
+    async def event_generator():
+        try:
+            async for delta in stream_chat_insight(
+                user_id=current_user["id"],
+                context=body.context,
+                question=body.question,
+            ):
+                yield f"data: {json.dumps({'delta': delta})}\n\n"
+        except Exception:
+            logger.exception("Streaming insight failed")
+            yield f"data: {json.dumps({'error': 'stream_failed'})}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.post("/ocr", response_model=OCRResponse)

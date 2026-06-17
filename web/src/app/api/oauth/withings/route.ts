@@ -26,7 +26,9 @@ export async function GET() {
   const redirectUri = process.env.WITHINGS_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/oauth/withings/callback`;
 
   if (!clientId) {
-    return NextResponse.json({ error: "Withings OAuth not configured" }, { status: 500 });
+    return NextResponse.redirect(
+      new URL("/dashboard/settings?error=withings_not_configured", process.env.NEXTAUTH_URL)
+    );
   }
 
   const codeVerifier = generateCodeVerifier();

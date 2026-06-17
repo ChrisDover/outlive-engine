@@ -14,11 +14,13 @@ export async function GET() {
     select: {
       ouraAccessToken: true,
       whoopAccessToken: true,
+      withingsAccessToken: true,
     },
   });
 
   return NextResponse.json({
     oura: !!user?.ouraAccessToken,
     whoop: !!user?.whoopAccessToken,
+    withings: !!user?.withingsAccessToken,
   });
 }

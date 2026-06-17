@@ -11,17 +11,29 @@ import { QuickStats } from "@/components/ui/QuickStats";
 import { RecoveryBanner } from "@/components/ui/RecoveryBanner";
 import { CircaseptanCard } from "@/components/ui/CircaseptanCard";
 import { WearableTrends } from "@/components/ui/WearableTrends";
+import { LongevityScore } from "@/components/ui/LongevityScore";
+import { SyncInputs } from "@/components/ui/SyncInputs";
+
+// Don't let a slow backend call (e.g. an LLM-backed morning brief) block the
+// whole server render. Slow calls resolve to a rejected settled-result and the
+// UI falls back to its empty state; the data appears on a later load.
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("timeout")), ms)),
+  ]);
+}
 
 async function getDashboardData(backendUserId: string) {
   try {
     const today = new Date().toISOString().split("T")[0];
     const [protocol, morningBrief, wearable, bloodwork, bodyComp, genomics, experiments, progressStats, adherence, goals] =
       await Promise.allSettled([
-        backendClient(`/protocols/daily?date=${today}`, { userId: backendUserId }),
-        backendClient(`/protocols/morning-brief?target_date=${today}`, {
+        withTimeout(backendClient(`/protocols/daily?date=${today}`, { userId: backendUserId }), 5000),
+        withTimeout(backendClient(`/protocols/morning-brief?target_date=${today}`, {
           method: "POST",
           userId: backendUserId
-        }),
+        }), 5000),
         backendClient(`/wearables?date=${today}`, { userId: backendUserId }),
         backendClient("/bloodwork?limit=1", { userId: backendUserId }),
         backendClient("/body-composition?limit=1", { userId: backendUserId }),
@@ -85,10 +97,16 @@ async function triggerWearableSync(backendUserId: string) {
 async function triggerDailyPlanGeneration(backendUserId: string) {
   try {
     const today = new Date().toISOString().split("T")[0];
-    const result = await backendClient(`/protocols/daily/generate?target_date=${today}`, {
-      method: "POST",
-      userId: backendUserId,
-    });
+    // Plan generation can be LLM-backed and slow — cap it so it never hangs
+    // the dashboard. If it times out the backend keeps generating; the plan
+    // appears on a subsequent load.
+    const result = await withTimeout(
+      backendClient(`/protocols/daily/generate?target_date=${today}`, {
+        method: "POST",
+        userId: backendUserId,
+      }),
+      6000,
+    );
     return result;
   } catch {
     return null;
@@ -176,6 +194,12 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {/* Sync all connected inputs */}
+      <SyncInputs />
+
+      {/* Longevity Score — flagship hero */}
+      <LongevityScore />
+
       {/* Always show wearable card first when not connected — this is the #1 priority */}
       {!hasWearableTokens && (
         <WearableConnectCard ouraConnected={hasOura} whoopConnected={hasWhoop} withingsConnected={hasWithings} />
@@ -224,9 +248,7 @@ export default async function DashboardPage() {
       />
 
       {/* Wearable Trends */}
-      {hasWearableTokens && (
-        <WearableTrends />
-      )}
+      <WearableTrends />
 
       {/* Chat Box - always visible */}
       <ChatBox />

@@ -31,7 +31,7 @@ export async function POST() {
   }
 
   const today = new Date().toISOString().split("T")[0];
-  const entries: Array<{ date: string; source: string; metrics: Record<string, any> }> = [];
+  const entries: Array<{ date: string; source: string; metrics: Record<string, number | string | null> }> = [];
   const errors: string[] = [];
 
   // Fetch Oura data if connected
@@ -46,10 +46,12 @@ export async function POST() {
     }
   }
 
-  // Fetch Whoop data if connected
-  if (user.whoopAccessToken && user.whoopRefreshToken) {
+  // Fetch Whoop data if connected. The refresh token is optional — older
+  // connections (made before the `offline` scope) only have an access token;
+  // sync still works until it expires, then the client asks the user to reconnect.
+  if (user.whoopAccessToken) {
     try {
-      const data = await fetchWhoopData(session.user.id, user.whoopAccessToken, user.whoopRefreshToken, today);
+      const data = await fetchWhoopData(session.user.id, user.whoopAccessToken, user.whoopRefreshToken ?? null, today);
       if (Object.keys(data.metrics).length > 0) {
         entries.push(data);
       }

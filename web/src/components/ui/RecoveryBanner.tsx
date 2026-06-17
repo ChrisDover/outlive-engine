@@ -89,11 +89,13 @@ export function RecoveryBanner({
           </div>
 
           {/* Circaseptan Badge */}
-          {circaseptanDay && (
+          {circaseptanDay?.name && (
             <div className="hidden sm:flex items-center gap-[var(--space-xs)] px-[var(--space-sm)] py-1 rounded-full bg-[var(--surface-elevated)] border border-[var(--surface-secondary)]">
               <span>{focusIcons[circaseptanDay.focus] || "📅"}</span>
               <span className="text-xs text-muted">{circaseptanDay.name.split(" - ")[0]}</span>
-              <span className="text-xs text-foreground font-medium">{circaseptanDay.name.split(" - ")[1]}</span>
+              {circaseptanDay.name.split(" - ")[1] && (
+                <span className="text-xs text-foreground font-medium">{circaseptanDay.name.split(" - ")[1]}</span>
+              )}
             </div>
           )}
         </div>

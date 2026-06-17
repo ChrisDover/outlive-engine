@@ -15,7 +15,7 @@ from slowapi.util import get_remote_address
 
 from app.config import get_settings, validate_settings
 from app.models.database import close_pool, init_pool, get_pool
-from app.routers import ai, ai_preferences, auth, bloodwork, body_composition, chat, experiments, genomics, knowledge, progress, protocols, sync, telegram, users, wearables, wearable_sync
+from app.routers import ai, ai_preferences, analytics, auth, bloodwork, body_composition, chat, context as context_router, experiments, genomics, knowledge, progress, protocols, sync, telegram, users, wearables, wearable_sync
 from app.security.audit import AuditLogMiddleware
 
 logging.basicConfig(
@@ -124,6 +124,8 @@ def create_app() -> FastAPI:
     application.include_router(body_composition.router, prefix=api_prefix)
     application.include_router(ai.router, prefix=api_prefix)
     application.include_router(ai_preferences.router, prefix=api_prefix)
+    application.include_router(analytics.router, prefix=api_prefix)
+    application.include_router(context_router.router, prefix=api_prefix)
     application.include_router(chat.router, prefix=api_prefix)
     application.include_router(sync.router, prefix=api_prefix)
     application.include_router(knowledge.router, prefix=api_prefix)

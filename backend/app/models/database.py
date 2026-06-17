@@ -430,6 +430,15 @@ CREATE INDEX IF NOT EXISTS idx_ai_preferences_user ON ai_preferences(user_id);
 ALTER TABLE daily_protocols ADD COLUMN IF NOT EXISTS recovery_zone TEXT;
 ALTER TABLE daily_protocols ADD COLUMN IF NOT EXISTS circaseptan_day INT;
 ALTER TABLE daily_protocols ADD COLUMN IF NOT EXISTS ai_insights JSONB;
+
+-- ── User Context / Memory ─────────────────────────────────────────────────────
+-- Free-form goals (markdown) + structured directives the engine reasons against.
+CREATE TABLE IF NOT EXISTS user_context (
+    user_id         UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    goals_md        TEXT NOT NULL DEFAULT '',     -- encrypted markdown
+    directives      JSONB NOT NULL DEFAULT '[]',  -- [{id, text, category, source, created_at}]
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 """
 
 
