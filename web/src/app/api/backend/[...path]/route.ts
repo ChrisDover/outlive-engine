@@ -35,12 +35,15 @@ async function proxyRequest(
 
   const contentType = request.headers.get("content-type") || "";
 
+  console.log(`[Proxy] ${request.method} ${url} (content-type: ${contentType})`);
+
   try {
     let fetchOptions: RequestInit;
 
     if (contentType.includes("multipart/form-data")) {
       // Handle file uploads - pass through FormData
       const formData = await request.formData();
+      console.log(`[Proxy] FormData keys:`, [...formData.keys()]);
       fetchOptions = {
         method: request.method,
         headers: {
@@ -66,10 +69,14 @@ async function proxyRequest(
       };
     }
 
+    console.log(`[Proxy] Sending request to backend...`);
     const response = await fetch(url, fetchOptions);
+    console.log(`[Proxy] Backend response: ${response.status}`);
 
     if (!response.ok) {
-      throw new Error(`Backend ${response.status}: request failed`);
+      const errorText = await response.text();
+      console.error(`[Proxy] Backend error response:`, errorText);
+      throw new Error(`Backend ${response.status}: ${errorText}`);
     }
 
     const responseContentType = response.headers.get("content-type");
@@ -81,11 +88,13 @@ async function proxyRequest(
     return new NextResponse(text);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Proxy error";
+    const stack = error instanceof Error ? error.stack : "";
     const statusMatch = message.match(/Backend (\d+):/);
     const statusCode = statusMatch ? parseInt(statusMatch[1]) : 502;
 
     // Log full error server-side, return generic message to client
-    console.error("Backend proxy error:", message);
+    console.error("[Proxy] Error:", message);
+    console.error("[Proxy] Stack:", stack);
 
     const safeMessages: Record<number, string> = {
       400: "Bad request",

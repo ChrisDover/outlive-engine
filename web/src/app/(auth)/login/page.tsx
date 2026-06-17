@@ -15,6 +15,21 @@ function LoginForm() {
   const [magicSent, setMagicSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"password" | "magic">("password");
+  const [devLoading, setDevLoading] = useState(false);
+
+  const handleDevLogin = async () => {
+    setDevLoading(true);
+    setError("");
+
+    const result = await signIn("local-dev", { redirect: false });
+
+    if (result?.error) {
+      setError("Local dev login failed");
+      setDevLoading(false);
+    } else {
+      router.push("/dashboard");
+    }
+  };
 
   useEffect(() => {
     const magicToken = searchParams.get("magic-token");
@@ -75,6 +90,17 @@ function LoginForm() {
         <h1 className="text-2xl font-bold text-foreground mb-[var(--space-lg)]">
           Sign in to Outlive Engine
         </h1>
+
+        {/* Local Dev Quick Login */}
+        {process.env.NODE_ENV === "development" && (
+          <button
+            onClick={handleDevLogin}
+            disabled={devLoading}
+            className="w-full mb-[var(--space-lg)] py-[var(--space-md)] bg-recovery-green text-white rounded-[var(--radius-sm)] font-medium hover:opacity-90 disabled:opacity-50 transition-opacity text-lg"
+          >
+            {devLoading ? "Logging in..." : "Quick Local Login"}
+          </button>
+        )}
 
         {error && (
           <div className="mb-[var(--space-md)] p-[var(--space-sm)] bg-recovery-red/10 border border-recovery-red/30 rounded-[var(--radius-sm)] text-recovery-red text-sm">

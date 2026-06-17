@@ -354,6 +354,91 @@ CREATE TABLE IF NOT EXISTS weekly_summaries (
     UNIQUE (user_id, week_start)
 );
 CREATE INDEX IF NOT EXISTS idx_weekly_summaries_user ON weekly_summaries(user_id);
+
+-- ── SNP Knowledge Base ────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS snp_knowledge (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    rsid            TEXT NOT NULL,
+    gene            TEXT,
+    risk_allele     TEXT,
+    normal_allele   TEXT,
+    category        TEXT NOT NULL,
+    condition       TEXT NOT NULL,
+    risk_level      TEXT,
+    description     TEXT NOT NULL,
+    supplements     JSONB,
+    avoid           JSONB,
+    interventions   JSONB,
+    tests_recommended TEXT[],
+    drug_interactions JSONB,
+    expert_source   TEXT,
+    pubmed_ids      TEXT[],
+    evidence_level  TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (rsid, risk_allele)
+);
+CREATE INDEX IF NOT EXISTS idx_snp_knowledge_rsid ON snp_knowledge(rsid);
+CREATE INDEX IF NOT EXISTS idx_snp_knowledge_category ON snp_knowledge(category);
+CREATE INDEX IF NOT EXISTS idx_snp_knowledge_gene ON snp_knowledge(gene);
+
+-- ── Circaseptan Day Profiles ──────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS circaseptan_profiles (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    day_of_week     INT NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
+    name            TEXT NOT NULL,
+    focus           TEXT NOT NULL,
+    training_emphasis TEXT,
+    nutrition_focus TEXT,
+    intervention_focus TEXT,
+    hormonal_notes  TEXT,
+    immune_notes    TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (day_of_week)
+);
+
+-- ── Wearable Connections (OAuth Token Storage) ────────────────────────────────
+CREATE TABLE IF NOT EXISTS wearable_connections (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    provider        TEXT NOT NULL,           -- 'oura', 'withings', 'whoop'
+    access_token    TEXT,                    -- encrypted
+    refresh_token   TEXT,                    -- encrypted
+    provider_user_id TEXT,
+    expires_at      TIMESTAMPTZ,
+    last_sync_at    TIMESTAMPTZ,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user_id, provider)
+);
+CREATE INDEX IF NOT EXISTS idx_wearable_connections_user ON wearable_connections(user_id);
+
+-- ── AI Preferences Per User ───────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS ai_preferences (
+    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    use_local_only  BOOLEAN NOT NULL DEFAULT TRUE,
+    external_provider TEXT,                  -- 'openai', 'anthropic', etc.
+    external_api_key TEXT,                   -- encrypted
+    acknowledged_external_warning BOOLEAN NOT NULL DEFAULT FALSE,
+    preferred_model TEXT DEFAULT 'llama3.1',
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_ai_preferences_user ON ai_preferences(user_id);
+
+-- ── Enhance daily_protocols table ─────────────────────────────────────────────
+ALTER TABLE daily_protocols ADD COLUMN IF NOT EXISTS recovery_zone TEXT;
+ALTER TABLE daily_protocols ADD COLUMN IF NOT EXISTS circaseptan_day INT;
+ALTER TABLE daily_protocols ADD COLUMN IF NOT EXISTS ai_insights JSONB;
+
+-- ── User Context / Memory ─────────────────────────────────────────────────────
+-- Free-form goals (markdown) + structured directives the engine reasons against.
+CREATE TABLE IF NOT EXISTS user_context (
+    user_id         UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    goals_md        TEXT NOT NULL DEFAULT '',     -- encrypted markdown
+    directives      JSONB NOT NULL DEFAULT '[]',  -- [{id, text, category, source, created_at}]
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 """
 
 

@@ -1,0 +1,243 @@
+{
+  "expert": {
+    "name": "Peter Attia",
+    "focus_areas": ["longevity", "cardiovascular", "metabolic_health", "exercise", "zone2", "four_horsemen"],
+    "bio": "Physician focused on the applied science of longevity. Former surgical oncologist at Johns Hopkins. Host of The Drive podcast. Author of Outlive: The Science and Art of Longevity. Emphasizes preventing the 'Four Horsemen' of chronic disease.",
+    "website": "https://peterattiamd.com"
+  },
+  "supplements": [
+    {
+      "name": "EPA/DHA (Fish Oil)",
+      "description": "High-quality omega-3 fatty acids for cardiovascular and brain health",
+      "mechanisms": ["Anti-inflammatory", "Triglyceride reduction", "Membrane fluidity", "Neuroprotection"],
+      "dose": "2-3g combined EPA/DHA",
+      "timing": "with meals",
+      "conditions": {"target_omega3_index": ">8%"}
+    },
+    {
+      "name": "Vitamin D3",
+      "description": "Essential for immune function, bone health, and metabolic regulation",
+      "mechanisms": ["Calcium absorption", "Immune modulation", "Gene expression regulation"],
+      "dose": "5000 IU",
+      "timing": "morning with fat",
+      "conditions": {"target_level": "40-60 ng/mL"}
+    },
+    {
+      "name": "Magnesium (various forms)",
+      "description": "Critical mineral for 300+ enzymatic reactions. Most people deficient.",
+      "mechanisms": ["ATP production", "Muscle function", "Sleep quality", "Insulin sensitivity"],
+      "dose": "400-600mg elemental",
+      "timing": "evening",
+      "forms": ["glycinate for sleep", "threonate for cognition", "citrate for gut motility"]
+    },
+    {
+      "name": "Creatine Monohydrate",
+      "description": "Performance and cognitive benefits with excellent safety profile",
+      "mechanisms": ["ATP regeneration", "Cognitive reserve", "Muscle strength", "Neuroprotection"],
+      "dose": "5g daily",
+      "timing": "anytime, consistency matters"
+    },
+    {
+      "name": "Methylfolate + B12",
+      "description": "Essential for methylation and homocysteine metabolism",
+      "mechanisms": ["Methylation support", "DNA synthesis", "Homocysteine clearance"],
+      "dose": "400-800mcg methylfolate, 1000mcg methylcobalamin",
+      "timing": "morning",
+      "conditions": {"check_MTHFR": true, "target_homocysteine": "<10 umol/L"}
+    },
+    {
+      "name": "Baby Aspirin",
+      "description": "Cardiovascular protection for those with elevated risk",
+      "mechanisms": ["Antiplatelet", "Anti-inflammatory", "COX inhibition"],
+      "dose": "81mg",
+      "timing": "evening",
+      "conditions": {"requires": "elevated_cardiovascular_risk", "apob_above_threshold": true}
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Zone 2 Training Protocol",
+      "category": "training",
+      "description": "Foundational aerobic training at lactate threshold 1 (LT1). The highest intensity where lactate remains stable ~2mmol/L. Should be able to maintain nasal breathing or conversation.",
+      "frequency": "3-4x per week, 45-60 min sessions",
+      "evidence_level": "high",
+      "details": {
+        "heart_rate_zone": "60-70% of max HR",
+        "lactate_target": "1.7-2.0 mmol/L",
+        "rpe": "4-5 out of 10",
+        "modalities": ["cycling", "rowing", "walking uphill", "swimming"],
+        "progression": "Add 10% duration every 2 weeks until 4+ hours/week total",
+        "testing": "Lactate meter preferred, MAF test alternative"
+      },
+      "rationale": "Builds mitochondrial density, improves fat oxidation, enhances metabolic flexibility. Foundation for all other training."
+    },
+    {
+      "name": "VO2 Max Training",
+      "category": "training",
+      "description": "High-intensity intervals to improve maximum oxygen uptake. Critical for longevity - strong correlation with all-cause mortality.",
+      "frequency": "1-2x per week",
+      "evidence_level": "high",
+      "details": {
+        "protocol": "4x4 Norwegian method or similar",
+        "work_intervals": "4 minutes at 90-95% max HR",
+        "rest_intervals": "3-4 minutes active recovery",
+        "total_sets": "4-6 intervals",
+        "rpe": "8-9 out of 10"
+      },
+      "rationale": "VO2 max is one of strongest predictors of longevity. Moving from bottom 25% to top 25% associated with 5x reduction in mortality."
+    },
+    {
+      "name": "Stability Training",
+      "category": "training",
+      "description": "Foundation for all movement. DNS-based approach to rebuild proper motor patterns and prevent injury.",
+      "frequency": "Daily, 10-15 minutes",
+      "evidence_level": "moderate",
+      "details": {
+        "focus_areas": ["foot stability", "hip hinge", "scapular control", "breathing mechanics"],
+        "exercises": ["dead bugs", "bird dogs", "carries", "single leg work"],
+        "progression": "Complexity over load initially"
+      },
+      "rationale": "Prevents injury that derails training. Enables heavy strength work safely. Often neglected but critical."
+    },
+    {
+      "name": "Strength Training - Centenarian Decathlon",
+      "category": "training",
+      "description": "Train for the activities you want to do in your 90s. Grip strength, carrying grandchildren, getting off floor, climbing stairs.",
+      "frequency": "2-3x per week",
+      "evidence_level": "high",
+      "details": {
+        "key_movements": ["hip hinge (deadlift)", "squat pattern", "push", "pull", "carry", "rotation"],
+        "rep_ranges": "Varied - strength (3-5), hypertrophy (8-12), endurance (15+)",
+        "grip_work": "Farmer carries, dead hangs, plate pinches",
+        "eccentric_emphasis": "Critical for injury prevention and muscle quality"
+      },
+      "rationale": "Muscle mass peaks at 25, then declines. Must actively maintain to preserve function into old age."
+    },
+    {
+      "name": "Four Horsemen Prevention Protocol",
+      "category": "longevity",
+      "description": "Comprehensive approach to preventing cardiovascular disease, cancer, neurodegenerative disease, and metabolic disease.",
+      "frequency": "Ongoing monitoring",
+      "evidence_level": "high",
+      "cardiovascular": {
+        "primary_target": "apoB",
+        "goal": "<60 mg/dL (aggressive) or <80 mg/dL",
+        "monitoring": ["CAC score", "CT angiography", "carotid IMT"],
+        "interventions": ["statins if needed", "PCSK9 if needed", "lifestyle first"]
+      },
+      "metabolic": {
+        "primary_target": "insulin_sensitivity",
+        "monitoring": ["fasting insulin", "OGTT", "HOMA-IR", "CGM"],
+        "goal": "fasting insulin <6 uIU/mL, HOMA-IR <1.5"
+      },
+      "cancer": {
+        "approach": "early detection + risk reduction",
+        "screening": ["colonoscopy 45+", "low-dose CT if risk factors", "liquid biopsy emerging"],
+        "risk_reduction": ["exercise", "maintain lean mass", "avoid obesity", "limit alcohol"]
+      },
+      "neurodegenerative": {
+        "focus": ["APOE status awareness", "metabolic health", "sleep quality", "exercise"],
+        "monitoring": ["cognitive testing baseline", "sleep studies if indicated"]
+      }
+    },
+    {
+      "name": "ApoB Management Protocol",
+      "category": "cardiovascular",
+      "description": "Primary focus on apoB as the causal driver of atherosclerosis. More important than LDL-C.",
+      "frequency": "Monitor every 3-6 months until stable",
+      "evidence_level": "high",
+      "details": {
+        "target": "<60 mg/dL for aggressive prevention, <80 mg/dL standard",
+        "first_line": "Lifestyle - Zone 2, strength, metabolic health",
+        "pharmacologic": ["statins (rosuvastatin/atorvastatin)", "ezetimibe if needed", "PCSK9i if needed", "bempedoic acid if statin intolerant"],
+        "monitoring": ["Lp(a) one-time", "apoB primary", "LDL-P secondary"]
+      },
+      "rationale": "apoB is the causal particle in atherosclerosis. Each apoB particle can deposit cholesterol in arterial wall. Lower is better with no lower limit identified."
+    },
+    {
+      "name": "CGM Protocol for Metabolic Health",
+      "category": "nutrition",
+      "description": "Use continuous glucose monitoring to optimize metabolic health and understand individual responses.",
+      "frequency": "1-2 weeks every quarter, or continuous if pre-diabetic",
+      "evidence_level": "moderate",
+      "details": {
+        "targets": {
+          "fasting_glucose": "<90 mg/dL",
+          "average_glucose": "<100 mg/dL",
+          "post_meal_spike": "<30 mg/dL above baseline",
+          "time_above_140": "<5%"
+        },
+        "learnings": "Identify personal glucose responses to foods, meal timing, exercise effects",
+        "exercise_timing": "Post-meal walks, Zone 2 fasted or fed comparison"
+      }
+    },
+    {
+      "name": "Sleep Optimization Protocol",
+      "category": "sleep",
+      "description": "Sleep is the foundation. Poor sleep undermines every other intervention.",
+      "frequency": "Daily habits",
+      "evidence_level": "high",
+      "details": {
+        "duration_target": "7-8.5 hours in bed, 7+ hours sleep",
+        "timing": "Consistent bed/wake times within 30 minutes",
+        "temperature": "Cool room 65-68F",
+        "light": "Morning sun exposure, evening dim",
+        "tracking": ["Oura", "WHOOP", "Eight Sleep"],
+        "interventions_if_needed": ["sleep study", "CPAP if indicated", "CBT-I before medications"]
+      }
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Sauna Protocol",
+      "category": "heat_exposure",
+      "description": "Regular sauna use associated with reduced all-cause mortality in Finnish studies",
+      "frequency": "4x per week optimal, minimum 2x",
+      "duration": "20 minutes at 170-180F",
+      "evidence_level": "high",
+      "rationale": "Heat shock proteins, growth hormone release, cardiovascular conditioning, possibly dementia risk reduction"
+    },
+    {
+      "name": "Cold Exposure",
+      "category": "cold_therapy",
+      "description": "Cold plunge or cold shower for metabolic and mood benefits",
+      "frequency": "3-5x per week",
+      "duration": "2-5 minutes at 40-50F",
+      "evidence_level": "moderate",
+      "timing": "Not immediately post-strength training (blunts hypertrophy signal)",
+      "rationale": "Dopamine release, brown fat activation, mental resilience, inflammation reduction"
+    },
+    {
+      "name": "Continuous Glucose Monitor",
+      "category": "monitoring",
+      "description": "Real-time feedback on glucose for metabolic optimization",
+      "frequency": "Periodic 2-week blocks or continuous",
+      "evidence_level": "moderate",
+      "brands": ["Dexcom", "Libre"],
+      "rationale": "Identify personal glycemic responses, optimize meal composition and timing"
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "Protein Priority",
+      "guidance": "Protein is the most important macronutrient to get right. Target 1g per pound of lean body mass minimum for muscle preservation.",
+      "details": "Distribute evenly across meals (40-50g per meal). Leucine threshold matters. Animal sources superior for muscle protein synthesis.",
+      "conditions": {"activity_level": "moderate_to_high"}
+    },
+    {
+      "topic": "Carbohydrate Flexibility",
+      "guidance": "Carb needs highly individual. Athletes need more. Sedentary need less. CGM can personalize.",
+      "details": "Prioritize around training. Focus on whole food sources. Avoid liquid calories and refined sugars."
+    },
+    {
+      "topic": "Time-Restricted Eating",
+      "guidance": "Eating window of 10-12 hours. Not extreme fasting. Focus on not eating late at night.",
+      "details": "Last meal 3+ hours before bed. Protein early in day. Not about calorie restriction."
+    },
+    {
+      "topic": "Alcohol",
+      "guidance": "No safe level for optimal health. If drinking, minimize. Red wine not protective.",
+      "details": "Disrupts sleep architecture. Increases cancer risk. Impacts metabolic health. Social benefits real but weigh against health costs."
+    }
+  ]
+}

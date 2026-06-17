@@ -664,3 +664,125 @@ class MorningBriefResponse(BaseModel):
     rationale: str
     expert_citations: list[str]
     recovery_status: dict[str, Any] | None = None
+    circaseptan: dict[str, Any] | None = None
+    snp_recommendations: list[str] | None = None
+    ai_insights: list[str] | None = None
+
+
+# ── Recovery & Circaseptan ───────────────────────────────────────────────────
+
+class RecoveryZone(str, Enum):
+    GREEN = "GREEN"
+    YELLOW = "YELLOW"
+    RED = "RED"
+
+
+class CircaseptanFocus(str, Enum):
+    IMMUNE_RESET = "immune_reset"
+    MUSCLE_BUILDING = "muscle_building"
+    FAT_OXIDATION = "fat_oxidation"
+    ADAPTATION = "adaptation"
+    RECOVERY = "recovery"
+    GUT_RESET = "gut_reset"
+
+
+class CircaseptanDay(BaseModel):
+    day_of_week: int = Field(..., ge=0, le=6)
+    name: str
+    focus: CircaseptanFocus
+    training_emphasis: str | None = None
+    nutrition_focus: str | None = None
+    intervention_focus: str | None = None
+    hormonal_notes: str | None = None
+    immune_notes: str | None = None
+
+
+class RecoveryStatus(BaseModel):
+    zone: RecoveryZone
+    score: float = Field(..., ge=0, le=100)
+    summary: str
+    breakdown: dict[str, Any] | None = None
+
+
+class SNPRecommendation(BaseModel):
+    rsid: str
+    gene: str | None = None
+    condition: str
+    supplements: list[dict[str, Any]] = Field(default_factory=list)
+    avoid: list[dict[str, Any]] = Field(default_factory=list)
+    interventions: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class TrainingProtocol(BaseModel):
+    type: str
+    duration_mins: int | None = None
+    rpe_target: float | None = None
+    exercises: list[dict[str, Any]] = Field(default_factory=list)
+    session_type: str | None = None
+    recovery_zone: str | None = None
+    adaptation_notes: str | None = None
+
+
+class SupplementProtocol(BaseModel):
+    name: str
+    dose: str | None = None
+    timing: str | None = None
+    rationale: str | None = None
+    source_expert: str | None = None
+    genetic_priority: bool = False
+    snp_source: str | None = None
+
+
+class InterventionProtocol(BaseModel):
+    type: str
+    duration_mins: int | None = None
+    notes: str | None = None
+    source_expert: str | None = None
+    skipped: bool = False
+    skip_reason: str | None = None
+
+
+class NutritionProtocol(BaseModel):
+    tdee: int | None = None
+    protein: int | None = None
+    carbs: int | None = None
+    fat: int | None = None
+    meal_timing: str | None = None
+    notes: str | None = None
+    circaseptan_guidance: str | None = None
+    emphasis: list[str] = Field(default_factory=list)
+
+
+class SleepProtocol(BaseModel):
+    target_hours: float = 8.0
+    bedtime: str | None = None
+    wake_time: str | None = None
+    wind_down_mins: int = 30
+    recommendations: list[str] = Field(default_factory=list)
+
+
+class EnhancedDailyProtocolResponse(BaseModel):
+    """Enhanced daily protocol with recovery zone, circaseptan, and SNP integration."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID | None = None
+    user_id: UUID | None = None
+    date: date
+    recovery_zone: RecoveryZone
+    recovery_score: float
+    recovery_summary: str
+    circaseptan_day: int
+    circaseptan_name: str
+    circaseptan_summary: str
+    training: TrainingProtocol | None = None
+    nutrition: NutritionProtocol | None = None
+    supplements: list[SupplementProtocol] = Field(default_factory=list)
+    interventions: list[InterventionProtocol] = Field(default_factory=list)
+    sleep: SleepProtocol | None = None
+    snp_recommendations: list[str] = Field(default_factory=list)
+    snp_avoid: list[dict[str, Any]] = Field(default_factory=list)
+    ai_insights: list[str] = Field(default_factory=list)
+    conflicts_resolved: list[dict[str, Any]] = Field(default_factory=list)
+    expert_sources: list[str] = Field(default_factory=list)
+    summary: str | None = None
+    rationale: str | None = None

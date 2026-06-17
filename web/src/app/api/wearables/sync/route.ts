@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { backendClient } from "@/lib/backend-client";
 import { fetchOuraData } from "@/lib/oura-client";
 import { fetchWhoopData } from "@/lib/whoop-client";
+import { fetchWithingsBodyComposition, normalizeWithingsMetrics } from "@/lib/withings-client";
 
 export async function POST() {
   const session = await getServerSession(authOptions);
@@ -20,6 +21,8 @@ export async function POST() {
       ouraRefreshToken: true,
       whoopAccessToken: true,
       whoopRefreshToken: true,
+      withingsAccessToken: true,
+      withingsUserId: true,
     },
   });
 
@@ -28,7 +31,7 @@ export async function POST() {
   }
 
   const today = new Date().toISOString().split("T")[0];
-  const entries: Array<{ date: string; source: string; metrics: Record<string, any> }> = [];
+  const entries: Array<{ date: string; source: string; metrics: Record<string, number | string | null> }> = [];
   const errors: string[] = [];
 
   // Fetch Oura data if connected
@@ -43,15 +46,32 @@ export async function POST() {
     }
   }
 
-  // Fetch Whoop data if connected
-  if (user.whoopAccessToken && user.whoopRefreshToken) {
+  // Fetch Whoop data if connected. The refresh token is optional — older
+  // connections (made before the `offline` scope) only have an access token;
+  // sync still works until it expires, then the client asks the user to reconnect.
+  if (user.whoopAccessToken) {
     try {
-      const data = await fetchWhoopData(session.user.id, user.whoopAccessToken, user.whoopRefreshToken, today);
+      const data = await fetchWhoopData(session.user.id, user.whoopAccessToken, user.whoopRefreshToken ?? null, today);
       if (Object.keys(data.metrics).length > 0) {
         entries.push(data);
       }
     } catch (err) {
       errors.push(`Whoop: ${err instanceof Error ? err.message : "unknown error"}`);
+    }
+  }
+
+  // Fetch Withings data if connected (body composition from scale)
+  if (user.withingsAccessToken && user.withingsUserId) {
+    try {
+      const bodyComp = await fetchWithingsBodyComposition(session.user.id);
+      // Get the most recent measurement
+      if (bodyComp.length > 0) {
+        const latest = bodyComp[0];
+        const data = normalizeWithingsMetrics(latest);
+        entries.push(data);
+      }
+    } catch (err) {
+      errors.push(`Withings: ${err instanceof Error ? err.message : "unknown error"}`);
     }
   }
 

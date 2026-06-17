@@ -19,9 +19,12 @@ model User {
   backendUserId      String?   @unique
   ouraAccessToken    String?
   ouraRefreshToken   String?
-  whoopAccessToken   String?
-  whoopRefreshToken  String?
-  goals              String[]  @default([])
+  whoopAccessToken     String?
+  whoopRefreshToken    String?
+  withingsAccessToken  String?
+  withingsRefreshToken String?
+  withingsUserId       String?   // Withings user ID for API calls
+  goals                String[]  @default([])
   onboardingComplete Boolean   @default(false)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt

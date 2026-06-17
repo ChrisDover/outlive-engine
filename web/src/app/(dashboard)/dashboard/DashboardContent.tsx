@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ProtocolCard } from "@/components/ui/ProtocolCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { AdherenceLogger } from "@/components/ui/AdherenceLogger";
@@ -38,9 +39,75 @@ interface ProgressStats {
   active_goals: number;
 }
 
+interface Exercise {
+  name: string;
+  sets?: number | string;
+  reps?: number | string;
+}
+
+interface Training {
+  type?: string;
+  duration?: number;
+  rpe?: number;
+  exercises?: Exercise[];
+}
+
+interface Meal {
+  name?: string;
+  time?: string;
+  calories?: number;
+  protein?: number;
+  items?: string[];
+}
+
+interface Nutrition {
+  tdee?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+  meal_timing?: string;
+  notes?: string;
+  meals?: Meal[];
+}
+
+interface Supplement {
+  name: string;
+  dose?: number | string;
+  unit?: string;
+  timing?: string;
+  source_expert?: string;
+}
+
+interface Intervention {
+  type?: string;
+  name?: string;
+  duration?: number;
+  source_expert?: string;
+}
+
+interface Sleep {
+  bedtime?: string;
+  wake_time?: string;
+  target_hours?: number;
+}
+
+interface Protocol {
+  training?: Training;
+  nutrition?: Nutrition;
+  supplements?: Supplement[];
+  interventions?: Intervention[];
+  sleep?: Sleep;
+  summary?: string;
+  rationale?: string;
+}
+
+// The backend sometimes returns the protocol wrapped in an envelope
+// ({ protocol: {...} }) and sometimes inline — accept both shapes.
+type ProtocolInput = (Protocol & { protocol?: Protocol }) | null | undefined;
+
 interface DashboardContentProps {
-  protocol: any;
-  wearable: any;
+  protocol: ProtocolInput;
+  wearable?: unknown;
   adherence?: AdherenceItem[];
   goals?: Goal[];
   progressStats?: ProgressStats | null;
@@ -66,12 +133,29 @@ function RationaleToggle({ rationale }: { rationale: string }) {
 
 export function DashboardContent({
   protocol,
-  wearable,
   adherence = [],
   goals = [],
   progressStats,
 }: DashboardContentProps) {
-  const [showProtocols, setShowProtocols] = useState(false);
+  const [showProtocols, setShowProtocols] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const router = useRouter();
+
+  const handleGeneratePlan = async () => {
+    setGenerating(true);
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const res = await fetch(`/api/backend/protocols/daily/generate?target_date=${today}`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error();
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to generate plan:", error);
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const protocolData = protocol?.protocol || protocol;
   const training = protocolData?.training;
@@ -98,8 +182,8 @@ export function DashboardContent({
           completed,
         }),
       });
-      // Optimistic update - the page will revalidate
-      window.location.reload();
+      // Re-fetch server data without a full-page reload.
+      router.refresh();
     } catch (error) {
       console.error("Failed to log adherence:", error);
     }
@@ -110,7 +194,7 @@ export function DashboardContent({
       await fetch(`/api/backend/progress/adherence/quick-log?message=${encodeURIComponent(message)}`, {
         method: "POST",
       });
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error("Failed to quick log:", error);
     }
@@ -123,7 +207,7 @@ export function DashboardContent({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error("Failed to update goal:", error);
     }
@@ -147,21 +231,34 @@ export function DashboardContent({
         />
       )}
 
-      {/* Protocol Details Toggle */}
+      {/* Today's Plan */}
       <div className="border border-[var(--surface-elevated)] bg-card">
-        <button
-          onClick={() => setShowProtocols(!showProtocols)}
-          className="w-full p-[var(--space-md)] flex items-center justify-between hover:bg-[var(--surface-secondary)] transition-colors"
-        >
-          <div className="flex items-center gap-[var(--space-sm)]">
+        <div className="w-full p-[var(--space-md)] flex items-center justify-between gap-3">
+          <button
+            onClick={() => setShowProtocols(!showProtocols)}
+            className="flex items-center gap-[var(--space-sm)]"
+          >
             <span className="text-training">{'>'}</span>
-            <span className="text-foreground font-semibold">PROTOCOL DETAILS</span>
-          </div>
-          <span className="text-muted">{showProtocols ? '▲' : '▼'}</span>
-        </button>
+            <span className="text-foreground font-semibold">TODAY&apos;S PLAN</span>
+            <span className="text-muted">{showProtocols ? '▲' : '▼'}</span>
+          </button>
+          <button
+            onClick={handleGeneratePlan}
+            disabled={generating}
+            className="shrink-0 rounded-[var(--radius-md)] px-3 py-1.5 text-xs font-medium text-white transition-opacity disabled:opacity-60"
+            style={{ background: "var(--accent)" }}
+          >
+            {generating ? "Generating…" : protocolData ? "Regenerate" : "Generate plan"}
+          </button>
+        </div>
 
         {showProtocols && (
           <div className="border-t border-[var(--surface-elevated)]">
+            {generating && (
+              <div className="p-[var(--space-md)] border-b border-[var(--surface-elevated)] text-sm text-muted">
+                Generating your personalized meal plan, workout, and supplements… this can take up to a minute on the local model.
+              </div>
+            )}
             {summary && (
               <div className="p-[var(--space-md)] border-b border-[var(--surface-elevated)]">
                 <p className="text-sm text-foreground">{summary}</p>
@@ -184,7 +281,7 @@ export function DashboardContent({
                       <div className="space-y-2 text-sm">
                         {training.duration && <p className="text-muted">Duration: {training.duration} min</p>}
                         {training.rpe && <p className="text-muted">Target RPE: {training.rpe}/10</p>}
-                        {training.exercises?.map((ex: any, i: number) => (
+                        {training.exercises?.map((ex, i) => (
                           <p key={i} className="text-foreground">{ex.name} — {ex.sets}x{ex.reps}</p>
                         ))}
                       </div>
@@ -209,6 +306,36 @@ export function DashboardContent({
                           <p className="text-muted">Fat</p>
                         </div>
                       </div>
+
+                      {/* Meal plan */}
+                      {Array.isArray(nutrition.meals) && nutrition.meals.length > 0 && (
+                        <div className="mt-[var(--space-md)] space-y-[var(--space-sm)] border-t border-[var(--surface-elevated)] pt-[var(--space-md)]">
+                          {nutrition.meals.map((meal, i) => (
+                            <div key={i} className="text-sm">
+                              <div className="flex items-baseline justify-between gap-2">
+                                <span className="font-medium text-foreground">
+                                  {meal.name || `Meal ${i + 1}`}
+                                  {meal.time ? <span className="text-muted font-normal"> · {meal.time}</span> : null}
+                                </span>
+                                {(meal.calories || meal.protein) && (
+                                  <span className="font-mono text-xs text-muted">
+                                    {meal.calories ? `${meal.calories} kcal` : ""}
+                                    {meal.calories && meal.protein ? " · " : ""}
+                                    {meal.protein ? `${meal.protein}g P` : ""}
+                                  </span>
+                                )}
+                              </div>
+                              {Array.isArray(meal.items) && meal.items.length > 0 && (
+                                <p className="text-muted mt-0.5">{meal.items.join(", ")}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {nutrition.notes && (
+                        <p className="mt-[var(--space-sm)] text-xs text-muted">{nutrition.notes}</p>
+                      )}
                     </ProtocolCard>
                   </div>
                 )}
@@ -221,7 +348,7 @@ export function DashboardContent({
                       subtitle={`${Array.isArray(supplements) ? supplements.length : 0} items`}
                     >
                       <ul className="space-y-1 text-sm">
-                        {Array.isArray(supplements) && supplements.map((s: any, i: number) => (
+                        {Array.isArray(supplements) && supplements.map((s, i) => (
                           <li key={i} className="text-foreground">
                             {s.name} — {s.dose}{s.unit ? ` ${s.unit}` : ""} <span className="text-muted">({s.timing || "anytime"})</span>
                             {s.source_expert && <span className="text-subtle ml-2">[{s.source_expert}]</span>}
@@ -240,7 +367,7 @@ export function DashboardContent({
                       subtitle={`${Array.isArray(interventions) ? interventions.length : 0} activities`}
                     >
                       <ul className="space-y-1 text-sm">
-                        {Array.isArray(interventions) && interventions.map((item: any, i: number) => (
+                        {Array.isArray(interventions) && interventions.map((item, i) => (
                           <li key={i} className="text-foreground">
                             {item.type || item.name}
                             {item.duration ? ` — ${item.duration} min` : ""}
@@ -283,14 +410,14 @@ export function DashboardContent({
   );
 }
 
-function generateAdherenceItems(protocol: any): AdherenceItem[] {
+function generateAdherenceItems(protocol: Protocol | null | undefined): AdherenceItem[] {
   if (!protocol) return [];
 
   const items: AdherenceItem[] = [];
 
   // Add supplements as adherence items
   if (Array.isArray(protocol.supplements)) {
-    protocol.supplements.forEach((s: any) => {
+    protocol.supplements.forEach((s) => {
       items.push({
         item_type: "supplement",
         item_name: s.name,
@@ -310,10 +437,10 @@ function generateAdherenceItems(protocol: any): AdherenceItem[] {
 
   // Add interventions as adherence items
   if (Array.isArray(protocol.interventions)) {
-    protocol.interventions.forEach((i: any) => {
+    protocol.interventions.forEach((i) => {
       items.push({
         item_type: "intervention",
-        item_name: i.type || i.name,
+        item_name: i.type || i.name || "Intervention",
         completed: false,
       });
     });

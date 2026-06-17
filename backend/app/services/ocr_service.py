@@ -347,7 +347,7 @@ Return: {"markers": [...], "confidence": 0.0-1.0}"""
     }
 
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=60.0) as client:
             resp = await client.post(url, json=payload)
             resp.raise_for_status()
             result = resp.json()
@@ -398,7 +398,7 @@ Return: {"markers": [...], "confidence": 0.0-1.0}"""
         return markers, confidence
 
     except httpx.TimeoutException:
-        logger.error("LLM parsing timed out after 30s")
+        logger.error("LLM parsing timed out after 60s")
         return [], 0.0
     except json.JSONDecodeError as e:
         logger.error(f"LLM returned invalid JSON: {e}")
@@ -409,7 +409,7 @@ Return: {"markers": [...], "confidence": 0.0-1.0}"""
 
 
 def extract_markers_regex(raw_text: str) -> list[BloodworkMarker]:
-    """Fallback regex-based marker extraction when LLM fails."""
+    """Robust regex-based marker extraction - primary extraction method."""
     markers = []
 
     # Blacklist - terms that are NOT biomarkers
@@ -426,89 +426,202 @@ def extract_markers_regex(raw_text: str) -> list[BloodworkMarker]:
         'doctor', 'physician', 'lab', 'report', 'page', 'result', 'test',
         'specimen', 'collected', 'received', 'reported', 'ordered', 'status',
         'normal', 'abnormal', 'high', 'low', 'reference', 'range', 'units',
-        'fasting', 'random', 'am', 'pm', 'flag', 'comment', 'note',
+        'fasting', 'random', 'am', 'pm', 'flag', 'comment', 'note', 'your',
     }
 
-    # Known biomarker names to look for (whitelist)
-    known_markers = {
-        'glucose', 'hdl', 'ldl', 'cholesterol', 'triglycerides', 'hemoglobin', 'hematocrit',
-        'wbc', 'rbc', 'platelets', 'creatinine', 'bun', 'sodium', 'potassium', 'chloride',
-        'calcium', 'albumin', 'protein', 'bilirubin', 'ast', 'alt', 'alp', 'ggt',
-        'tsh', 'hba1c', 'a1c', 'insulin', 'ferritin', 'iron', 'vitamin', 'b12',
-        'testosterone', 'estradiol', 'cortisol', 'crp', 'homocysteine', 'apob', 'lp(a)',
-        'egfr', 'mcv', 'mch', 'mchc', 'rdw', 'mpv', 'uric', 'magnesium', 'zinc',
-        'folate', 'dhea', 'vldl', 'fibrinogen', 'globulin', 'ratio', 'count',
-        'neutrophil', 'lymphocyte', 'monocyte', 'eosinophil', 'basophil',
-        'co2', 'bicarbonate', 'anion', 'osmolality', 'phosphorus', 'phosphate',
-        'ld', 'ldh', 'ck', 'cpk', 'troponin', 'bnp', 'procalcitonin',
-        'psa', 'free', 'total', 't3', 't4', 'ft3', 'ft4', 'thyroid',
-        'sed', 'esr', 'sedimentation', 'sed rate',
-    }
+    # Comprehensive biomarker patterns with their normalized names
+    # Format: (regex pattern, normalized name)
+    # NOTE: All patterns must have the numeric value as group(1)
+    direct_patterns = [
+        # Lipid Panel
+        (r'(?:total\s+)?cholesterol[:\s]+(\d+\.?\d*)', 'Total Cholesterol'),
+        (r'hdl[- ]?(?:cholesterol)?[:\s]+(\d+\.?\d*)', 'HDL Cholesterol'),
+        (r'ldl[- ]?(?:cholesterol)?(?:\s*\(calc\))?[:\s]+(\d+\.?\d*)', 'LDL Cholesterol'),
+        (r'vldl[:\s]+(\d+\.?\d*)', 'VLDL'),
+        (r'triglycerides?[:\s]+(\d+\.?\d*)', 'Triglycerides'),
+        (r'non[- ]?hdl[:\s]+(\d+\.?\d*)', 'Non-HDL Cholesterol'),
+        (r'(?:apob|apolipoprotein\s*b)[:\s]+(\d+\.?\d*)', 'ApoB'),
+        (r'(?:lp\s*\(?a\)?|lipoprotein\s*\(?a\)?)[:\s]+(\d+\.?\d*)', 'Lp(a)'),
 
-    # Patterns for lab results
-    patterns = [
-        # Pattern 1: Name Value Unit [Reference] - more specific
-        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-\(\),]+?)\s+(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+(?:/[a-zA-Z]+)?)?(?:\s*[\[\(]?\s*(?P<ref_low>\d+\.?\d*)\s*[-–]\s*(?P<ref_high>\d+\.?\d*)\s*[\]\)]?)?',
-        # Pattern 2: Name: Value
-        r'(?P<name>[A-Za-z][A-Za-z0-9\s\-]+?):\s*(?P<value>\d+\.?\d*)\s*(?P<unit>[a-zA-Z/%]+)?',
+        # Metabolic Panel
+        (r'glucose(?:\s*,?\s*(?:fasting|serum|plasma))?[:\s]+(\d+\.?\d*)', 'Glucose'),
+        (r'(?:bun|blood\s+urea\s+nitrogen)[:\s]+(\d+\.?\d*)', 'BUN'),
+        (r'creatinine[:\s]+(\d+\.?\d*)', 'Creatinine'),
+        (r'e?gfr[:\s]+[>]?(\d+\.?\d*)', 'eGFR'),
+        (r'(?:sodium|na\+?)[:\s]+(\d+\.?\d*)', 'Sodium'),
+        (r'(?:potassium|k\+?)[:\s]+(\d+\.?\d*)', 'Potassium'),
+        (r'(?:chloride|cl)[:\s]+(\d+\.?\d*)', 'Chloride'),
+        (r'(?:co2|carbon\s+dioxide|bicarbonate)[:\s]+(\d+\.?\d*)', 'CO2'),
+        (r'(?:calcium|ca\+?)[:\s]+(\d+\.?\d*)', 'Calcium'),
+        (r'(?:phosphorus|phosphate)[:\s]+(\d+\.?\d*)', 'Phosphorus'),
+        (r'magnesium[:\s]+(\d+\.?\d*)', 'Magnesium'),
+        (r'uric\s+acid[:\s]+(\d+\.?\d*)', 'Uric Acid'),
+
+        # Liver Panel
+        (r'(?:ast|sgot)[:\s]+(\d+\.?\d*)', 'AST'),
+        (r'(?:alt|sgpt)[:\s]+(\d+\.?\d*)', 'ALT'),
+        (r'(?:alkaline\s+phosphatase|alk\s*phos|alp)[:\s]+(\d+\.?\d*)', 'Alkaline Phosphatase'),
+        (r'(?:ggt|gamma[- ]?gt)[:\s]+(\d+\.?\d*)', 'GGT'),
+        (r'(?:total\s+)?bilirubin[:\s]+(\d+\.?\d*)', 'Bilirubin Total'),
+        (r'direct\s+bilirubin[:\s]+(\d+\.?\d*)', 'Bilirubin Direct'),
+        (r'(?:total\s+)?protein[:\s]+(\d+\.?\d*)', 'Total Protein'),
+        (r'albumin[:\s]+(\d+\.?\d*)', 'Albumin'),
+        (r'globulin[:\s]+(\d+\.?\d*)', 'Globulin'),
+        (r'a/?g\s+ratio[:\s]+(\d+\.?\d*)', 'A/G Ratio'),
+
+        # CBC - Complete Blood Count
+        (r'(?:wbc|white\s+blood\s+cells?|white\s+count)[:\s]+(\d+\.?\d*)', 'White Blood Cells'),
+        (r'(?:rbc|red\s+blood\s+cells?|red\s+count)[:\s]+(\d+\.?\d*)', 'Red Blood Cells'),
+        (r'(?:hemoglobin|hgb|hb)(?!\s*a1c)[:\s]+(\d+\.?\d*)', 'Hemoglobin'),
+        (r'(?:hematocrit|hct)[:\s]+(\d+\.?\d*)', 'Hematocrit'),
+        (r'(?:platelets?|plt)(?:\s+count)?[:\s]+(\d+\.?\d*)', 'Platelets'),
+        (r'mcv[:\s]+(\d+\.?\d*)', 'MCV'),
+        (r'mch(?!c)[:\s]+(\d+\.?\d*)', 'MCH'),
+        (r'mchc[:\s]+(\d+\.?\d*)', 'MCHC'),
+        (r'rdw[:\s]+(\d+\.?\d*)', 'RDW'),
+        (r'mpv[:\s]+(\d+\.?\d*)', 'MPV'),
+
+        # Thyroid
+        (r'tsh[:\s]+(\d+\.?\d*)', 'TSH'),
+        (r'(?:free\s+)?t3[:\s]+(\d+\.?\d*)', 'T3'),
+        (r'(?:free\s+)?t4[:\s]+(\d+\.?\d*)', 'T4'),
+        (r'ft4[:\s]+(\d+\.?\d*)', 'Free T4'),
+        (r'ft3[:\s]+(\d+\.?\d*)', 'Free T3'),
+
+        # Diabetes/Metabolic
+        (r'(?:hemoglobin\s+)?a1c[:\s]+(\d+\.?\d*)', 'HbA1c'),
+        (r'hba1c[:\s]+(\d+\.?\d*)', 'HbA1c'),
+        (r'(?:fasting\s+)?insulin[:\s]+(\d+\.?\d*)', 'Insulin'),
+        (r'homa[- ]?ir[:\s]+(\d+\.?\d*)', 'HOMA-IR'),
+
+        # Iron Panel
+        (r'ferritin[:\s]+(\d+\.?\d*)', 'Ferritin'),
+        (r'(?<!transferrin\s)iron[:\s]+(\d+\.?\d*)', 'Iron'),
+        (r'tibc[:\s]+(\d+\.?\d*)', 'TIBC'),
+        (r'transferrin\s+sat(?:uration)?[:\s]+(\d+\.?\d*)', 'Transferrin Saturation'),
+
+        # Vitamins
+        (r'vitamin\s*d[:\s]+(\d+\.?\d*)', 'Vitamin D'),
+        (r'25[- ]?(?:hydroxy|oh)[:\s]+(\d+\.?\d*)', 'Vitamin D'),
+        (r'(?:vitamin\s*)?b12[:\s]+(\d+\.?\d*)', 'Vitamin B12'),
+        (r'(?:folate|folic\s+acid)[:\s]+(\d+\.?\d*)', 'Folate'),
+
+        # Inflammation
+        (r'(?:hs[- ]?)?crp[:\s]+(\d+\.?\d*)', 'CRP'),
+        (r'c[- ]?reactive\s+protein[:\s]+(\d+\.?\d*)', 'CRP'),
+        (r'homocysteine[:\s]+(\d+\.?\d*)', 'Homocysteine'),
+        (r'(?:sed\s+rate|esr|sedimentation)[:\s]+(\d+\.?\d*)', 'ESR'),
+        (r'fibrinogen[:\s]+(\d+\.?\d*)', 'Fibrinogen'),
+
+        # Hormones
+        (r'(?:total\s+)?testosterone[:\s]+(\d+\.?\d*)', 'Testosterone'),
+        (r'free\s+testosterone[:\s]+(\d+\.?\d*)', 'Testosterone Free'),
+        (r'(?:estradiol|e2)[:\s]+(\d+\.?\d*)', 'Estradiol'),
+        (r'cortisol[:\s]+(\d+\.?\d*)', 'Cortisol'),
+        (r'dhea[- ]?s(?:ulfate)?[:\s]+(\d+\.?\d*)', 'DHEA-S'),
+
+        # Other
+        (r'psa[:\s]+(\d+\.?\d*)', 'PSA'),
+        (r'zinc[:\s]+(\d+\.?\d*)', 'Zinc'),
+        (r'ldh[:\s]+(\d+\.?\d*)', 'LDH'),
+    ]
+
+    # First pass: direct pattern matching (most accurate)
+    text_lower = raw_text.lower()
+    for pattern, marker_name in direct_patterns:
+        matches = re.finditer(pattern, text_lower)
+        for match in matches:
+            try:
+                # Safely get group(1) - should always exist but check anyway
+                value_str = match.group(1)
+                if value_str is None:
+                    continue
+                value = float(value_str)
+                # Skip unreasonable values
+                if value <= 0 or value > 100000:
+                    continue
+                markers.append(BloodworkMarker(
+                    name=marker_name,
+                    value=value,
+                    unit="",
+                    reference_low=None,
+                    reference_high=None,
+                    flag=None,
+                ))
+            except (ValueError, IndexError, AttributeError):
+                continue
+
+    # Second pass: line-by-line extraction for tabular data
+    # Pattern: "Marker Name    Value    Unit    Reference Range"
+    line_patterns = [
+        # Name followed by value, optional unit and reference
+        r'^([A-Za-z][A-Za-z0-9\s\-\(\),\.]+?)\s{2,}(\d+\.?\d*)\s*([a-zA-Z/%µμ]+(?:/[a-zA-Z]+)?)?\s*(?:[\[\(]?\s*(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)\s*[\]\)]?)?',
+        # Name: Value format
+        r'^([A-Za-z][A-Za-z0-9\s\-\(\),]+?):\s*(\d+\.?\d*)\s*([a-zA-Z/%µμ]+)?',
     ]
 
     lines = raw_text.split('\n')
     for line in lines:
         line = line.strip()
-        if not line:
+        if not line or len(line) < 3:
             continue
 
-        for pattern in patterns:
-            match = re.search(pattern, line, re.IGNORECASE)
+        for pattern in line_patterns:
+            match = re.match(pattern, line, re.IGNORECASE)
             if match:
-                name = match.group('name').strip()
+                name = match.group(1).strip()
                 name_lower = name.lower()
 
-                # Skip if it's in blacklist
+                # Skip blacklisted terms
                 if name_lower in blacklist or any(b in name_lower.split() for b in blacklist):
                     continue
 
-                # Check if this looks like a biomarker (must match whitelist)
-                is_known = any(known in name_lower for known in known_markers)
-                if not is_known:
-                    continue  # Only extract known biomarkers
+                # Skip if too short or looks like a header
+                if len(name) < 2 or name.isupper() and len(name) > 20:
+                    continue
 
                 try:
-                    value = float(match.group('value'))
-                    unit = match.group('unit') or '' if 'unit' in match.groupdict() else ''
-                    ref_low = float(match.group('ref_low')) if match.group('ref_low') else None
-                    ref_high = float(match.group('ref_high')) if match.group('ref_high') else None
+                    value = float(match.group(2))
+                    if value <= 0 or value > 100000:
+                        continue
 
-                    # Normalize marker name
+                    unit = match.group(3) or '' if len(match.groups()) >= 3 else ''
+                    ref_low = float(match.group(4)) if len(match.groups()) >= 4 and match.group(4) else None
+                    ref_high = float(match.group(5)) if len(match.groups()) >= 5 and match.group(5) else None
+
                     normalized_name = normalize_marker_name(name)
 
-                    marker = BloodworkMarker(
+                    markers.append(BloodworkMarker(
                         name=normalized_name,
                         value=value,
                         unit=unit,
                         reference_low=ref_low,
                         reference_high=ref_high,
                         flag=None,
-                    )
-                    markers.append(marker)
-                    break  # Found a match for this line
-                except (ValueError, AttributeError):
+                    ))
+                except (ValueError, AttributeError, IndexError):
                     continue
 
-    # Deduplicate by name
+    # Deduplicate by normalized name (keep first occurrence)
     seen = set()
     unique_markers = []
     for m in markers:
-        if m.name.lower() not in seen:
-            seen.add(m.name.lower())
+        key = m.name.lower()
+        if key not in seen:
+            seen.add(key)
             unique_markers.append(m)
 
     return unique_markers
 
 
 async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = False) -> tuple[list[BloodworkMarker], str | None, float]:
-    """Process a single image through the OCR pipeline."""
+    """Process a single image through the OCR pipeline.
+
+    Pipeline:
+    1. Tesseract OCR for text extraction
+    2. Regex extraction (fast, reliable for known patterns)
+    3. LLM enhancement only if regex finds few markers (optional, slower)
+    """
 
     # Step 1: Extract text with Tesseract
     raw_text = extract_text_tesseract(img)
@@ -521,33 +634,36 @@ async def process_image_ocr(img: Image.Image, use_vision_fallback: bool = False)
         logger.warning("Not enough text extracted from image")
         return markers, raw_text, confidence
 
-    # Step 2: Always try LLM first (fast with mistral)
-    logger.info("Parsing with LLM")
-    llm_markers, llm_confidence = await parse_markers_with_llm(raw_text)
-    if llm_markers:
-        markers = llm_markers
-        confidence = llm_confidence
-        logger.info(f"LLM extracted {len(markers)} markers with confidence {confidence}")
+    # Step 2: Always try regex first (instant, reliable)
+    logger.info("Extracting markers with regex patterns")
+    regex_markers = extract_markers_regex(raw_text)
+    if regex_markers:
+        markers = regex_markers
+        confidence = 0.7
+        logger.info(f"Regex extracted {len(markers)} markers")
 
-    # Step 3: If LLM failed or found few markers, also try regex
-    if len(markers) < 5:
-        logger.info("Also trying regex extraction")
-        regex_markers = extract_markers_regex(raw_text)
-        if regex_markers:
-            # Merge: add regex markers not already found by LLM
-            marker_dict = {m.name.lower(): m for m in markers}
-            added = 0
-            for m in regex_markers:
-                if m.name.lower() not in marker_dict:
-                    marker_dict[m.name.lower()] = m
-                    added += 1
-            markers = list(marker_dict.values())
-            if added > 0:
-                logger.info(f"Regex added {added} more markers, total: {len(markers)}")
-            if not confidence:
-                confidence = 0.5
+    # Step 3: Only use LLM if regex found very few markers (expensive, slow)
+    # Skip LLM if we already have good results
+    if len(markers) < 3:
+        logger.info("Few markers found, trying LLM enhancement")
+        try:
+            llm_markers, llm_confidence = await parse_markers_with_llm(raw_text)
+            if llm_markers:
+                # Merge LLM results with regex results
+                marker_dict = {m.name.lower(): m for m in markers}
+                added = 0
+                for m in llm_markers:
+                    if m.name.lower() not in marker_dict:
+                        marker_dict[m.name.lower()] = m
+                        added += 1
+                markers = list(marker_dict.values())
+                if added > 0:
+                    logger.info(f"LLM added {added} more markers, total: {len(markers)}")
+                confidence = max(confidence, llm_confidence)
+        except Exception as e:
+            logger.warning(f"LLM enhancement failed: {e}")
 
-    # Step 4: Vision model disabled by default (too slow)
+    # Step 4: Vision model only as last resort
     if not markers and use_vision_fallback:
         logger.info("Falling back to vision model")
         markers, _, confidence = await process_with_vision(img)

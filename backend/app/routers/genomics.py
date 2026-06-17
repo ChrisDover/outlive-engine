@@ -209,3 +209,45 @@ async def list_genome_uploads(
     """List all genome uploads for the current user."""
     uploads = await get_genome_uploads(current_user["id"])
     return [GenomeUploadResponse(**u) for u in uploads]
+
+
+@router.get("/analysis")
+async def analyze_genome(
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    """
+    Comprehensive genome analysis using local SNP knowledge base.
+
+    Matches user's variants against known health-relevant SNPs and returns:
+    - Findings with impact levels
+    - Aggregated supplement recommendations
+    - Things to avoid
+    - Lifestyle interventions
+    - Recommended tests
+
+    All processing happens locally - no external AI APIs used.
+    """
+    from app.services.snp_service import analyze_genome_with_knowledge
+
+    return await analyze_genome_with_knowledge(current_user["id"])
+
+
+@router.post("/knowledge/seed")
+async def seed_snp_knowledge(
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Seed/update the SNP knowledge base from local JSON file."""
+    from app.services.snp_service import seed_snp_knowledge
+
+    result = await seed_snp_knowledge()
+    return {"status": "success", **result}
+
+
+@router.get("/knowledge/categories")
+async def get_snp_categories_endpoint(
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """Get all SNP categories in the knowledge base."""
+    from app.services.snp_service import get_snp_categories
+
+    return await get_snp_categories()

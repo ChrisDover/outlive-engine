@@ -1,15 +1,24 @@
-"""AI service wrapping AirLLM via an OpenAI-compatible API."""
+"""AI service - local Ollama by default, optional external APIs.
+
+Supports:
+- Local: Ollama (llama3.1, llava, etc.)
+- External: Anthropic Claude, OpenAI GPT (requires user acknowledgment)
+"""
 
 from __future__ import annotations
 
+import json
 import logging
+from collections.abc import AsyncIterator
 from typing import Any
 from uuid import UUID
 
 import httpx
 
 from app.config import get_settings
+from app.models.database import get_pool
 from app.models.schemas import AIInsightResponse, BloodworkMarker, OCRResponse
+from app.security.encryption import decrypt_field, derive_key
 
 logger = logging.getLogger(__name__)
 
@@ -64,26 +73,192 @@ async def _chat_completion(
         return resp.json()
 
 
-async def chat_completion_multi(
+async def _get_user_ai_config(user_id: UUID | None) -> dict[str, Any]:
+    """Get user's AI configuration preferences."""
+    if not user_id:
+        return {"use_local_only": True, "external_provider": None, "external_api_key": None}
+
+    pool = get_pool()
+    row = await pool.fetchrow(
+        """
+        SELECT use_local_only, external_provider, external_api_key,
+               acknowledged_external_warning, preferred_model
+        FROM ai_preferences
+        WHERE user_id = $1
+        """,
+        user_id,
+    )
+
+    if not row:
+        return {"use_local_only": True, "external_provider": None, "external_api_key": None}
+
+    return dict(row)
+
+
+async def _call_anthropic(
     messages: list[dict[str, str]],
+    api_key: str,
+    model: str = "claude-3-haiku-20240307",
     temperature: float = 0.5,
-    model: str | None = None,
 ) -> dict[str, Any]:
-    """Call the LLM with a full multi-turn message history. 120s timeout for local models."""
-    settings = get_settings()
-    url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
-    model = model or settings.AIRLLM_MODEL
+    """Call Anthropic Claude API."""
+    # Convert messages to Anthropic format
+    system_message = None
+    anthropic_messages = []
+
+    for msg in messages:
+        if msg["role"] == "system":
+            system_message = msg["content"]
+        else:
+            anthropic_messages.append({
+                "role": msg["role"],
+                "content": msg["content"],
+            })
 
     payload = {
+        "model": model,
+        "max_tokens": 4096,
+        "temperature": temperature,
+        "messages": anthropic_messages,
+    }
+    if system_message:
+        payload["system"] = system_message
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        resp = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            json=payload,
+            headers={
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+
+        # Convert to OpenAI-compatible format
+        return {
+            "choices": [{
+                "message": {
+                    "role": "assistant",
+                    "content": data["content"][0]["text"],
+                }
+            }],
+            "model": data.get("model"),
+            "usage": {
+                "prompt_tokens": data.get("usage", {}).get("input_tokens"),
+                "completion_tokens": data.get("usage", {}).get("output_tokens"),
+            },
+        }
+
+
+async def _call_openai(
+    messages: list[dict[str, str]],
+    api_key: str,
+    model: str = "gpt-4o-mini",
+    temperature: float = 0.5,
+    response_format: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Call OpenAI API."""
+    payload: dict[str, Any] = {
         "model": model,
         "messages": messages,
         "temperature": temperature,
     }
+    if response_format:
+        payload["response_format"] = response_format
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        resp = await client.post(
+            "https://api.openai.com/v1/chat/completions",
+            json=payload,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def _call_local_ollama(
+    messages: list[dict[str, str]],
+    model: str | None = None,
+    temperature: float = 0.5,
+    response_format: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Call local Ollama API."""
+    settings = get_settings()
+    url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
+    model = model or settings.AIRLLM_MODEL
+
+    payload: dict[str, Any] = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+    }
+    if response_format:
+        payload["response_format"] = response_format
 
     async with httpx.AsyncClient(timeout=120.0) as client:
         resp = await client.post(url, json=payload)
         resp.raise_for_status()
         return resp.json()
+
+
+async def chat_completion_multi(
+    messages: list[dict[str, str]],
+    temperature: float = 0.5,
+    model: str | None = None,
+    user_id: UUID | None = None,
+    require_local: bool = False,
+    response_format: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """
+    Call the LLM with a full multi-turn message history.
+
+    Routes to local or external AI based on user preferences.
+    Falls back to local if external fails.
+
+    Args:
+        messages: Chat message history
+        temperature: Sampling temperature
+        model: Model override (optional)
+        user_id: User ID for preference lookup (optional)
+        require_local: Force local AI regardless of preferences
+    """
+    settings = get_settings()
+
+    # Get user preferences if user_id provided
+    config = await _get_user_ai_config(user_id) if user_id and not require_local else None
+
+    # Determine which AI to use
+    use_external = (
+        config
+        and not config.get("use_local_only", True)
+        and config.get("external_api_key")
+        and config.get("acknowledged_external_warning", False)
+        and not require_local
+    )
+
+    if use_external:
+        try:
+            key = derive_key(settings.FIELD_ENCRYPTION_KEY)
+            api_key = decrypt_field(config["external_api_key"], key)
+            provider = config.get("external_provider", "anthropic")
+
+            if provider == "anthropic":
+                return await _call_anthropic(messages, api_key, model or "claude-3-haiku-20240307", temperature)
+            elif provider == "openai":
+                return await _call_openai(messages, api_key, model or "gpt-4o-mini", temperature, response_format)
+            else:
+                logger.warning(f"Unknown provider {provider}, falling back to local")
+        except Exception as e:
+            logger.warning(f"External AI failed ({e}), falling back to local")
+
+    # Default: use local Ollama
+    return await _call_local_ollama(messages, model, temperature, response_format)
 
 
 async def analyze_with_ai(
@@ -113,6 +288,81 @@ async def analyze_with_ai(
             model=None,
             usage=None,
         )
+
+
+_CHAT_SYSTEM_PROMPT = """You are an expert longevity and health-optimization advisor.
+Answer the user's question using the provided health-data context. Be specific and
+cite the user's own numbers and trends when they are available. Prefer short
+paragraphs and markdown bullet lists. Be honest about uncertainty and never invent
+data that is not present. Do NOT return JSON — write a natural, readable answer."""
+
+
+async def stream_chat_insight(
+    user_id: UUID | None,
+    context: dict[str, Any] | None,
+    question: str | None,
+) -> AsyncIterator[str]:
+    """
+    Stream a conversational health insight token-by-token.
+
+    Yields text deltas from the OpenAI-compatible (local Ollama / AirLLM) chat
+    completions endpoint. Routes to the user's chosen external provider only when
+    that provider exposes an OpenAI-compatible streaming surface; otherwise streams
+    from the local model.
+    """
+    settings = get_settings()
+    url = f"{settings.AIRLLM_BASE_URL.rstrip('/')}/chat/completions"
+    model = settings.AIRLLM_MODEL
+
+    # Inject the user's stated goals + standing directives so the advisor reasons
+    # against them and stays consistent with what the user has told it before.
+    system_prompt = _CHAT_SYSTEM_PROMPT
+    if user_id:
+        try:
+            from app.models.database import get_pool
+            from app.security.encryption import derive_key
+            from app.services.context_service import format_context_block, load_user_context
+
+            uc = await load_user_context(get_pool(), derive_key(settings.FIELD_ENCRYPTION_KEY), user_id)
+            block = format_context_block(uc)
+            if block:
+                system_prompt = f"{_CHAT_SYSTEM_PROMPT}\n\n{block}"
+        except Exception:
+            logger.warning("Could not load user context for chat")
+
+    parts: list[str] = []
+    if context:
+        parts.append(f"User data context:\n{context}")
+    if question:
+        parts.append(f"\nQuestion: {question}")
+    user_message = "\n".join(parts) or "Give me a brief overview of my current health status."
+
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message},
+        ],
+        "temperature": 0.4,
+        "stream": True,
+    }
+
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        async with client.stream("POST", url, json=payload) as resp:
+            resp.raise_for_status()
+            async for line in resp.aiter_lines():
+                if not line or not line.startswith("data:"):
+                    continue
+                data = line[len("data:"):].strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    obj = json.loads(data)
+                    delta = obj.get("choices", [{}])[0].get("delta", {}).get("content")
+                    if delta:
+                        yield delta
+                except (json.JSONDecodeError, KeyError, IndexError):
+                    continue
 
 
 async def analyze_experiment(experiment_data: dict[str, Any]) -> AIInsightResponse:

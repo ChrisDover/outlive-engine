@@ -12,7 +12,9 @@ export async function GET() {
   const redirectUri = process.env.OURA_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/oauth/oura/callback`;
 
   if (!clientId) {
-    return NextResponse.json({ error: "Oura OAuth not configured" }, { status: 500 });
+    return NextResponse.redirect(
+      new URL("/dashboard/settings?error=oura_not_configured", process.env.NEXTAUTH_URL)
+    );
   }
 
   const params = new URLSearchParams({

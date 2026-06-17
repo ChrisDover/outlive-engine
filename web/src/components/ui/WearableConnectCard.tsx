@@ -5,9 +5,10 @@ import Link from "next/link";
 interface WearableConnectCardProps {
   ouraConnected: boolean;
   whoopConnected: boolean;
+  withingsConnected?: boolean;
 }
 
-export function WearableConnectCard({ ouraConnected, whoopConnected }: WearableConnectCardProps) {
+export function WearableConnectCard({ ouraConnected, whoopConnected, withingsConnected = false }: WearableConnectCardProps) {
   return (
     <div className="bg-card rounded-[var(--radius-md)] border-2 border-training/40 p-[var(--space-lg)] space-y-[var(--space-md)]">
       {/* Priority banner */}
@@ -73,14 +74,27 @@ export function WearableConnectCard({ ouraConnected, whoopConnected }: WearableC
           </a>
         )}
 
-        {/* Apple Watch */}
-        <div className="flex items-center gap-[var(--space-sm)] p-[var(--space-sm)] rounded-[var(--radius-sm)] border border-[var(--surface-elevated)] opacity-50">
-          <span className="text-lg shrink-0">⌚</span>
-          <div>
-            <p className="text-sm font-medium text-foreground">Apple Watch</p>
-            <p className="text-xs text-muted">Coming soon</p>
+        {/* Withings Scale */}
+        {withingsConnected ? (
+          <div className="flex items-center gap-[var(--space-sm)] p-[var(--space-sm)] rounded-[var(--radius-sm)] border border-recovery-green/30 bg-recovery-green/5">
+            <span className="text-lg shrink-0">✓</span>
+            <div>
+              <p className="text-sm font-medium text-foreground">Withings Scale</p>
+              <p className="text-xs text-recovery-green">Connected</p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <a
+            href="/api/oauth/withings"
+            className="flex items-center gap-[var(--space-sm)] p-[var(--space-sm)] rounded-[var(--radius-sm)] border border-training/30 bg-training/5 hover:bg-training/10 hover:border-training/50 transition-colors"
+          >
+            <span className="text-lg shrink-0">⚖️</span>
+            <div>
+              <p className="text-sm font-medium text-foreground">Connect Withings</p>
+              <p className="text-xs text-muted">Weight, body composition</p>
+            </div>
+          </a>
+        )}
 
         {/* Manual */}
         <Link

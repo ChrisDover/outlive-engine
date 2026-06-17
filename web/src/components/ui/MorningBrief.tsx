@@ -29,12 +29,15 @@ interface MorningBriefProps {
       duration?: number;
       rpe?: number;
       exercises?: Array<{ name: string; sets: number; reps: string }>;
+      volume_modifier?: number;
     };
     interventions_plan: Array<{
       type: string;
       duration?: number;
       notes?: string;
       source_expert?: string;
+      skipped?: boolean;
+      skip_reason?: string;
     }>;
     rationale: string;
     expert_citations: string[];
@@ -45,6 +48,14 @@ interface MorningBriefProps {
       recovery_score?: number;
       recommendation: string;
     };
+    // Enhanced fields
+    recovery_zone?: string;
+    circaseptan_day?: {
+      name: string;
+      focus: string;
+    };
+    genetic_notes?: string[];
+    adaptations?: string[];
   } | null;
   isLoading?: boolean;
   onRefresh?: () => void;
@@ -155,7 +166,14 @@ export function MorningBrief({ brief, isLoading, onRefresh }: MorningBriefProps)
           {/* Workout */}
           {brief.workout_plan?.type && (
             <div className="p-[var(--space-md)] border-b border-[var(--surface-elevated)]">
-              <h4 className="text-training text-sm mb-[var(--space-sm)]">TRAINING</h4>
+              <div className="flex items-center justify-between mb-[var(--space-sm)]">
+                <h4 className="text-training text-sm">TRAINING</h4>
+                {brief.workout_plan.volume_modifier && brief.workout_plan.volume_modifier < 1 && (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-recovery-yellow/10 text-recovery-yellow border border-recovery-yellow/30">
+                    Volume: {Math.round(brief.workout_plan.volume_modifier * 100)}%
+                  </span>
+                )}
+              </div>
               <p className="text-foreground">
                 {brief.workout_plan.type} - {brief.workout_plan.duration || 45} min
                 {brief.workout_plan.rpe && <span className="text-muted"> (RPE {brief.workout_plan.rpe})</span>}
@@ -178,10 +196,13 @@ export function MorningBrief({ brief, isLoading, onRefresh }: MorningBriefProps)
               <h4 className="text-interventions text-sm mb-[var(--space-sm)]">INTERVENTIONS</h4>
               <div className="space-y-[var(--space-xs)]">
                 {brief.interventions_plan.map((int, idx) => (
-                  <div key={idx} className="flex items-center gap-[var(--space-sm)]">
-                    <span className="text-muted">•</span>
-                    <span className="text-foreground">{int.type}</span>
-                    {int.duration && <span className="text-muted">({int.duration} min)</span>}
+                  <div key={idx} className={`flex items-center gap-[var(--space-sm)] ${int.skipped ? 'opacity-50' : ''}`}>
+                    <span className="text-muted">{int.skipped ? '✗' : '•'}</span>
+                    <span className={int.skipped ? 'text-muted line-through' : 'text-foreground'}>{int.type}</span>
+                    {int.duration && !int.skipped && <span className="text-muted">({int.duration} min)</span>}
+                    {int.skipped && int.skip_reason && (
+                      <span className="text-xs text-recovery-yellow">— {int.skip_reason}</span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -206,6 +227,38 @@ export function MorningBrief({ brief, isLoading, onRefresh }: MorningBriefProps)
               <p className="text-subtle text-sm">
                 Based on protocols from: {brief.expert_citations.join(', ')}
               </p>
+            </div>
+          )}
+
+          {/* Genetic Notes */}
+          {brief.genetic_notes && brief.genetic_notes.length > 0 && (
+            <div className="p-[var(--space-md)] border-b border-[var(--surface-elevated)]">
+              <h4 className="text-supplements text-sm mb-[var(--space-sm)]">GENETIC CONSIDERATIONS</h4>
+              <ul className="space-y-[var(--space-xs)]">
+                {brief.genetic_notes.map((note, idx) => (
+                  <li key={idx} className="flex items-start gap-[var(--space-sm)]">
+                    <span className="text-supplements">🧬</span>
+                    <span className="text-foreground text-sm">{note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Adaptations */}
+          {brief.adaptations && brief.adaptations.length > 0 && (
+            <div className="p-[var(--space-md)] border-b border-[var(--surface-elevated)]">
+              <h4 className="text-recovery-yellow text-sm mb-[var(--space-sm)]">TODAY&apos;S ADAPTATIONS</h4>
+              <div className="flex flex-wrap gap-[var(--space-xs)]">
+                {brief.adaptations.map((adaptation, idx) => (
+                  <span
+                    key={idx}
+                    className="text-xs px-2 py-1 rounded-full bg-recovery-yellow/10 text-recovery-yellow border border-recovery-yellow/30"
+                  >
+                    {adaptation}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 

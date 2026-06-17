@@ -1,0 +1,272 @@
+{
+  "expert": {
+    "name": "Tim Ferriss",
+    "focus_areas": ["productivity", "minimum_effective_dose", "cold_thermogenesis", "fat_loss", "sleep_optimization", "experimentation"],
+    "bio": "Author of The 4-Hour Body, The 4-Hour Workweek, and Tools of Titans. Pioneer of self-experimentation and biohacking. Known for minimum effective dose approach and testing unconventional protocols.",
+    "website": "https://tim.blog"
+  },
+  "supplements": [
+    {
+      "name": "Slow-Carb Pagg Stack - Policosanol",
+      "description": "Part of PAGG stack for fat loss from The 4-Hour Body",
+      "mechanisms": ["Cholesterol synthesis inhibition", "Possible fat metabolism effects"],
+      "dose": "20-25mg",
+      "timing": "before bed",
+      "conditions": {"goal": "fat_loss"}
+    },
+    {
+      "name": "Slow-Carb Pagg Stack - Alpha Lipoic Acid",
+      "description": "Potent antioxidant and insulin mimetic",
+      "mechanisms": ["Glucose uptake", "Insulin sensitivity", "Antioxidant"],
+      "dose": "300mg 4x daily (before meals and bed)",
+      "timing": "before meals",
+      "conditions": {"goal": "fat_loss", "note": "R-ALA form preferred"}
+    },
+    {
+      "name": "Slow-Carb Pagg Stack - Green Tea Extract (EGCG)",
+      "description": "Catechins for metabolic boost and fat oxidation",
+      "mechanisms": ["AMPK activation", "Fat oxidation", "Thermogenesis"],
+      "dose": "325mg EGCG 3x daily",
+      "timing": "before meals",
+      "conditions": {"goal": "fat_loss", "note": "decaffeinated to allow evening dose"}
+    },
+    {
+      "name": "Slow-Carb Pagg Stack - Garlic Extract (Allicin)",
+      "description": "Cardiovascular and fat loss support",
+      "mechanisms": ["Lipid metabolism", "Cardiovascular health", "Immune support"],
+      "dose": "200mg aged garlic extract",
+      "timing": "before bed",
+      "conditions": {"goal": "fat_loss"}
+    },
+    {
+      "name": "Magnesium",
+      "description": "Essential mineral for sleep and recovery",
+      "mechanisms": ["GABA modulation", "Muscle relaxation", "Sleep quality"],
+      "dose": "400-500mg",
+      "timing": "before bed",
+      "forms": ["citrate or glycinate preferred"]
+    },
+    {
+      "name": "Vitamin D3",
+      "description": "Critical for testosterone and overall health",
+      "mechanisms": ["Hormone precursor", "Immune function", "Mood"],
+      "dose": "4000-5000 IU",
+      "timing": "morning with fat"
+    },
+    {
+      "name": "Creatine Monohydrate",
+      "description": "Simple, effective for strength and cognition",
+      "mechanisms": ["ATP regeneration", "Strength gains", "Cognitive benefits"],
+      "dose": "5g daily",
+      "timing": "post-workout or morning"
+    },
+    {
+      "name": "BCAAs (during fasted training)",
+      "description": "Preserve muscle during fasted training windows",
+      "mechanisms": ["Anti-catabolic", "Leucine-triggered MPS"],
+      "dose": "10g",
+      "timing": "before fasted training",
+      "conditions": {"fasted_training": true}
+    }
+  ],
+  "protocols": [
+    {
+      "name": "Slow-Carb Diet",
+      "category": "nutrition",
+      "description": "Simple rules for sustainable fat loss without counting calories. Focus on 'good enough' compliance over perfection.",
+      "frequency": "6 days per week, 1 cheat day",
+      "evidence_level": "anecdotal",
+      "rules": [
+        "Avoid white carbohydrates (bread, rice, pasta, potatoes, grains)",
+        "Eat the same few meals repeatedly",
+        "Don't drink calories (no juice, soda, milk)",
+        "Don't eat fruit (except tomatoes and avocados)",
+        "Take one day off per week (cheat day)"
+      ],
+      "meals": {
+        "proteins": ["eggs", "chicken", "beef", "pork", "fish"],
+        "legumes": ["lentils", "black beans", "pinto beans"],
+        "vegetables": ["spinach", "broccoli", "mixed vegetables", "sauerkraut"]
+      },
+      "cheat_day": {
+        "purpose": "Metabolic spike, psychological relief",
+        "guidelines": "Eat whatever you want. Grapefruit juice and caffeine before. Start with protein."
+      }
+    },
+    {
+      "name": "Minimum Effective Dose Training",
+      "category": "training",
+      "description": "Get maximum results with minimum time investment. Quality over quantity.",
+      "frequency": "2-3x per week maximum",
+      "evidence_level": "moderate",
+      "principles": [
+        "One set to failure often sufficient for hypertrophy",
+        "5-10 minute workouts can be effective",
+        "Focus on compound movements",
+        "Slow cadence (5 seconds up, 5 seconds down) for time under tension"
+      ],
+      "key_exercises": {
+        "upper": ["incline bench", "pullups/rows", "overhead press"],
+        "lower": ["squat", "deadlift", "leg press"],
+        "cadence": "5/5 tempo, 8-12 reps to failure"
+      }
+    },
+    {
+      "name": "Kettlebell Swing Protocol",
+      "category": "training",
+      "description": "Two exercises, 30 minutes per week for remarkable body recomposition",
+      "frequency": "2x per week",
+      "evidence_level": "moderate",
+      "details": {
+        "exercises": ["Two-hand kettlebell swing", "Turkish get-up"],
+        "swing_protocol": "75 reps in 15-20 minutes, sets of 20-25",
+        "tgu_protocol": "1-2 per side, focus on form",
+        "weight": "Men start 20-24kg, Women start 12-16kg"
+      },
+      "rationale": "Posterior chain development, hip power, grip strength, cardiovascular conditioning all in one efficient movement"
+    },
+    {
+      "name": "Cold Thermogenesis Protocol",
+      "category": "fat_loss",
+      "description": "Use cold exposure to activate brown fat and increase calorie burn",
+      "frequency": "Daily or near-daily",
+      "evidence_level": "moderate",
+      "progression": [
+        {"week": 1, "protocol": "Cold water face immersion 30 seconds"},
+        {"week": 2, "protocol": "Cold showers 2-3 minutes, back of neck and upper back"},
+        {"week": 3, "protocol": "Ice packs on upper back/neck 20-30 min while working"},
+        {"week": 4, "protocol": "Cold baths or plunges 10-20 minutes"}
+      ],
+      "timing": "Morning optimal for metabolic boost. Can combine with fat-burning supplements.",
+      "mechanisms": ["Brown fat activation", "Norepinephrine release", "GLUT4 translocation", "Increased calorie burn"]
+    },
+    {
+      "name": "Pre-Cheat Day Damage Control",
+      "category": "nutrition",
+      "description": "Minimize fat storage from cheat day indulgences",
+      "frequency": "Cheat day mornings",
+      "evidence_level": "anecdotal",
+      "protocol": [
+        "Grapefruit juice first thing (naringin for metabolic effects)",
+        "Caffeine as soon as possible",
+        "Start cheat day with 30g protein (eggs)",
+        "Brief squats or wall presses before meals (GLUT4 translocation)",
+        "Legumes with meals (slower glucose absorption)"
+      ]
+    },
+    {
+      "name": "Sleep Optimization - Biohacking Sleep",
+      "category": "sleep",
+      "description": "Rapid sleep onset and deep sleep optimization",
+      "frequency": "Nightly",
+      "evidence_level": "moderate",
+      "tactics": {
+        "temperature": "Cold room (65-67F), hot bath 90 min before bed",
+        "half_military_crawl": "Position for rapid sleep onset (one arm up, opposite leg up)",
+        "supplements": ["Magnesium", "Calcium", "GABA (if needed)"],
+        "timing": "Same bedtime within 30 minutes, even weekends",
+        "light": "No screens 1 hour before bed, f.lux on devices"
+      },
+      "optimization": {
+        "deep_sleep": "Cold sleeping environment, no alcohol",
+        "rem": "Consistent wake time, no alarm if possible"
+      }
+    },
+    {
+      "name": "Morning Routine - Titanium Tea",
+      "category": "productivity",
+      "description": "Optimal morning beverage for focus and fat burning",
+      "frequency": "Daily, morning",
+      "evidence_level": "anecdotal",
+      "recipe": {
+        "base": "Pu-erh aged black tea or green tea",
+        "additions": ["Turmeric + black pepper", "Ginger", "Coconut oil 1-2 tbsp"],
+        "optional": ["MCT oil", "Cinnamon"]
+      },
+      "timing": "First thing in morning, before food"
+    },
+    {
+      "name": "Testosterone Optimization - Natural Protocol",
+      "category": "hormones",
+      "description": "Natural methods to optimize testosterone from 4-Hour Body",
+      "frequency": "Ongoing",
+      "evidence_level": "moderate",
+      "interventions": [
+        {"action": "Cold exposure", "effect": "Increases testosterone"},
+        {"action": "Short intense workouts", "effect": "Hormonal response"},
+        {"action": "Brazil nuts (selenium)", "effect": "2-3 daily"},
+        {"action": "Vitamin D optimization", "effect": "Target 55+ ng/mL"},
+        {"action": "Fermented cod liver oil + butter oil", "effect": "Fat-soluble vitamins"}
+      ],
+      "avoid": ["Excessive cardio", "Low fat diets", "Soy", "Excessive alcohol"]
+    }
+  ],
+  "interventions": [
+    {
+      "name": "Cold Showers",
+      "category": "cold_therapy",
+      "description": "Daily cold exposure for metabolic and mood benefits",
+      "frequency": "Daily",
+      "duration": "2-5 minutes",
+      "evidence_level": "moderate",
+      "protocol": "End shower with coldest water tolerable. Focus on back of neck, upper back, chest.",
+      "rationale": "Brown fat activation, dopamine/norepinephrine release, mental toughness"
+    },
+    {
+      "name": "Ice Baths/Cold Plunge",
+      "category": "cold_therapy",
+      "description": "Extended cold exposure for fat loss and recovery",
+      "frequency": "3-5x per week",
+      "duration": "10-20 minutes",
+      "temperature": "50-59F",
+      "evidence_level": "moderate",
+      "timing": "Morning for fat burning, evening for sleep (controversial)"
+    },
+    {
+      "name": "Pre-Meal Air Squats",
+      "category": "glucose_management",
+      "description": "Brief exercise before meals to improve glucose uptake",
+      "frequency": "Before large meals",
+      "duration": "30-60 seconds",
+      "evidence_level": "moderate",
+      "protocol": "30-50 air squats or wall presses before eating, especially high-carb meals",
+      "rationale": "GLUT4 translocation to muscle cell surface allows glucose uptake without insulin"
+    },
+    {
+      "name": "Cissus Quadrangularis Protocol",
+      "category": "recovery",
+      "description": "Traditional Ayurvedic herb for joint and bone healing",
+      "frequency": "Daily when needed",
+      "dose": "2400-3600mg daily",
+      "evidence_level": "moderate",
+      "rationale": "Accelerates fracture and soft tissue healing. Used by Tim for injury recovery."
+    }
+  ],
+  "nutrition_principles": [
+    {
+      "topic": "Calories Don't Matter (If You Follow Rules)",
+      "guidance": "On Slow-Carb, focus on food choices not calorie counting. Protein and fiber naturally regulate appetite.",
+      "details": "Eat until satisfied, not stuffed. Impossible to overeat on compliant foods if eating slowly."
+    },
+    {
+      "topic": "Same Meals Repeatedly",
+      "guidance": "Decision fatigue kills diets. Pick 3-4 meals you like and rotate.",
+      "details": "Simplicity enables compliance. Variety is overrated for fat loss. Save creativity for cheat day."
+    },
+    {
+      "topic": "30g Protein Within 30 Minutes of Waking",
+      "guidance": "Protein first thing sets up metabolic dominoes for the day.",
+      "details": "Eggs are ideal. 3-4 whole eggs with legumes. Stabilizes blood sugar, reduces cravings all day."
+    },
+    {
+      "topic": "Cheat Day Strategy",
+      "guidance": "Cheat day is strategic, not just psychological. Spikes leptin, resets metabolism.",
+      "details": "Go big. The bigger the better for hormonal effect. One day won't ruin weeks of progress. Use damage control protocol."
+    },
+    {
+      "topic": "Liquid Calories Are the Enemy",
+      "guidance": "No juice, soda, milk, or caloric beverages. Exception: red wine 1-2 glasses on some slow-carb versions.",
+      "details": "Liquid calories don't trigger satiety. Easy to consume hundreds of calories without noticing. Stick to water, tea, black coffee."
+    }
+  ]
+}
