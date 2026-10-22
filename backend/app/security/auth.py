@@ -13,8 +13,9 @@ from uuid import UUID
 import httpx
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
-from jose.backends import RSAKey
+import jwt
+from jwt import PyJWK
+from jwt import PyJWTError as JWTError
 
 from app.config import Settings, get_settings
 from app.models.database import get_pool
@@ -57,11 +58,11 @@ async def _fetch_apple_jwks() -> dict[str, Any]:
     return _apple_jwks
 
 
-def _get_apple_public_key(kid: str, jwks: dict[str, Any]) -> RSAKey:
+def _get_apple_public_key(kid: str, jwks: dict[str, Any]) -> Any:
     """Find the matching key in the JWKS by key-id."""
     for key_data in jwks.get("keys", []):
         if key_data["kid"] == kid:
-            return RSAKey(key_data, algorithm="RS256")
+            return PyJWK(key_data, algorithm="RS256").key
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Apple public key not found for kid",
@@ -101,7 +102,7 @@ async def validate_apple_identity_token(
     try:
         claims = jwt.decode(
             identity_token,
-            public_key.public_key(),
+            public_key,
             algorithms=["RS256"],
             audience=settings.APPLE_BUNDLE_ID,
             issuer=APPLE_ISSUER,
